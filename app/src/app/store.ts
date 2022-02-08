@@ -1,13 +1,23 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  combineReducers,
+} from '@reduxjs/toolkit';
 import calculateSlice from '../features/calculate/calculateSlice';
 import sayByeMiddleware from '../features/middleware/sayBye';
 import sayHelloMiddleware from '../features/middleware/sayHello';
 
-const reducers = {
+// const reducers = {
+//   calculate: calculateSlice.reducer,
+// };
+
+const rootReducer = combineReducers({
   calculate: calculateSlice.reducer,
-};
+});
+
 export const store = configureStore({
-  reducer: { ...reducers },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sayHelloMiddleware).concat(sayByeMiddleware),
 });
