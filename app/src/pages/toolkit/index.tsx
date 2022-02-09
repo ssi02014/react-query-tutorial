@@ -16,6 +16,11 @@ const Button = styled.button`
   margin-right: 10px;
 `;
 
+const OtherButton = styled.button(({ theme, color }) => ({
+  border: `1px solid ${theme.colors.red}`,
+  color,
+}));
+
 const ToolkitPage = () => {
   const { number } = useSelector((state: RootState) => state.calculate);
   const dispatch = useDispatch();
@@ -42,9 +47,15 @@ const ToolkitPage = () => {
       <div>{number}</div>
       <div>
         <Button onClick={onIncrease}>+</Button>
-        <button onClick={onDecrease}>-</button>
-        <button onClick={onMultiple}>x2</button>
-        <button onClick={onDivide}>/2</button>
+        <OtherButton color={'blue'} onClick={onDecrease}>
+          -
+        </OtherButton>
+        <OtherButton color={'blue'} onClick={onMultiple}>
+          x2
+        </OtherButton>
+        <OtherButton color={'blue'} onClick={onDivide}>
+          /2
+        </OtherButton>
       </div>
     </>
   );
