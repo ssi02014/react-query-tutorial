@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   useEffect(() => {
@@ -9,7 +10,13 @@ const HomePage = () => {
       });
   }, []);
 
-  return <div>홈페이지입니다.</div>;
+  return (
+    <>
+      <Link to="/toolkit">툴킷(동기)</Link>
+      <Link to="/query">쿼리</Link>
+      <div>홈페이지입니다.</div>
+    </>
+  );
 };
 
 export default HomePage;
