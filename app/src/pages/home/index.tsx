@@ -1,19 +1,24 @@
+import axios from 'axios';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   useEffect(() => {
-    fetch(`https://api.github.com/users/ssi02014`)
-      .then((response) => response.json())
-      .then((response) => {
-        console.log(response);
-      });
+    axios
+      .get(`https://api.github.com/users/ssi02014`)
+      .then((res) => console.log(res));
   }, []);
 
   return (
     <>
-      <Link to="/toolkit">툴킷(동기)</Link>
-      <Link to="/query">쿼리</Link>
+      <ul>
+        <li>
+          <Link to="/toolkit">툴킷(동기)</Link>
+        </li>
+        <li>
+          <Link to="/query">쿼리</Link>
+        </li>
+      </ul>
       <div>홈페이지입니다.</div>
     </>
   );
