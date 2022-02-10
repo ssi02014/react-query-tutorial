@@ -1,12 +1,14 @@
 import axios from 'axios';
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { fetchGithubUserData } from '../../features/github/githubSlice';
 
 const HomePage = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    axios
-      .get(`https://api.github.com/users/ssi02014`)
-      .then((res) => console.log(res));
+    dispatch(fetchGithubUserData('ssi02014'));
   }, []);
 
   return (

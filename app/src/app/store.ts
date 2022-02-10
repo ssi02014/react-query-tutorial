@@ -5,15 +5,13 @@ import {
   combineReducers,
 } from '@reduxjs/toolkit';
 import calculateSlice from '../features/calculate/calculateSlice';
+import githubSlice from '../features/github/githubSlice';
 import sayByeMiddleware from '../features/middleware/sayBye';
 import sayHelloMiddleware from '../features/middleware/sayHello';
 
-// const reducers = {
-//   calculate: calculateSlice.reducer,
-// };
-
 const rootReducer = combineReducers({
   calculate: calculateSlice.reducer,
+  github: githubSlice.reducer,
 });
 
 export const store = configureStore({
