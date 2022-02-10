@@ -26,7 +26,7 @@ export const fetchGithubUserData = createAsyncThunk(
   'github/user',
   async (userId: string, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`https://api.github.com/users/${userId}1111`);
+      const res = await axios.get(`https://api.github.com/users/${userId}`);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
