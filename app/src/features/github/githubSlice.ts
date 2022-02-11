@@ -5,6 +5,7 @@ import {
   SerializedError,
 } from '@reduxjs/toolkit';
 import axios from 'axios';
+import customAxios from '../../utils/axios';
 
 interface GithubState {
   loading: boolean;
@@ -26,7 +27,7 @@ export const fetchGithubUserData = createAsyncThunk(
   'github/user',
   async (userId: string, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`https://api.github.com/users/${userId}`);
+      const res = await customAxios.get(`/users/${userId}`);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
