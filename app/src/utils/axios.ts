@@ -9,7 +9,6 @@ const customAxios = axios.create({
 customAxios.interceptors.request.use(
   function (config) {
     console.log('요청 성공 직전!');
-    console.log(config);
     return config;
   },
   function (err) {
@@ -21,7 +20,6 @@ customAxios.interceptors.request.use(
 customAxios.interceptors.response.use(
   function (response) {
     console.log('응답 성공 직전!');
-    console.log(response);
     return response;
   },
   function (err) {
@@ -30,12 +28,15 @@ customAxios.interceptors.response.use(
   }
 );
 
-export const getAPI = async (url: string, params: object) => {
+export const getAPI = async (url: string, params?: object) => {
   const response = await customAxios({
     method: 'get',
     url,
+    //params는 요청과 함께 전송 될 URL 매개 변수입니다.
     params,
+    // paramsSerializer는 params를 직렬화(serializing) 하는 옵션 함수입니다.
     paramsSerializer(paramObj) {
+      console.log(paramObj);
       // URLSearchParams 인터페이스는 URL의 쿼리 문자열에 대해 작업할 수 있는 유틸리티 메서드를 정의합니다.
       // https://developer.mozilla.org/ko/docs/Web/API/URLSearchParams
       const params = new URLSearchParams();
@@ -48,7 +49,7 @@ export const getAPI = async (url: string, params: object) => {
   return response.data;
 };
 
-export const postAPI = async (url: string, data?: any, params?: any) => {
+export const postAPI = async (url: string, data?: object, params?: object) => {
   const response = await customAxios({
     method: 'post',
     url,
