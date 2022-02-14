@@ -21,6 +21,9 @@ const HomePage = () => {
         <li>
           <Link to="/query">쿼리</Link>
         </li>
+        <li>
+          <Link to="/param">파라미터</Link>
+        </li>
       </ul>
       <div>홈페이지입니다.</div>
       <Button />
