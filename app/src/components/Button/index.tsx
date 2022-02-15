@@ -5,7 +5,7 @@ const Button = () => {
   return <S.DefaultButton>버튼입니다.</S.DefaultButton>;
 };
 
-Button.red = () => {
+Button.Red = () => {
   return <S.RedButton>버튼입니다.</S.RedButton>;
 };
 

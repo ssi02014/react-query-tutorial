@@ -23,10 +23,8 @@ const ParamPage = () => {
 
   useEffect(() => {
     get();
-  }, []);
+  }, [get]);
 
-  console.log(postData);
-  console.log(data);
   return (
     <>
       <div>파라미터페이지</div>

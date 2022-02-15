@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -10,24 +9,13 @@ const HomePage = () => {
 
   useEffect(() => {
     dispatch(fetchGithubUserData('ssi02014'));
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
-      <ul>
-        <li>
-          <Link to="/toolkit">툴킷(동기)</Link>
-        </li>
-        <li>
-          <Link to="/query">쿼리</Link>
-        </li>
-        <li>
-          <Link to="/param?id=ssi02014&name=minjae">파라미터</Link>
-        </li>
-      </ul>
       <div>홈페이지입니다.</div>
       <Button />
-      <Button.red />
+      <Button.Red />
     </>
   );
 };

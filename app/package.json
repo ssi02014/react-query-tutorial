@@ -15,6 +15,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.22",
     "axios": "^0.25.0",
+    "json-server": "^0.17.0",
     "query-string": "^7.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -29,7 +30,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server-json": "json-server --watch db.json --port 4000"
   },
   "eslintConfig": {
     "extends": [
