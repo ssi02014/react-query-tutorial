@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { getAPI, postAPI } from '../../utils/axios';
 
 const ParamPage = () => {
-  const location = useLocation();
   const [data, setData] = useState<any>();
   const [postData, setPostData] = useState<any>();
 
@@ -24,6 +22,9 @@ const ParamPage = () => {
   useEffect(() => {
     get();
   }, [get]);
+
+  console.log(data);
+  console.log(postData);
 
   return (
     <>
