@@ -1,46 +1,49 @@
-# Getting Started with Create React App
+# 💻 React-query, Redux-Toolkit
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📃 React-Query 개요 및 기능
 
-## Available Scripts
+### 개요
 
-In the project directory, you can run:
+- React를 위한 강력하고 성능 좋은 데이터 동기화
+  `전역 상태`를 건드리지 않고도 React 및 React Native 애플리케이션에서 데이터를 가져오고, 캐시하고, 업데이트할 수 있습니다.
 
-### `yarn start`
+<br />
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 기능
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. 선언적 및 자동
 
-### `yarn test`
+   - 데이터 가져오기 로직을 ​​손으로 작성하는 것은 끝났습니다. React Query에 데이터를 가져올 위치와 데이터가 얼마나 필요한지 알려주면 나머지는 자동입니다. React Query는 구성이 필요 없는 즉시 캐싱, 백그라운드 업데이트 및 오래된 데이터를 처리합니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. 간단하고 친숙한
 
-### `yarn build`
+   - promise 또는 async/await로 작업하는 방법을 알고 있다면 이미 React Query를 사용하는 방법을 알고 있는 것입니다. 관리할 전역 상태, 감속기, 정규화 시스템 또는 이해해야 할 무거운 구성이 없습니다. 데이터를 해결하는(또는 오류를 발생시키는) 함수를 전달하기만 하면 나머지는 기록입니다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. 강력하고 구성 가능
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   - React Query는 모든 사용 사례에 맞는 노브와 옵션을 사용하여 쿼리의 각 관찰자 인스턴스까지 구성할 수 있습니다. 전용 devtools, 무한 로딩 API 및 데이터 업데이트를 쉽게 만들어주는 일류 mutation 도구와 연결되어 있습니다. 걱정하지 마십시오. 모든 것이 성공을 위해 미리 구성되어 있습니다!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. 적은 코드. 더 적은 엣지 케이스.
+   - 리듀서, 캐싱 로직, 타이머, 재시도 로직, 복잡한 비동기/대기 스크립팅(계속 진행할 수 있습니다...) 대신 문자 그대로 평소 하던 코드의 아주 작은 부분을 작성합니다. React Query를 사용할 때 작성하는 코드가 얼마나 적은지 또는 얼마나 많은 코드를 삭제하는지에 놀랄 것입니다.
 
-### `yarn eject`
+<br />
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## 📃 React-Query 구성 요소
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<br />
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 🤔 QueryClientProvider, QueryClient
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- App.js에 Context Provider로 이하 컴포넌트를 감싸고 queryClient를 내려보내줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 background 계층이 됨
+  - QueryClientProvider는 구성 요소를 사용하여 QueryClient를 연결하고 응용 프로그램에 제공
+  - QueryClient를 사용하여 캐시와 상호 작용할 수 있습니다.
 
-## Learn More
+```js
+import { QueryClient, QueryClientProvider } from "react-query";
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const queryClient = new QueryClient();
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+function App() {
+  return <QueryClientProvider client={queryClient}>...</QueryClientProvider>;
+}
+```
