@@ -1,5 +1,11 @@
 # 💻 React-query, Redux-Toolkit
 
+## 📃 json-server
+- json-server 실행
+```
+   yarn server-json
+```
+
 ## 📃 React-Query 개요 및 기능
 
 ### 개요
