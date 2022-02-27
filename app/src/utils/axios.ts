@@ -13,7 +13,7 @@ customAxios.interceptors.request.use(
   },
   function (err) {
     console.log('요청 실패 직전 ㅠ');
-    return err;
+    return Promise.reject(err);
   }
 );
 
@@ -24,7 +24,7 @@ customAxios.interceptors.response.use(
   },
   function (err) {
     console.log('응답 실패 직전 ㅠ');
-    return err;
+    return Promise.reject(err);
   }
 );
 

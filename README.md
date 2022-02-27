@@ -1,7 +1,9 @@
 # 💻 React-query, Redux-Toolkit
 
 ## 📃 json-server
+
 - json-server 실행
+
 ```
    yarn server-json
 ```
@@ -41,15 +43,29 @@
 ### 🤔 QueryClientProvider, QueryClient
 
 - App.js에 Context Provider로 이하 컴포넌트를 감싸고 queryClient를 내려보내줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 background 계층이 됨
-  - QueryClientProvider는 구성 요소를 사용하여 QueryClient를 연결하고 응용 프로그램에 제공
-  - QueryClient를 사용하여 캐시와 상호 작용할 수 있습니다.
+- QueryClientProvider는 구성 요소를 사용하여 QueryClient를 연결하고 응용 프로그램에 제공
+- QueryClient를 사용하여 캐시와 상호 작용할 수 있습니다.
 
-```js
+```jsx
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
 
 function App() {
-  return <QueryClientProvider client={queryClient}>...</QueryClientProvider>;
+  return (
+   <QueryClientProvider client={queryClient}>
+      <div>블라블라</div>
+   </QueryClientProvider>;
+  );
 }
+```
+
+### 🤔 useQuery
+
+```jsx
+const getSuperHero = useCallback(() => {
+  return axios.get("http://localhost:4000/superheroes");
+}, []);
+
+const { isLoading, data } = useQuery("super-heroes", getSuperHero);
 ```

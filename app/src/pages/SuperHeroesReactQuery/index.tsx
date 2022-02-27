@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { getAPI } from '../../utils/axios';
 
 interface Data {
   id: number;
@@ -9,19 +8,19 @@ interface Data {
   alterEgo: string;
 }
 
-const QueryPage = () => {
+const SuperHerosReactQueryPage = () => {
   const getSuperHero = useCallback(() => {
     return axios.get('http://localhost:4000/superheroes');
   }, []);
 
-  const { isLoading, data } = useQuery('super-heroes', getSuperHero);
+  const { isLoading, data, isError, error } = useQuery(
+    'super-heroes',
+    getSuperHero
+  );
 
-  const results = useQuery('super-heroes', () => {
-    return getAPI('http://localhost:4000/superheroes');
-  });
-
-  console.log(data);
-  console.log(results);
+  if (isError) {
+    return <h2>{'에러'}</h2>;
+  }
 
   return (
     <>
@@ -38,4 +37,4 @@ const QueryPage = () => {
   );
 };
 
-export default QueryPage;
+export default SuperHerosReactQueryPage;

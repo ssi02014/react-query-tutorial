@@ -3,7 +3,7 @@ import { Link, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import HomePage from './pages/home';
 import ParamPage from './pages/params';
-import QueryPage from './pages/query';
+import QueryPage from './pages/SuperHeroesReactQuery';
 import SuperHeroes from './pages/SuperHeroes';
 import ToolkitPage from './pages/toolkit';
 
@@ -13,9 +13,9 @@ export const AppContext = createContext<any>(undefined);
 
 function App() {
   const user = {
-    name: "전민재",
-    job: "프로그래머",
-  }
+    name: '전민재',
+    job: '프로그래머',
+  };
   return (
     <AppContext.Provider value={user}>
       <QueryClientProvider client={queryClient}>
