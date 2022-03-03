@@ -60,6 +60,8 @@ function App() {
 }
 ```
 
+<br />
+
 ### 🤔 useQuery
 
 ```jsx
@@ -68,4 +70,53 @@ const getSuperHero = useCallback(() => {
 }, []);
 
 const { isLoading, data } = useQuery("super-heroes", getSuperHero);
+```
+
+<br />
+
+### 🤔 useQuery Error Handle
+
+- useQuery 주로 사용되는 3가지 return 값 중에서 isError와 error 프로퍼티로 에러처리를 할 수 있다.
+
+```js
+const getSuperHero = useCallback(() => {
+  return axios.get("http://localhost:4000/superheroes1");
+}, []);
+
+const { isLoading, data, isError, error } = useQuery(
+  "super-heroes",
+  getSuperHero
+);
+```
+
+<br />
+
+### 🤔 React Query Devtools
+
+- React Query는 전용 devtools를 제공한다.
+- devtools를 사용하면 React Query의 모든 내부 동작을 시각화하는데 도움이 되며 문제가 발생하면 디버깅 시간을 절약할 수 있다.
+
+```jsx
+import { ReactQueryDevtools } from "react-query/devtools";
+
+<AppContext.Provider value={user}>
+  <QueryClientProvider client={queryClient}>
+    // ...
+    <ReactQueryDevtools />
+  </QueryClientProvider>
+</AppContext.Provider>;
+```
+
+```
+1. initialIsOpen: Boolean
+  - true이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
+2. panelProps: PropsObject
+  - 패널에 props을 추가할 수 있다. 예를 들어 className, style, onClick 등
+3. closeButtonProps: PropsObject
+  - 닫기 버튼에 props를 추가할 수 있다.
+4. toggleButtonProps: PropsObject
+  - 토글 버튼에 props를 추가할 수 있다.
+5. position?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
+  - 기본값: bottom-left
+  - devtools 패널을 열고 닫기 위한 로고 위치
 ```

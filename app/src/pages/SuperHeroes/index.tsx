@@ -13,7 +13,7 @@ const SuperHeroPage = () => {
 
   const getSuperHero = useCallback(async () => {
     try {
-      const response = await getAPI('http://localhost:4000/superheroes1');
+      const response = await getAPI('http://localhost:4000/superheroes');
       setIsLoading(false);
       setData(response);
     } catch (err: any) {

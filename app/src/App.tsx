@@ -1,6 +1,7 @@
 import React, { createContext } from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import HomePage from './pages/home';
 import ParamPage from './pages/params';
 import QueryPage from './pages/SuperHeroesReactQuery';
@@ -43,6 +44,7 @@ function App() {
           <Route path="/param" element={<ParamPage />} />
           <Route path="/superHero" element={<SuperHeroes />} />
         </Routes>
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
     </AppContext.Provider>
   );

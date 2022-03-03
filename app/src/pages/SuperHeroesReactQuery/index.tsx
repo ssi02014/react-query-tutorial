@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 
@@ -18,14 +18,10 @@ const SuperHerosReactQueryPage = () => {
     getSuperHero
   );
 
-  if (isError) {
-    return <h2>{'에러'}</h2>;
-  }
-
   return (
     <>
       {isLoading ? (
-        <div>로딩중</div>
+        <div>로딩중...</div>
       ) : (
         <div>
           {data?.data.map((hero: Data) => (
