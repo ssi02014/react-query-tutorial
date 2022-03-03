@@ -13,11 +13,14 @@ const SuperHerosReactQueryPage = () => {
     return axios.get('http://localhost:4000/superheroes');
   }, []);
 
-  const { isLoading, data, isError, error } = useQuery(
+  const { isLoading, isFetching, data, isError, error } = useQuery(
     'super-heroes',
-    getSuperHero
+    getSuperHero,
+    {
+      cacheTime: 5000,
+    }
   );
-
+  console.log(isLoading, isFetching);
   return (
     <>
       {isLoading ? (
