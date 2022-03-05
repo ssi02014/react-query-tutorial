@@ -10,7 +10,7 @@ interface Data {
 
 const SuperHerosReactQueryPage = () => {
   const getSuperHero = useCallback(() => {
-    return axios.get('http://localhost:4000/superheroes');
+    return axios.get('http://localhost:4000/superheroes1');
   }, []);
 
   const { isLoading, isFetching, data, isError, error } = useQuery(
