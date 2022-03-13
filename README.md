@@ -136,45 +136,103 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 1. A 쿼리 인스턴스가 mount 됨
 2. 네트워크에서 데이터 fetch 하고 A라는 query key로 캐싱함
-3. 이 데이터는 fresh 상태에서 staleTime(기본값 0) 이후 stale 상태로 변경됨
+3. 이 데이터는 `fresh` 상태에서 staleTime(기본값 0) 이후 `stale` 상태로 변경됨
 4. A 쿼리 인스턴스가 unmount 됨
 5. 캐시는 cacheTime(기본값 5min) 만큼 유지되다가 가비지 콜렉터로 수집됨
 6. 만일 cacheTime이 지나기 전에 A 쿼리 인스턴스가 새롭게 mount되면, fetch가 실행되고 fresh한 값을 가져오는 동안 캐시 데이터를 보여줌
 
 <br />
 
-### 🤔 staleTime, cacheTime
+### 🤔 isFetching, isLoading
 
-1. staleTime
-   - 데이터가 fresh -> stale 상태로 변경되는데 걸리는 시간
-   - fresh 상태일때는 쿼리 인스턴스가 새롭게 mount 되어도 네트워크 fetch가 일어나지 않는다.
-   - 데이터가 한번 fetch 되고 나서 staleTime이 지나지 않았다면 unmount 후 mount 되어도 fetch가 일어나지 않는다.
-2. cacheTime
-   - 데이터가 inactive 상태일 때 캐싱된 상태로 남아있는 시간
-   - 쿼리 인스턴스가 unmount 되면 데이터는 inactive 상태로 변경되며, 캐시는 cacheTime만큼 유지된다.
-   - cacheTime이 지나면 가비지 콜렉터로 수집된다.
-   - cacheTime이 지나기 전에 쿼리 인스턴스가 다시 마운트 되면, 데이터를 fetch하는 동안 캐시 데이터를 보여준다.
-   - cacheTime은 staleTime과 관계없이, 무조건 inactive 된 시점을 기준으로 캐시 데이터 삭제를 결정한다.
+- isFetching : 데이터가 fetch될 때 false에서 true가 된다. 캐싱 데이터가 있어서 백그라운드에서 fetch 되더라도 true이다.
+- isLoading : 캐싱된 데이터가 없을때 fetch 과정 중에 true 즉, 캐싱 데이터가 있으면 false
 
 <br />
 
-### 🤔 isFetching, isLoading
+### 🤔 staleTime, cacheTime (number | Infinity)
 
-- isFetching : 데이터가 fetch될 때 true, 캐싱 데이터가 있어서 백그라운드에서 fetch되더라도 true
-- isLoading : 캐싱된 데이터가 없을때 fetch 중에 true
+- stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다. fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미
 
 ```jsx
-const getSuperHero = useCallback(() => {
-  return axios.get("http://localhost:4000/superheroes");
-}, []);
-
 const { isLoading, isFetching, data, isError, error } = useQuery(
   "super-heroes",
   getSuperHero,
   {
-    cacheTime: 5000,
+    cacheTime: 3000,
+    staleTime: 50000,
   }
 );
 ```
 
+1. staleTime
+   - 데이터가 `fresh -> stale` 상태로 변경되는데 걸리는 시간
+   - `fresh` 상태일때는 쿼리 인스턴스가 새롭게 mount 되어도 네트워크 요청(fetch)이 일어나지 않는다.
+   - 데이터가 한번 fetch 되고 나서 staleTime이 지나지 않았다면 unmount 후 mount 되어도 fetch가 일어나지 않는다.
+   - staleTime의 기본값은 `0`
+2. cacheTime
+   - 데이터가 inactive 상태일 때 `캐싱된 상태로` 남아있는 시간
+   - 쿼리 인스턴스가 unmount 되면 데이터는 inactive 상태로 변경되며, 캐시는 cacheTime만큼 유지된다.
+   - cacheTime이 지나면 가비지 콜렉터로 수집된다.
+   - cacheTime이 지나기 전에 쿼리 인스턴스가 다시 마운트 되면, 데이터를 fetch하는 동안 캐시 데이터를 보여준다.
+   - cacheTime은 staleTime과 관계없이, 무조건 inactive 된 시점을 기준으로 캐시 데이터 삭제를 결정한다.
+   - cacheTime의 기본값은 `5분`
+
+- 참고로, staleTime을 길게주고, cacheTime을 짧게 준다면, 캐싱 데이터가 사라지기 때문에 새로 요청해줘야 한다.
+
 <br />
+
+### 🤔 refetchOnMount (boolean | "always")
+
+```jsx
+const { isLoading, isFetching, data, isError, error } = useQuery(
+  "super-heroes",
+  getSuperHero,
+  {
+    refetchOnMount: true,
+  }
+);
+```
+
+- refetchOnMount는 데이터가 `stale` 상태일 경우 마운트 시 마다 refetch를 실행하는 옵션이다.
+- 기본값은 `true`인데 이게 베스트다.
+- `'always'` 로 설정하면 마운트 시 마다 매번 refetch를 실행한다.
+- `false`로 설정하면 최초 fetch 이후에는 refetch하지 않는다.
+
+<br />
+
+### 🤔 refetchOnWindowFocus (boolean | "always")
+
+```jsx
+const { isLoading, isFetching, data, isError, error } = useQuery(
+  "super-heroes",
+  getSuperHero,
+  {
+    refetchOnWindowFocus: true,
+  }
+);
+```
+
+- refetchOnWindowFocus는 데이터가 `stale` 상태일 경우 `윈도우 포커싱` 될 때 마다 refetch를 실행하는 옵션이다.
+- 예를 들어, 크롬에서 다른 탭을 눌렀다가 다시 원래 보던 중인 탭을 눌렀을 때도 이 경우에 해당한다. 심지어 F12로 개발자 도구 창을 켜서 네트워크 탭이든, 콘솔 탭이든 개발자 도구 창에서 놀다가 페이지 내부를 다시 클릭했을 때도 이 경우에 해당한다.
+- 기본값은 `true`이다.
+- `always` 로 설정하면 항상 윈도우 포커싱 될 때 마다 refetch를 실행한다는 의미이다.
+
+<br />
+
+### 🤔 Polling(with.refetchInterval, refetchIntervalInBackground)
+
+```jsx
+const { isLoading, isFetching, data, isError, error } = useQuery(
+  "super-heroes",
+  getSuperHero,
+  {
+    // refetchInterval: 2000,
+    refetchIntervalInBackground: true,
+  }
+);
+```
+
+- 폴링이란? 리얼타임 웹을 위한 기법으로 `일정한 주기(특정한 시간)`를 가지고 서버와 응답을 주고받는 방식이 폴링 방식이다.
+- react-query에서는 `refetchInterval`을 이용해서 구현할 수 있다.
+- `refetchIntervalInBackground` 으로도 폴링을 구현할 수 있는데 `refetchInterval` 탭/창이 백그라운드에 있는 동안 계속 다시 가져옵니다.

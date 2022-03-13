@@ -10,14 +10,15 @@ interface Data {
 
 const SuperHerosReactQueryPage = () => {
   const getSuperHero = useCallback(() => {
-    return axios.get('http://localhost:4000/superheroes1');
+    return axios.get('http://localhost:4000/superheroes   ');
   }, []);
 
   const { isLoading, isFetching, data, isError, error } = useQuery(
     'super-heroes',
     getSuperHero,
     {
-      cacheTime: 5000,
+      // refetchInterval: 20000,
+      refetchIntervalInBackground: true,
     }
   );
   console.log(isLoading, isFetching);
