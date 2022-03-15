@@ -38,7 +38,9 @@
 
 ## 📃 React-Query 구성 요소
 
-<br />
+- [useQuery 참고 사이트](https://react-query.tanstack.com/reference/useQuery)
+
+  <br />
 
 ### 🤔 QueryClientProvider, QueryClient
 
@@ -236,3 +238,92 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 - 폴링이란? 리얼타임 웹을 위한 기법으로 `일정한 주기(특정한 시간)`를 가지고 서버와 응답을 주고받는 방식이 폴링 방식이다.
 - react-query에서는 `refetchInterval`을 이용해서 구현할 수 있다.
 - `refetchIntervalInBackground` 으로도 폴링을 구현할 수 있는데 `refetchInterval` 탭/창이 백그라운드에 있는 동안 계속 다시 가져옵니다.
+
+<br />
+
+### 🤔 enabled와 refetch
+
+```jsx
+const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
+  "super-heroes",
+  getSuperHero,
+  {
+    enabled: false,
+  }
+);
+
+const handleClickRefetch = useCallback(() => {
+  refetch();
+}, [refetch]);
+
+return (
+  <div>
+    {data?.data.map((hero: Data) => (
+      <div key={hero.id}>{hero.name}</div>
+    ))}
+    <button onClick={handleClickRefetch}>Fetch Heroes</button>
+  </div>
+);
+```
+
+- `enabled`는 쿼리가 자동으로 실행되지 않도록 할 때 설정할 수 있다. `false`를 주면 자동 실행되지 않는다.
+- `refetch`는 쿼리를 수동으로 다시 요청하는 기능이다. 쿼리 오류가 발생하면 오류만 기록된다. 오류를 발생시키려면 `throwOnError`속성을 `true`로해서 전달해야 한다.
+- 보통 자동으로 쿼리 요청을 하지 않고 버튼 클릭이나 특정 이벤트를 통해 요청을 시도할 때 같이 사용한다.
+
+<br />
+
+### 🤔 onSuccess와 onError Callback
+
+```jsx
+const onSuccess = useCallback((data) => {
+  console.log("Success", data);
+}, []);
+
+const onError = useCallback((err) => {
+  console.log("Error", err);
+}, []);
+
+const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
+  "super-heroes",
+  getSuperHero,
+  {
+    onSuccess,
+    onError,
+  }
+);
+```
+
+- `onSuccess` 함수는 쿼리 요청이 성공적으로 진행되서 새 데이터를 가져오거나 캐시가 업데이트될 때마다 실행된다.
+- `onError` 함수는 쿼리에 오류가 발생하고 오류가 전달되면 실행된다.
+
+<br />
+
+### 🤔 select로 데이터 변환
+
+```jsx
+const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
+  "super-heroes",
+  getSuperHero,
+  {
+    onSuccess,
+    onError,
+    select(data) {
+      const superHeroNames = data.data.map((hero: Data) => hero.name);
+      return superHeroNames;
+    },
+  }
+);
+
+return (
+  <div>
+    <button onClick={handleClickRefetch}>Fetch Heroes</button>
+    {data.map((heroName: string, idx: number) => (
+      <div key={idx}>{heroName}</div>
+    ))}
+  </div>
+);
+```
+
+- `select` 옵션을 사용하여 쿼리 함수에서 반환된 데이터의 일부를 변환하거나 선택할 수 있다.
+
+<br />

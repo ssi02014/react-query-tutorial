@@ -10,26 +10,46 @@ interface Data {
 
 const SuperHerosReactQueryPage = () => {
   const getSuperHero = useCallback(() => {
-    return axios.get('http://localhost:4000/superheroes   ');
+    return axios.get('http://localhost:4000/superheroes');
   }, []);
 
-  const { isLoading, isFetching, data, isError, error } = useQuery(
+  const onSuccess = useCallback((data) => {
+    console.log('Success', data);
+  }, []);
+
+  const onError = useCallback((err) => {
+    console.log('Error', err);
+  }, []);
+
+  const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
     'super-heroes',
     getSuperHero,
     {
-      // refetchInterval: 20000,
-      refetchIntervalInBackground: true,
+      onSuccess,
+      onError,
+      select(data) {
+        const superHeroNames = data.data.map((hero: Data) => hero.name);
+        return superHeroNames;
+      },
     }
   );
-  console.log(isLoading, isFetching);
+
+  const handleClickRefetch = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
   return (
     <>
-      {isLoading ? (
+      {isLoading || isFetching ? (
         <div>로딩중...</div>
       ) : (
         <div>
-          {data?.data.map((hero: Data) => (
+          {/* {data?.data.map((hero: Data) => (
             <div key={hero.id}>{hero.name}</div>
+          ))} */}
+          <button onClick={handleClickRefetch}>Fetch Heroes</button>
+          {data.map((heroName: string, idx: number) => (
+            <div key={idx}>{heroName}</div>
           ))}
         </div>
       )}
