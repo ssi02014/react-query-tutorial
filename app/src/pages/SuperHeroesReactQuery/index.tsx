@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { Link } from 'react-router-dom';
 
 interface Data {
   id: number;
@@ -21,16 +22,12 @@ const SuperHerosReactQueryPage = () => {
     console.log('Error', err);
   }, []);
 
-  const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
+  const { isLoading, isFetching, data, refetch } = useQuery(
     'super-heroes',
     getSuperHero,
     {
       onSuccess,
       onError,
-      select(data) {
-        const superHeroNames = data.data.map((hero: Data) => hero.name);
-        return superHeroNames;
-      },
     }
   );
 
@@ -44,13 +41,12 @@ const SuperHerosReactQueryPage = () => {
         <div>로딩중...</div>
       ) : (
         <div>
-          {/* {data?.data.map((hero: Data) => (
-            <div key={hero.id}>{hero.name}</div>
-          ))} */}
-          <button onClick={handleClickRefetch}>Fetch Heroes</button>
-          {data.map((heroName: string, idx: number) => (
-            <div key={idx}>{heroName}</div>
+          {data?.data.map((hero: Data) => (
+            <div key={hero.id}>
+              <Link to={`/super-hero/${hero.id}`}>{hero.name}</Link>
+            </div>
           ))}
+          <button onClick={handleClickRefetch}>Fetch Heroes</button>
         </div>
       )}
     </>

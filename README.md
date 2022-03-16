@@ -10,14 +10,14 @@
 
 ## 📃 React-Query 개요 및 기능
 
-### 개요
+### 👀 개요
 
 - React를 위한 강력하고 성능 좋은 데이터 동기화
   `전역 상태`를 건드리지 않고도 React 및 React Native 애플리케이션에서 데이터를 가져오고, 캐시하고, 업데이트할 수 있습니다.
 
 <br />
 
-### 기능
+### 👀 기능
 
 1. 선언적 및 자동
 
@@ -44,9 +44,10 @@
 
 ### 🤔 QueryClientProvider, QueryClient
 
-- App.js에 Context Provider로 이하 컴포넌트를 감싸고 queryClient를 내려보내줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 background 계층이 됨
-- QueryClientProvider는 구성 요소를 사용하여 QueryClient를 연결하고 응용 프로그램에 제공
-- QueryClient를 사용하여 캐시와 상호 작용할 수 있습니다.
+- 리액트 쿼리를 사용하기 위해서는 `QueryClientProvider`를 최상단에서 감싸주어야 한다.
+- App.js에 `QueryClientProvider`로 이하 컴포넌트를 감싸고 `queryClient`를 내려보내줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 background 계층이 됨
+- `QueryClientProvider`는 구성 요소를 사용하여 QueryClient를 연결하고 응용 프로그램에 제공
+- `QueryClient`를 사용하여 캐시와 상호 작용할 수 있습니다.
 
 ```jsx
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -67,12 +68,50 @@ function App() {
 ### 🤔 useQuery
 
 ```jsx
+// 기본 문법
+const result = useQuery({
+  queryKey,
+  queryFn,
+  enabled,
+});
+```
+
+```jsx
+// 실제 예제
 const getSuperHero = useCallback(() => {
   return axios.get("http://localhost:4000/superheroes");
 }, []);
 
 const { isLoading, data } = useQuery("super-heroes", getSuperHero);
 ```
+
+- useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
+- useQuery는 첫 번째 인자인 `queryKey`를 기반으로 데이터 캐싱을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제 처럼 문자열로 지정할 수 있지만, 만약 쿼리가 변수에 의존하는 경우에는 아래 예제처럼 배열로 지정해 해당 변수를 추가해주어야 합니다.
+- 1번과 2번 방식으로 많이 사용합니다. 두 가지 방식의 차이점을 잘 이해하고 사용합시다.
+
+```jsx
+// (1)
+const fetchSuperHero = ({ queryKey }: any) => {
+  const heroId = queryKey[1]; // queryKey: (2) ['super-hero', '3']
+  return axios.get(`http://localhost:4000/superheroes/${heroId}`);
+};
+const useSuperHeroData = (heroId: string) => {
+  return useQuery(["super-hero", heroId], fetchSuperHero);
+};
+```
+
+```jsx
+// (2)
+const fetchSuperHero = (heroId: string) => {
+  return axios.get(`http://localhost:4000/superheroes/${heroId}`);
+};
+const useSuperHeroData = (heroId: string) => {
+  return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId));
+};
+```
+
+- 두 번째 인자인 queryFn는 promise를 반환하는 함수를 넣어주어야 합니다.
+- 세 번째 인자인 options에 많이 쓰이는 옵션들을 밑에서 설명하였습니다.
 
 <br />
 
@@ -109,19 +148,26 @@ import { ReactQueryDevtools } from "react-query/devtools";
 </AppContext.Provider>;
 ```
 
-```
-1. initialIsOpen: Boolean
-  - true이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
-2. panelProps: PropsObject
-  - 패널에 props을 추가할 수 있다. 예를 들어 className, style, onClick 등
-3. closeButtonProps: PropsObject
-  - 닫기 버튼에 props를 추가할 수 있다.
-4. toggleButtonProps: PropsObject
-  - 토글 버튼에 props를 추가할 수 있다.
-5. position?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
-  - 기본값: bottom-left
-  - devtools 패널을 열고 닫기 위한 로고 위치
-```
+1. initialIsOpen (Boolean)
+
+   - `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
+
+2. panelProps (PropsObject)
+
+   - 패널에 props을 추가할 수 있다. 예를 들어 className, style, onClick 등
+
+3. closeButtonProps( PropsObject)
+
+   - 닫기 버튼에 props를 추가할 수 있다.
+
+4. toggleButtonProps (PropsObject)
+
+   - 토글 버튼에 props를 추가할 수 있다.
+
+5. position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
+
+   - 기본값: `bottom-left`
+   - devtools 패널을 열고 닫기 위한 로고 위치
 
 <br />
 
@@ -131,7 +177,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 ```
 * Query Instances with and without cache data(캐시 데이터가 있거나 없는 쿼리 인스턴스)
-* Background Refetching(백그라운드 다시 페칭)
+* Background Refetching(백그라운드 리패칭)
 * Inactive Queries(비활성 쿼리)
 * Garbage Collection(가비지 컬렉션)
 ```
@@ -184,7 +230,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 <br />
 
-### 🤔 refetchOnMount (boolean | "always")
+### 🤔 refetchOnMount
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -222,7 +268,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 <br />
 
-### 🤔 Polling(with.refetchInterval, refetchIntervalInBackground)
+### 🤔 Polling(refetchInterval, refetchIntervalInBackground)
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(

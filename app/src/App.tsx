@@ -7,6 +7,7 @@ import ParamPage from './pages/params';
 import QueryPage from './pages/SuperHeroesReactQuery';
 import SuperHeroes from './pages/SuperHeroes';
 import ToolkitPage from './pages/toolkit';
+import RQSuperHeroDetailPage from './pages/RQSuperHeroDetail';
 
 const queryClient = new QueryClient();
 
@@ -31,10 +32,10 @@ function App() {
             <Link to="/param">파라미터</Link>
           </li>
           <li>
-            <Link to="/superHero">슈퍼히어로</Link>
+            <Link to="/super-hero">슈퍼히어로(Normal)</Link>
           </li>
           <li>
-            <Link to="/query">슈퍼히어로 쿼리</Link>
+            <Link to="/query">슈퍼히어로(RQ)</Link>
           </li>
         </ul>
         <Routes>
@@ -42,7 +43,11 @@ function App() {
           <Route path="/toolkit" element={<ToolkitPage />} />
           <Route path="/query" element={<QueryPage />} />
           <Route path="/param" element={<ParamPage />} />
-          <Route path="/superHero" element={<SuperHeroes />} />
+          <Route path="/super-hero" element={<SuperHeroes />} />
+          <Route
+            path="/super-hero/:heroId"
+            element={<RQSuperHeroDetailPage />}
+          />
         </Routes>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
