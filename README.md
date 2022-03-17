@@ -68,7 +68,10 @@ function App() {
 ### 🤔 useQuery
 
 ```jsx
-// 기본 문법
+// 기본 문법(1)
+const { data, isLoading, ... } =  useQuery(queryKey, queryFn, {});
+
+// 기번 문법(2)
 const result = useQuery({
   queryKey,
   queryFn,
