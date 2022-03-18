@@ -229,8 +229,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
    - cacheTime은 staleTime과 관계없이, 무조건 inactive 된 시점을 기준으로 캐시 데이터 삭제를 결정한다.
    - cacheTime의 기본값은 `5분`
 
-- 참고로, staleTime을 길게주고, cacheTime을 짧게 준다면, 캐싱 데이터가 사라지기 때문에 새로 요청해줘야 한다.
-
 <br />
 
 ### 🤔 refetchOnMount
@@ -374,5 +372,28 @@ return (
 ```
 
 - `select` 옵션을 사용하여 쿼리 함수에서 반환된 데이터의 일부를 변환하거나 선택할 수 있다.
+
+<br />
+
+### 🤔 Parallel(병렬)
+
+```jsx
+const { data: superHeroes } = useQuery("super-heroes", fetchSuperHeroes);
+const { data: friends } = useQuery("friends", fetchFriends);
+```
+
+- 몇 가지 상황을 제외하면 쿼리 여러개가 선언되어 있는 일반적인 상황일 때 쿼리 함수들은 `그냥 병렬로 요청되서 처리`된다.
+- 이러한 특징은 쿼리 처리의 `동시성`을 극대화 시킨다.
+
+```jsx
+const queryResults = useQueries(
+  heroIds.map((id) => ({
+    queryKey: ["super-hero", id],
+    queryFn: () => fetchSuperHero(id),
+  }))
+);
+```
+
+- 하지만, 쿼리 여러개를 동시에 수행해야 하는데, 렌더링이 거듭되는 사이사이에 계속 쿼리가 수행되어야 한다면 쿼리를 수행하는 로직이 hook룰에 위배될 수도 있다. 이럴 때는 `uesQueries`를 사용한다.
 
 <br />

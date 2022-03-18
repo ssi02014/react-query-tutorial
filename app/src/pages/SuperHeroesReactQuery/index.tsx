@@ -26,7 +26,7 @@ const SuperHerosReactQueryPage = () => {
     'super-heroes',
     getSuperHero,
     {
-      staleTime: 300,
+      staleTime: 50000,
       cacheTime: 5000,
       onSuccess,
       onError,

@@ -15,5 +15,19 @@
             "name": "Wonder Woman",
             "alterEgo": "Princess Diana"
         }
+    ],
+    "friends": [
+        {
+            "id": 1,
+            "name": "minjae"
+        },
+        {
+            "id": 2,
+            "name": "yeonjae"
+        },
+        {
+            "id": 3,
+            "name": "woorim"
+        }
     ]
 }
