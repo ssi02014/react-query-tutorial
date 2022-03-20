@@ -29,5 +29,17 @@
             "id": 3,
             "name": "woorim"
         }
+    ],
+    "users": [
+        {
+            "id": "ssi02014@naver.com",
+            "channelId": "minjae"
+        }
+    ],
+    "channels": [
+        {
+            "id": "minjae",
+            "courses": ["react", "js", "html", "css"]
+        }
     ]
 }

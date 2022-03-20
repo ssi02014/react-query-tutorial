@@ -10,6 +10,7 @@ import ToolkitPage from './pages/toolkit';
 import RQSuperHeroDetailPage from './pages/RQSuperHeroDetail';
 import ParallelQueriesPage from './pages/ParallelQueries';
 import DynamicParallelPage from './pages/DynamicParallelPage';
+import DependantQueriesPage from './pages/DependantQueries';
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,9 @@ function App() {
           <li>
             <Link to="/dynamic-parallel">Dynamic Parallel(RQ)</Link>
           </li>
+          <li>
+            <Link to="/dependant-queries">Dependant queries(RQ)</Link>
+          </li>
         </ul>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -60,6 +64,10 @@ function App() {
           <Route
             path="/dynamic-parallel"
             element={<DynamicParallelPage heroIds={[1, 3]} />}
+          />
+          <Route
+            path="/dependant-queries"
+            element={<DependantQueriesPage email="ssi02014@naver.com" />}
           />
         </Routes>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />

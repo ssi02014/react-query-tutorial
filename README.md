@@ -319,6 +319,21 @@ return (
 
 <br />
 
+### 🤔 retry
+
+```jsx
+const result = useQuery(["todos", 1], fetchTodoListPage, {
+  retry: 10, // 오류를 표시하기 전에 실패한 요청을 10번 재시도합니다.
+});
+```
+
+- retry가 `false`인 경우 실패한 쿼리는 기본적으로 다시 시도하지 않는다.
+- `true`인 경우에는 실패한 쿼리에 대해서 무한 재요청을 시도한다.
+- 값으로 `숫자`를 넣을 경우 실패한 쿼리가 해당 숫자를 충족할 때까지 요청을 재시도한다.
+- 기본값은 `3`이다.
+
+<br />
+
 ### 🤔 onSuccess와 onError Callback
 
 ```jsx
@@ -397,3 +412,25 @@ const queryResults = useQueries(
 - 하지만, 쿼리 여러개를 동시에 수행해야 하는데, 렌더링이 거듭되는 사이사이에 계속 쿼리가 수행되어야 한다면 쿼리를 수행하는 로직이 hook룰에 위배될 수도 있다. 이럴 때는 `uesQueries`를 사용한다.
 
 <br />
+
+### 🤔 Dependent Queries(종속 쿼리)
+
+- 종속 쿼리는 어떤 A라는 쿼리가 있는데 이 A쿼리를 실행하기 전에 사전에 완료되야 하는 B 쿼리가 있는데, 이러한 B쿼리에 의존하는 A쿼리를 종속 쿼리라고 한다.
+- react-query에서는 쿼리를 실행할 준비가 되었다는 것을 알려주는 enabled 옵션을 통해 종속 쿼리를 쉽게 구현할 수 있다.
+
+```jsx
+const DependantQueriesPage = ({ email }: Props) => {
+  // 사전에 완료되야할 쿼리
+  const { data: user } = useQuery(['user', email], () =>
+    fetchUserByEmail(email)
+  );
+
+  const channelId = user?.data.channelId;
+
+  // 종속 쿼리
+  const { data } = useQuery(
+    ['courses', channelId],
+    () => fetchCoursesByChannelId(channelId),
+    { enabled: !!channelId }
+  );
+```
