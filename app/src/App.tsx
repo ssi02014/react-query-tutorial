@@ -11,6 +11,7 @@ import RQSuperHeroDetailPage from './pages/RQSuperHeroDetail';
 import ParallelQueriesPage from './pages/ParallelQueries';
 import DynamicParallelPage from './pages/DynamicParallelPage';
 import DependantQueriesPage from './pages/DependantQueries';
+import PaginatedQueriesPage from './pages/PaginatedQueries';
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,9 @@ function App() {
           <li>
             <Link to="/dependant-queries">Dependant queries(RQ)</Link>
           </li>
+          <li>
+            <Link to="/paginated-queries">Paginated queries(RQ)</Link>
+          </li>
         </ul>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -69,6 +73,7 @@ function App() {
             path="/dependant-queries"
             element={<DependantQueriesPage email="ssi02014@naver.com" />}
           />
+          <Route path="/paginated-queries" element={<PaginatedQueriesPage />} />
         </Routes>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>

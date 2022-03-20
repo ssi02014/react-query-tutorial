@@ -245,7 +245,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 <br />
 
-### 🤔 refetchOnMount
+### 🤔 마운트 시 마다 refech(refetchOnMount)
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -257,7 +257,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 );
 ```
 
-- refetchOnMount는 데이터가 `stale` 상태일 경우 마운트 시 마다 refetch를 실행하는 옵션이다.
+- refetchOnMount는 데이터가 `stale` 상태일 경우 마운트 시 마다 `refetch`를 실행하는 옵션이다.
 - 기본값은 `true`인데 이게 베스트다.
 - `'always'` 로 설정하면 마운트 시 마다 매번 refetch를 실행한다.
 - `false`로 설정하면 최초 fetch 이후에는 refetch하지 않는다.
@@ -348,7 +348,7 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 
 <br />
 
-### 🤔 onSuccess와 onError Callback
+### 🤔 onSuccess와 onError, onSettled Callback
 
 ```jsx
 const onSuccess = useCallback((data) => {
@@ -359,18 +359,24 @@ const onError = useCallback((err) => {
   console.log("Error", err);
 }, []);
 
+const onSettled = useCallback(() => {
+  console.log("Settled");
+}, []);
+
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
   "super-heroes",
   getSuperHero,
   {
     onSuccess,
     onError,
+    onSettled,
   }
 );
 ```
 
 - `onSuccess` 함수는 쿼리 요청이 성공적으로 진행되서 새 데이터를 가져오거나 캐시가 업데이트될 때마다 실행된다.
 - `onError` 함수는 쿼리에 오류가 발생하고 오류가 전달되면 실행된다.
+- `onSettled` 함수는 쿼리 요청이 성공, 실패 모두 실행된다.
 
 <br />
 
@@ -464,7 +470,7 @@ const queryClient = useQueryClient();
 
 ### 🤔 Initial Query Data
 
-- 쿼리에 대한 초기 데이터가 필요하기 전에 캐시에 제공하는 방법이 있다. 아래 예제 참고
+- 쿼리에 대한 `초기 데이터`가 필요하기 전에 캐시에 제공하는 방법이 있다. 아래 예제 참고
 - initialData 옵션을 통해서 쿼리를 미리 채우는데 사용할 수 있으며, 초기 로드 상태도 건너띌 수 있다.
 
 ```jsx
@@ -485,5 +491,24 @@ const queryClient = useQueryClient();
 ```
 
 - 참고로 위 예제에서 `queryClient.getQueryData` 메서드는 기존 쿼리의 `캐시된 데이터`를 가져오는데 사용할 수 있는 동기 함수이다. 쿼리가 존재하지 않으면 `undefined`를 반환한다.
+
+<br />
+
+### 🤔 Paginated 구현에 유용한 keepPreviousData
+
+```jsx
+const fetchColors = (pageNum: number) => {
+  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageNum}`);
+};
+
+const { isLoading, isError, error, data, isFetching, isPreviousData } =
+  useQuery(["colors", pageNum], () => fetchColors(pageNum), {
+    keepPreviousData: true,
+  });
+```
+
+- `keepPreviousData`를 true로 설정하면 쿼리 키가 변경되어서 새로운 데이터를 요청하는 동안에도 마지막 data 값을 유지한다.
+- `keepPreviousData`은 페이지네이션과 같은 기능을 구현할 때 편리하다. 캐시되지 않은 페이지를 가져올 때 목록이 `깜빡깜빡거리는 현상을 방지`할 수 있다.
+- 또한, `isPreviousData` 값으로 현재의 쿼리 키에 해당하는 값인지 확인할 수 있다.
 
 <br />
