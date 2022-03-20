@@ -7,14 +7,12 @@ const ScrollDomPage = () => {
   const component2 = useRef<HTMLDivElement>(null);
   const component3 = useRef<HTMLDivElement>(null);
   const component4 = useRef<HTMLDivElement>(null);
-  const component5 = useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback((num: number) => {
     switch (num) {
       case 1:
         if (component1.current)
           component1.current.scrollIntoView({ behavior: 'smooth' });
-
         break;
       case 2:
         if (component2.current) {
@@ -29,10 +27,6 @@ const ScrollDomPage = () => {
       case 4:
         if (component4.current)
           component4.current.scrollIntoView({ behavior: 'smooth' });
-        break;
-      case 5:
-        if (component5.current)
-          component5.current.scrollIntoView({ behavior: 'smooth' });
         break;
       default:
         return;
@@ -54,9 +48,6 @@ const ScrollDomPage = () => {
           <li>
             <button onClick={() => handleScroll(4)}>Component4</button>
           </li>
-          <li>
-            <button onClick={() => handleScroll(5)}>Component5</button>
-          </li>
         </NavList>
       </nav>
       <div>
@@ -64,7 +55,6 @@ const ScrollDomPage = () => {
         <ComponentOne color="green" ref={component2} />
         <ComponentOne color="blue" ref={component3} />
         <ComponentOne color="yellow" ref={component4} />
-        <ComponentOne color="purple" ref={component5} />
       </div>
     </div>
   );
