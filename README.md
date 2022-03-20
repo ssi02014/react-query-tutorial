@@ -50,6 +50,20 @@
 - `QueryClient`를 사용하여 캐시와 상호 작용할 수 있습니다.
 
 ```jsx
+// QueryClient 예제
+import { QueryClient } from "react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+});
+```
+
+```jsx
+// QueryClientProvider + QueryClient
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const queryClient = new QueryClient();
@@ -427,10 +441,49 @@ const DependantQueriesPage = ({ email }: Props) => {
 
   const channelId = user?.data.channelId;
 
-  // 종속 쿼리
+  // user 쿼리에 종속 쿼리
   const { data } = useQuery(
     ['courses', channelId],
     () => fetchCoursesByChannelId(channelId),
     { enabled: !!channelId }
   );
 ```
+
+### 🤔 useQueryClient
+
+- useQueryClient는 `QueryClient` 인스턴스를 반환한다.
+- `QueryClient`는 캐시와 상호작용 한다.
+
+```jsx
+import { useQueryClient } from "react-query";
+
+const queryClient = useQueryClient();
+```
+
+<br />
+
+### 🤔 Initial Query Data
+
+- 쿼리에 대한 초기 데이터가 필요하기 전에 캐시에 제공하는 방법이 있다. 아래 예제 참고
+- initialData 옵션을 통해서 쿼리를 미리 채우는데 사용할 수 있으며, 초기 로드 상태도 건너띌 수 있다.
+
+```jsx
+  const useSuperHeroData = (heroId: string) => {
+  const queryClient = useQueryClient();
+  return useQuery(['super-hero', heroId], fetchSuperHero, {
+    initialData: () => {
+      const queryData = queryClient.getQueryData('super-heroes') as any;
+      const hero = queryData?.data?.find(
+        (hero: Hero) => hero.id === parseInt(heroId)
+      );
+
+      if (hero) return { data: hero };
+      return undefined;
+    },
+  });
+};
+```
+
+- 참고로 위 예제에서 `queryClient.getQueryData` 메서드는 기존 쿼리의 `캐시된 데이터`를 가져오는데 사용할 수 있는 동기 함수이다. 쿼리가 존재하지 않으면 `undefined`를 반환한다.
+
+<br />

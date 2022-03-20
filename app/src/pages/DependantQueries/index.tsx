@@ -27,8 +27,8 @@ const DependantQueriesPage = ({ email }: Props) => {
   return (
     <div>
       {data?.data.id}{' '}
-      {data?.data.courses.map((el: string) => (
-        <p>{el}</p>
+      {data?.data.courses.map((el: string, idx: string) => (
+        <p key={idx}>{el}</p>
       ))}
     </div>
   );
