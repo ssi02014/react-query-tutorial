@@ -13,7 +13,7 @@
     "@types/react-dom": "^17.0.9",
     "@types/react-redux": "^7.1.22",
     "@types/react-router-dom": "^5.3.3",
-    "@types/styled-components": "^5.1.22",
+    "@types/styled-components": "^5.1.24",
     "axios": "^0.25.0",
     "json-server": "^0.17.0",
     "query-string": "^7.1.1",

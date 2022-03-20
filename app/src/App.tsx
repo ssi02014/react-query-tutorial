@@ -12,6 +12,7 @@ import ParallelQueriesPage from './pages/ParallelQueries';
 import DynamicParallelPage from './pages/DynamicParallelPage';
 import DependantQueriesPage from './pages/DependantQueries';
 import PaginatedQueriesPage from './pages/PaginatedQueries';
+import ScrollDomPage from './pages/ScrollDom';
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,9 @@ function App() {
           <li>
             <Link to="/paginated-queries">Paginated queries(RQ)</Link>
           </li>
+          <li>
+            <Link to="/scroll-dom">ScrollDom</Link>
+          </li>
         </ul>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -74,6 +78,7 @@ function App() {
             element={<DependantQueriesPage email="ssi02014@naver.com" />}
           />
           <Route path="/paginated-queries" element={<PaginatedQueriesPage />} />
+          <Route path="/scroll-dom" element={<ScrollDomPage />} />
         </Routes>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
