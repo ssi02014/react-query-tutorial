@@ -82,14 +82,16 @@ function App() {
 ### 🤔 useQuery
 
 ```jsx
-// 기본 문법(1)
-const { data, isLoading, ... } =  useQuery(queryKey, queryFn, {});
+// 사용법(1)
+const { data, isLoading, ... } =  useQuery(queryKey, queryFn, {
+  //옵션들 ex) enabled, staleTime
+});
 
-// 기번 문법(2)
+// 사용법(2)
 const result = useQuery({
   queryKey,
   queryFn,
-  enabled,
+  //옵션들 ex) enabled, staleTime
 });
 ```
 
@@ -104,7 +106,7 @@ const { isLoading, data } = useQuery("super-heroes", getSuperHero);
 
 - useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
 - useQuery는 첫 번째 인자인 `queryKey`를 기반으로 데이터 캐싱을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제 처럼 문자열로 지정할 수 있지만, 만약 쿼리가 변수에 의존하는 경우에는 아래 예제처럼 배열로 지정해 해당 변수를 추가해주어야 합니다.
-- 1번과 2번 방식으로 많이 사용합니다. 두 가지 방식의 차이점을 잘 이해하고 사용합시다.
+- 사용법 1번과 2번 둘다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
 
 ```jsx
 // (1)
@@ -210,14 +212,15 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 ### 🤔 isFetching, isLoading
 
-- isFetching : 데이터가 fetch될 때 false에서 true가 된다. 캐싱 데이터가 있어서 백그라운드에서 fetch 되더라도 true이다.
-- isLoading : 캐싱된 데이터가 없을때 fetch 과정 중에 true 즉, 캐싱 데이터가 있으면 false
+- isFetching : 데이터가 `fetch`될 때 false에서 true가 된다. 캐싱 데이터가 있어서 백그라운드에서 fetch 되더라도 true이다.
+- isLoading : `캐싱된 데이터가 없을때!` fetch 과정 중에 true 즉, 캐싱 데이터가 있으면 false
 
 <br />
 
 ### 🤔 staleTime, cacheTime (number | Infinity)
 
-- stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다. fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미
+- stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다.
+- fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미이다.
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -231,10 +234,10 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 ```
 
 1. staleTime
-   - 데이터가 `fresh -> stale` 상태로 변경되는데 걸리는 시간
+   - 데이터가 `fresh에서 stale` 상태로 변경되는데 걸리는 시간
    - `fresh` 상태일때는 쿼리 인스턴스가 새롭게 mount 되어도 네트워크 요청(fetch)이 일어나지 않는다.
    - 데이터가 한번 fetch 되고 나서 staleTime이 지나지 않았다면 unmount 후 mount 되어도 fetch가 일어나지 않는다.
-   - staleTime의 기본값은 `0`
+   - staleTime의 기본값은 `0`이기 때문에 일반적으로 fetch 후에 바로 stale이 된다.
 2. cacheTime
    - 데이터가 inactive 상태일 때 `캐싱된 상태로` 남아있는 시간
    - 쿼리 인스턴스가 unmount 되면 데이터는 inactive 상태로 변경되며, 캐시는 cacheTime만큼 유지된다.
@@ -510,5 +513,71 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 - `keepPreviousData`를 true로 설정하면 쿼리 키가 변경되어서 새로운 데이터를 요청하는 동안에도 마지막 data 값을 유지한다.
 - `keepPreviousData`은 페이지네이션과 같은 기능을 구현할 때 편리하다. 캐시되지 않은 페이지를 가져올 때 목록이 `깜빡깜빡거리는 현상을 방지`할 수 있다.
 - 또한, `isPreviousData` 값으로 현재의 쿼리 키에 해당하는 값인지 확인할 수 있다.
+
+<br />
+
+### 🤔 Infinite Queries
+
+- 무한 쿼리는 무한 스크롤이나 lode more 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능 구현할 때 사용하면 유용하다.
+
+```jsx
+import { useInfiniteQuery } from "react-query";
+
+const fetchColors = ({ pageParam = 1 }) => {
+  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageParam}`);
+};
+
+const InfiniteQueries = () => {
+  const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } =
+    useInfiniteQuery("colors", fetchColors, {
+      getNextPageParam: (lastPage, allPages) => {
+        if (allPages.length < 4) {
+          return allPages.length + 1;
+        } else {
+          return undefined;
+        }
+      },
+    });
+
+  return (
+    <div>
+      {data?.pages.map((group, idx) => (
+        <Fragment key={idx}>
+          {group.data.map((color: any) => (
+            <h2 key={color.id}>
+              {color.id}. {color.label}
+            </h2>
+          ))}
+        </Fragment>
+      ))}
+      <div>
+        <button disabled={!hasNextPage} onClick={() => fetchNextPage()}>
+          LoadMore
+        </button>
+      </div>
+      <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
+    </div>
+  );
+};
+```
+
+<b>Returns</b>
+
+- `useInfiniteQuery`는 기본적으로 useQuery와 사용법은 비슷하지만 차이점이 있다.
+- useInfiniteQuery는 반환값으로 isFetchingNextPage, isFetchingPreviousPage, fetchNextPage, fetchPreviousPage 등이 추가적으로 있다.
+  - `fetchNextPage`를 호출하면 다음 페이지를 fetch 할 수 있다.
+  - `fetchPreviousPage`를 호출하면 이전 페이지를 fetch 할 수 있다.
+  - `isFetchingNextPage`은 `fetchNextPage` 메서드가 다음 페이지를 가져오는 동안 true이다. 즉, 초기값은 true이고, 데이터를 가져오면 false가 된다.
+  - `isFetchingPreviousPage`은 `fetchPreviousPage` 메서드가 이전 페이지를 가져오는 동안 true이다. 즉, 초기값은 true이고, 데이터를 가져오면 false가 된다.
+  - `hasNextPage`는 가져올 수 있는 다음 페이지가 있을 경우 true이다.
+
+<b>옵션</b>
+
+- `pageParam`이라는 프로퍼티가 존재하며 queryFn에 할당해줘야한다. 이때 기본값을 `1`로 해줘야한다.
+- 그리고 `getNextPageParam`을 이용해서 페이지를 증가시킨다.
+  - 이때, getNextPageParam의 첫 번째 인자 `lastPage`는 fetch 해온 가장 최근에 가져온 페이지 목록이다.
+  - 두 번째 인자 `allPages`는 현재까지 가져온 모든 페이지들 데이터이다.
+- `getPreviousPageParam`도 존재하며, `getNextPageParam`와 반대의 속성을 갖고 있다.
+- 그리고 요청이 성공하고 반환되는 data는 `pages`라는 프로퍼티를 갖고있으며, pages는 `group`이라는 프로퍼티를 갖고있다.
 
 <br />

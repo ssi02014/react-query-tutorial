@@ -13,6 +13,7 @@ import DynamicParallelPage from './pages/DynamicParallelPage';
 import DependantQueriesPage from './pages/DependantQueries';
 import PaginatedQueriesPage from './pages/PaginatedQueries';
 import ScrollDomPage from './pages/ScrollDom';
+import InfiniteQueries from './pages/InfiniteQueries';
 
 const queryClient = new QueryClient();
 
@@ -55,7 +56,10 @@ function App() {
             <Link to="/paginated-queries">Paginated queries(RQ)</Link>
           </li>
           <li>
-            <Link to="/scroll-dom">ScrollDom</Link>
+            <Link to="/infinite-queries">Infinite queries(RQ)</Link>
+          </li>
+          <li>
+            <Link to="/scroll-dom">ScrollDom(etc)</Link>
           </li>
         </ul>
         <Routes>
@@ -78,6 +82,7 @@ function App() {
             element={<DependantQueriesPage email="ssi02014@naver.com" />}
           />
           <Route path="/paginated-queries" element={<PaginatedQueriesPage />} />
+          <Route path="/infinite-queries" element={<InfiniteQueries />} />
           <Route path="/scroll-dom" element={<ScrollDomPage />} />
         </Routes>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
