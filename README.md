@@ -583,3 +583,48 @@ const InfiniteQueries = () => {
 <br />
 
 ### 🤔 useMutation, mutate
+
+- react-query에서 기본적으로 서버에서 데이터를 Get 할 때는 useQuery를 사용한다.
+- 만약 서버의 data를 post, patch, put, delete와 같이 수정하고자 한다면 이때는 useMutation을 이용한다.
+- 요약하자면 `R(read)는 useQuery`, `CUD(Create, Update, Delete)는 useMutation`을 사용한다.
+
+```jsx
+const CreateTodo = () => {
+  const mutation = useMutation(createTodo, {
+    onSuccess(data) {
+      console.log(data);
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
+
+  const onCreateTodo = (e) => {
+    e.preventDefault();
+    mutation.mutate({ title });
+  };
+
+  return <>...</>;
+};
+```
+
+- useMutation의 반환 값인 mutation 객체의 `mutate` 메서드를 이용해서 요청 함수를 호출할 수 있다.
+- mutate는 `onSuccess`, `onError` 메서드를 통해 성공 했을 시, 실패 했을 시 response 데이터를 핸들링할 수 있다.
+
+```jsx
+const mutation = useMutation(addTodo);
+
+try {
+  const todo = await mutation.mutateAsync(todo);
+  console.log(todo);
+} catch (error) {
+  console.error(error);
+} finally {
+  console.log("done");
+}
+```
+
+- 만약, useMutation을 사용할 때 promise 형태의 response가 필요한 경우라면 `mutateAsync`를 사용해서 얻어올 수 있다.
+- 결과적으로 mutate는 onSuccess, onError와 같은 메서드를 같이 사용해야 되기때문에 `mutateAsync가 더 가독성이 좋다!`
+
+<br />

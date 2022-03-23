@@ -33,7 +33,14 @@ const useSuperHeroesData = (
 };
 
 const useAddSuperHeroData = () => {
-  return useMutation(addSuperHero);
+  return useMutation(addSuperHero, {
+    onSuccess(data) {
+      console.log(data);
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
 };
 
 export { useSuperHeroesData, useAddSuperHeroData };
