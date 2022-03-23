@@ -1,79 +1,89 @@
 {
-    "superheroes": [
-        { 
-            "id": 1,
-            "name": "Batman",
-            "alterEgo": "Bruce Wayne"
-        },
-        { 
-            "id": 2,
-            "name": "Superman",
-            "alterEgo": "Clark Kent"
-        },
-        { 
-            "id": 3,
-            "name": "Wonder Woman",
-            "alterEgo": "Princess Diana"
-        }
-    ],
-    "friends": [
-        {
-            "id": 1,
-            "name": "minjae"
-        },
-        {
-            "id": 2,
-            "name": "yeonjae"
-        },
-        {
-            "id": 3,
-            "name": "woorim"
-        }
-    ],
-    "users": [
-        {
-            "id": "ssi02014@naver.com",
-            "channelId": "minjae"
-        }
-    ],
-    "channels": [
-        {
-            "id": "minjae",
-            "courses": ["react", "js", "html", "css"]
-        }
-    ],
-    "colors": [
-        {
-            "id": 1,
-            "label": "red"
-        },
-        {
-            "id": 2,
-            "label": "blue"
-        },
-        {
-            "id": 3,
-            "label": "green"
-        },
-        {
-            "id": 4,
-            "label": "yellow"
-        },
-        {
-            "id": 5,
-            "label": "black"
-        },
-        {
-            "id": 6,
-            "label": "white"
-        },
-        {
-            "id": 7,
-            "label": "purple"
-        },
-        {
-            "id": 8,
-            "label": "orange"
-        }
-    ]
+  "superheroes": [
+    {
+      "id": 1,
+      "name": "Batman",
+      "alterEgo": "Bruce Wayne"
+    },
+    {
+      "id": 2,
+      "name": "Superman",
+      "alterEgo": "Clark Kent"
+    },
+    {
+      "id": 3,
+      "name": "Wonder Woman",
+      "alterEgo": "Princess Diana"
+    },
+    {
+      "id": 4,
+      "name": "sdasd",
+      "alterEgo": "sd"
+    }
+  ],
+  "friends": [
+    {
+      "id": 1,
+      "name": "minjae"
+    },
+    {
+      "id": 2,
+      "name": "yeonjae"
+    },
+    {
+      "id": 3,
+      "name": "woorim"
+    }
+  ],
+  "users": [
+    {
+      "id": "ssi02014@naver.com",
+      "channelId": "minjae"
+    }
+  ],
+  "channels": [
+    {
+      "id": "minjae",
+      "courses": [
+        "react",
+        "js",
+        "html",
+        "css"
+      ]
+    }
+  ],
+  "colors": [
+    {
+      "id": 1,
+      "label": "red"
+    },
+    {
+      "id": 2,
+      "label": "blue"
+    },
+    {
+      "id": 3,
+      "label": "green"
+    },
+    {
+      "id": 4,
+      "label": "yellow"
+    },
+    {
+      "id": 5,
+      "label": "black"
+    },
+    {
+      "id": 6,
+      "label": "white"
+    },
+    {
+      "id": 7,
+      "label": "purple"
+    },
+    {
+      "id": 8,
+      "label": "orange"
+    }
+  ]
 }
