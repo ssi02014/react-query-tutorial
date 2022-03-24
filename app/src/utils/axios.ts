@@ -1,7 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosAdapter } from 'axios';
+import { cacheAdapterEnhancer } from 'axios-extensions';
 
 const customAxios = axios.create({
   baseURL: 'https://api.github.com',
+  headers: { 'Cache-Control': 'no-cache' },
+  adapter: cacheAdapterEnhancer(axios.defaults.adapter as AxiosAdapter, {
+    enabledByDefault: false,
+  }),
   //withCredentials: true,
   // 사이트 간 액세스 제어 요청 여부를 나타낸다. true면 클라이언트와 서버의 쿠키 값을 공유하겠다는 의미.
 });
@@ -28,7 +33,7 @@ customAxios.interceptors.response.use(
   }
 );
 
-export const getAPI = async (url: string, params?: object) => {
+export const getAPI = async (url: string, params?: any, options?: any) => {
   const response = await customAxios({
     method: 'get',
     url,
@@ -45,6 +50,7 @@ export const getAPI = async (url: string, params?: object) => {
       }
       return params.toString();
     },
+    ...options,
   });
   return response.data;
 };

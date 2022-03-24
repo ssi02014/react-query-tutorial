@@ -1,5 +1,6 @@
+import axios, { AxiosResponse } from 'axios';
 import React, { useState, useCallback, useEffect } from 'react';
-import { getAPI } from '../../utils/axios';
+import customAxios, { getAPI } from '../../utils/axios';
 
 interface Data {
   id: number;
@@ -13,9 +14,16 @@ const SuperHeroPage = () => {
 
   const getSuperHero = useCallback(async () => {
     try {
-      const response = await getAPI('http://localhost:4000/superheroes');
+      const response = await getAPI(
+        'http://localhost:4000/superheroes',
+        {},
+        {
+          cache: true,
+        }
+      );
       setIsLoading(false);
       setData(response);
+      // setData(response);
     } catch (err: any) {
       setIsLoading(false);
       setError(err.message);

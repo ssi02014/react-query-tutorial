@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
+import customAxios from '../utils/axios';
 
 export interface Data {
   id: number;
@@ -15,7 +16,7 @@ export interface IResponse {
 }
 
 const fetchSuperHeroes = () => {
-  return axios.get(`http://localhost:4000/superheroes`);
+  return customAxios.get(`http://localhost:4000/superheroes`, { cache: true });
 };
 
 const addSuperHero = (hero: Data) => {
