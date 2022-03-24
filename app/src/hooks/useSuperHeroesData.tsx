@@ -36,8 +36,12 @@ const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
     onSuccess(data) {
-      queryClient.invalidateQueries('super-heroes');
-      console.log(data);
+      queryClient.setQueryData('super-heroes', (oldData: any) => {
+        return {
+          ...oldData,
+          data: [...oldData.data, data.data],
+        };
+      });
     },
     onError(err) {
       console.log(err);
