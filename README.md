@@ -628,3 +628,38 @@ try {
 - 결과적으로 mutate는 onSuccess, onError와 같은 메서드를 같이 사용해야 되기때문에 `mutateAsync가 더 가독성이 좋다!`
 
 <br />
+
+### 🤔 쿼리 무효화(invalidateQueries)
+
+- `Post` 요청을 하거나 `Delete` 요청을 했을 대 화면에 보여주는 데이터를 변화시켜줘야 한다.
+- 하지만 query Key가 변하지 않으므로 이럴때 강제 리프레쉬를 진행해야 하는데 이때, `queryClient`의 `invalidateQueries()` 메소드를 이용한다.
+- 즉, query가 오래 되었다는 것을 판단하고 다시 refetch를 하는 것!
+
+```tsx
+import { useMutation, useQuery, useQueryClient } from "react-query";
+
+const useSuperHeroesData = (
+  onSuccess: (data: IResponse) => void,
+  onError: (err: Error) => void
+) => {
+  return useQuery<IResponse, Error>("super-heroes", fetchSuperHeroes, {
+    onSuccess,
+    onError,
+  });
+};
+
+const useAddSuperHeroData = () => {
+  const queryClient = useQueryClient();
+  return useMutation(addSuperHero, {
+    onSuccess(data) {
+      queryClient.invalidateQueries("super-heroes"); // 이때 query Key가 핵심!
+      console.log(data);
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
+};
+```
+
+<br />

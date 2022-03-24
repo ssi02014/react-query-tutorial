@@ -17,13 +17,23 @@
     },
     {
       "id": 4,
-      "name": "sdasd",
-      "alterEgo": "sd"
+      "name": "안녕",
+      "alterEgo": "하이"
     },
     {
       "id": 5,
       "name": "123",
       "alterEgo": "123"
+    },
+    {
+      "id": 6,
+      "name": "안녕",
+      "alterEgo": "안녕"
+    },
+    {
+      "id": 7,
+      "name": "전",
+      "alterEgo": "민재"
     }
   ],
   "friends": [
