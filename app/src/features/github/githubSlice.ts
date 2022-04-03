@@ -1,10 +1,4 @@
-import {
-  createSlice,
-  PayloadAction,
-  createAsyncThunk,
-  SerializedError,
-} from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import customAxios from '../../utils/axios';
 
 interface GithubState {
@@ -41,7 +35,7 @@ export const githubSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGithubUserData.pending, (state) => {
+      .addCase(fetchGithubUserData.pending, (state: GithubState) => {
         state.loading = true;
       })
       .addCase(fetchGithubUserData.fulfilled, (state: GithubState, action) => {
@@ -60,5 +54,5 @@ export const githubSlice = createSlice({
   },
 });
 
-export const {} = githubSlice.actions;
+// export const {} = githubSlice.actions;
 export default githubSlice;

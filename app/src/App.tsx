@@ -62,10 +62,6 @@ function App() {
             <Link to="/scroll-dom">ScrollDom(etc)</Link>
           </li>
         </ul>
-        <iframe
-          title="계좌관리"
-          src="https://common.bunjang.co.kr/bank-accounts/select"
-          frameBorder="0"></iframe>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/toolkit" element={<ToolkitPage />} />
