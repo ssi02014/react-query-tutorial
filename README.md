@@ -1,31 +1,30 @@
-# 💻 React-query, Redux-Toolkit
+# 💻 React-query
 
 ## 📃 목차
 
 1. [React-Query 기능](#기능)
-2. [기본 설정(QueryClientProvider, QueryClient)](#기본-설정)
+2. [기본 설정(QueryClientProvider, QueryClient)](#react-Query-기본-설정)
 3. [useQuery](#usequery)
-4. [useQuery Error Handle](#에러-핸들링)
+4. [useQuery Returns](#useQuery-주요-리턴-데이터)
 5. [React Query Devtools](#devtools)
 6. [React Query 캐싱 라이프 사이클](#캐싱-라이프-사이클)
-7. [isFetching과 isLoading](#isfetching-isloading)
-8. [staleTime과 cacheTime](#staletime-cachetime)
-9. [마운트 될 때마다 재요청하는 refetchOnMount](#refetchonmount)
-10. [윈도우 포커싱 될 때 재 요청하는 refetchOnWindowFocus](#refetchOnWindowFocus)
-11. [Polling 방식을 구현하기 위한 refetchInterval와 refetchIntervalInBackground)](#polling)
-12. [자동 실행의 enabled와 수동으로 쿼리를 다시 요청하는 refetch](#enabled-refetch)
-13. [실패 쿼리에 대한 재 요청하는 retry](#retry)
-14. [onSuccess, onError, onSettled Callback](#onsuccess-onerror-onsettled)
-15. [select를 이용한 데이터 변환](#select)
-16. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
-17. [종속 쿼리(Dependent Queries)](#dependent-queries)
-18. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
-19. [초기 데이터 설정할 수 있는 initialData](#initial-query-data)
-20. [Paginated 구현에 유용한 keepPreviousData](#keeppreviousdata)
-21. [Infinite Queries](#infinite-queries)
-22. [서버와 Http CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
-23. [쿼리 무효화 queryClient.invalidateQueries](#쿼리-무효화)
-24. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#쿼리-무효화)
+7. [staleTime과 cacheTime](#staletime-cachetime)
+8. [마운트 될 때마다 재요청하는 refetchOnMount](#refetchonmount)
+9. [윈도우 포커싱 될 때 재 요청하는 refetchOnWindowFocus](#refetchOnWindowFocus)
+10. [Polling 방식을 구현하기 위한 refetchInterval와 refetchIntervalInBackground)](#polling)
+11. [자동 실행의 enabled와 수동으로 쿼리를 다시 요청하는 refetch](#enabled-refetch)
+12. [실패 쿼리에 대한 재 요청하는 retry](#retry)
+13. [onSuccess, onError, onSettled Callback](#onsuccess-onerror-onsettled)
+14. [select를 이용한 데이터 변환](#select)
+15. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
+16. [종속 쿼리(Dependent Queries)](#dependent-queries)
+17. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
+18. [초기 데이터 설정할 수 있는 initialData](#initial-query-data)
+19. [Paginated 구현에 유용한 keepPreviousData](#keeppreviousdata)
+20. [Infinite Queries](#infinite-queries)
+21. [서버와 Http CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
+22. [쿼리 무효화 queryClient.invalidateQueries](#쿼리-무효화)
+23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#쿼리-무효화)
 
 <hr />
 
@@ -33,8 +32,9 @@
 
 ### 👀 개요
 
-- React를 위한 강력하고 성능 좋은 데이터 동기화
-  `전역 상태`를 건드리지 않고도 React 및 React Native 애플리케이션에서 데이터를 가져오고, 캐시하고, 업데이트할 수 있습니다.
+- react-query는 리액트 애플리케이션에서 `서버 상태 가져오기`, `캐싱`, `동기화 및 업데이트`를 보다 쉽게 다룰 수 있도록 도와주며 클라이언트 상태와 서버 상태를 명확히 구분하기 위해서 만들어진 라이브러리이다.
+- react-query에서 기존 상태 관리 라이브러리`(redux, mobX)`는 `클라이언트 상태 작업`에 적합하지만 `비동기 또는 서버 상태 작업`에는 그다지 좋지 않다고 말하고 있다.
+- 클라이언트 상태(Client State) 와 서버 상태(Server State)는 완전히 다르며 클라이언트 상태는 컴포넌트에서 관리하는 각각의 input 값으로 예를 들 수 있고 서버 상태는 database에 저장되어있는 데이터로 예를 들 수 있다.
 
 <br />
 
@@ -42,34 +42,28 @@
 
 1. 선언적 및 자동
 
-   - 데이터 가져오기 로직을 ​​손으로 작성하는 것은 끝났습니다. React Query에 데이터를 가져올 위치와 데이터가 얼마나 필요한지 알려주면 나머지는 자동입니다. React Query는 구성이 필요 없는 즉시 캐싱, 백그라운드 업데이트 및 오래된 데이터를 처리합니다.
+   - React Query에 데이터를 가져올 위치와 데이터가 얼마나 필요한지 알려주면 나머지는 자동이다. React Query는 구성이 필요 없는 즉시 캐싱, 백그라운드 업데이트 및 오래된 데이터를 처리합니다.
 
 2. 간단하고 친숙한
 
-   - promise 또는 async/await로 작업하는 방법을 알고 있다면 이미 React Query를 사용하는 방법을 알고 있는 것입니다. 관리할 전역 상태, 감속기, 정규화 시스템 또는 이해해야 할 무거운 구성이 없습니다. 데이터를 해결하는(또는 오류를 발생시키는) 함수를 전달하기만 하면 나머지는 기록입니다.
+   - promise 또는 async/await로 작업하는 방법을 알고 있다면 이미 React Query를 사용하는 방법을 알고 있는 것이다. 관리할 전역 상태, 감속기, 정규화 시스템 또는 이해해야 할 무거운 구성이 없다. 데이터를 해결하는(또는 오류를 발생시키는) 함수를 전달하기만 하면됀다.
 
 3. 강력하고 구성 가능
 
-   - React Query는 모든 사용 사례에 맞는 노브와 옵션을 사용하여 쿼리의 각 관찰자 인스턴스까지 구성할 수 있습니다. 전용 devtools, 무한 로딩 API 및 데이터 업데이트를 쉽게 만들어주는 일류 mutation 도구와 연결되어 있습니다. 걱정하지 마십시오. 모든 것이 성공을 위해 미리 구성되어 있습니다!
+   - React Query는 모든 사용 사례에 맞는 노브와 옵션을 사용하여 쿼리의 각 관찰자 인스턴스까지 구성할 수 있다. `전용 devtools`, `무한 로딩 API` 및 `데이터 업데이트`를 쉽게 만들어주는 mutation 도구가 있다.
 
 4. 적은 코드. 더 적은 엣지 케이스.
-   - 리듀서, 캐싱 로직, 타이머, 재시도 로직, 복잡한 비동기/대기 스크립팅(계속 진행할 수 있습니다...) 대신 문자 그대로 평소 하던 코드의 아주 작은 부분을 작성합니다. React Query를 사용할 때 작성하는 코드가 얼마나 적은지 또는 얼마나 많은 코드를 삭제하는지에 놀랄 것입니다.
+   - 리듀서, 캐싱 로직, 타이머, 재시도 로직, 복잡한 비동기/대기 스크립팅을 평소 하던 코드보다 적은 양의 코드로 작성할 수 있다.
 
 <br />
 
-## 📃 React-Query 구성 요소
-
-- [useQuery 참고 사이트](https://react-query.tanstack.com/reference/useQuery)
-
-  <br />
-
-### 🤔 기본 설정
+## 📃 React-Query 기본 설정
 
 - `QueryClientProvider`, `QueryClient`
 - 리액트 쿼리를 사용하기 위해서는 `QueryClientProvider`를 최상단에서 감싸주어야 한다.
-- App.js에 `QueryClientProvider`로 이하 컴포넌트를 감싸고 `queryClient`를 내려보내줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 background 계층이 됨
+- App.js에 `QueryClientProvider`로 이하 컴포넌트를 감싸고 `queryClient`를 내려보내줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 background 계층이 됀다.
 - `QueryClientProvider`는 구성 요소를 사용하여 QueryClient를 연결하고 응용 프로그램에 제공
-- `QueryClient`를 사용하여 캐시와 상호 작용할 수 있습니다.
+- `QueryClient`를 사용하여 `캐시`와 상호 작용할 수 있습니다.
 
 ```jsx
 // QueryClient 예제
@@ -101,7 +95,11 @@ function App() {
 
 <br />
 
+## 📃 React-Query 기본 설정
+
 ### 🤔 useQuery
+
+- [useQuery 참고 사이트](https://react-query.tanstack.com/reference/useQuery)
 
 ```jsx
 // 사용법(1)
@@ -127,7 +125,7 @@ const { isLoading, data } = useQuery("super-heroes", getSuperHero);
 ```
 
 - useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
-- useQuery는 첫 번째 인자인 `queryKey`를 기반으로 데이터 캐싱을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제 처럼 문자열로 지정할 수 있지만, 만약 쿼리가 변수에 의존하는 경우에는 아래 예제처럼 배열로 지정해 해당 변수를 추가해주어야 합니다.
+- useQuery는 첫 번째 인자인 `queryKey`를 기반으로 데이터 캐싱을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제 처럼 `문자열`로 지정할 수 있지만, 만약 쿼리가 특정 변수에 의존하는 경우에는 아래 예제처럼 `배열`로 지정해 해당 변수를 추가해주어야 합니다.
 - 사용법 1번과 2번 둘다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
 
 ```jsx
@@ -151,32 +149,31 @@ const useSuperHeroData = (heroId: string) => {
 };
 ```
 
-- 두 번째 인자인 queryFn는 promise를 반환하는 함수를 넣어주어야 합니다.
-- 세 번째 인자인 options에 많이 쓰이는 옵션들을 밑에서 설명하였습니다.
+- 두 번째 인자인 queryFn는 `promise`를 반환하는 함수를 넣어주어야 합니다.
+- 세 번째 인자인 `options`에 많이 쓰이는 옵션들을 밑에서 설명하였습니다. 그외에는 위에 useQuery 참고 사이트를 통해 확인하면된다.
 
 <br />
 
-### 🤔 에러 핸들링
+### 🤔 useQuery 주요 리턴 데이터
 
-- useQuery Error Handle
-- useQuery 주로 사용되는 3가지 return 값 중에서 `isError`와 `error` 프로퍼티로 에러 처리를 할 수 있다.
+- data: 쿼리 함수가 리턴한 Promise에서 `resolved`된 데이터
+- isLoading: `캐싱된 데이터가 없을때!` fetch 과정 중에 true 즉, 캐싱 데이터가 있으면 false
+- isFetching: 데이터가 `fetch`될 때 false에서 true가 된다. 캐싱 데이터가 있어서 백그라운드에서 fetch 되더라도 true이다.
+- error: 쿼리 함수가 오류가 발생한 경우에 대한 오류 객체
+- isError: 에러가 발생한 경우 true
 
 ```js
-const getSuperHero = useCallback(() => {
-  return axios.get("http://localhost:4000/superheroes1");
-}, []);
-
-const { isLoading, data, isError, error } = useQuery(
-  "super-heroes",
-  getSuperHero
+const { isLoading, isError, error, data, isFetching } = useQuery(
+  ["colors", pageNum],
+  () => fetchColors(pageNum)
 );
 ```
 
 <br />
 
-### 🤔 Devtools
+## 📃 Devtools
 
-- React Query는 전용 devtools를 제공한다.
+- React Query는 `전용 devtools`를 제공한다.
 - devtools를 사용하면 React Query의 모든 내부 동작을 시각화하는데 도움이 되며 문제가 발생하면 디버깅 시간을 절약할 수 있다.
 
 ```jsx
@@ -185,35 +182,35 @@ import { ReactQueryDevtools } from "react-query/devtools";
 <AppContext.Provider value={user}>
   <QueryClientProvider client={queryClient}>
     // ...
-    <ReactQueryDevtools />
+    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
   </QueryClientProvider>
 </AppContext.Provider>;
 ```
 
-1. initialIsOpen (Boolean)
+- initialIsOpen (Boolean)
 
-   - `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
+  - `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
 
-2. panelProps (PropsObject)
+- panelProps (PropsObject)
 
-   - 패널에 props을 추가할 수 있다. 예를 들어 className, style, onClick 등
+  - 패널에 props을 추가할 수 있다. 예를 들어 className, style, onClick 등
 
-3. closeButtonProps( PropsObject)
+- closeButtonProps( PropsObject)
 
-   - 닫기 버튼에 props를 추가할 수 있다.
+  - 닫기 버튼에 props를 추가할 수 있다.
 
-4. toggleButtonProps (PropsObject)
+- toggleButtonProps (PropsObject)
 
-   - 토글 버튼에 props를 추가할 수 있다.
+  - 토글 버튼에 props를 추가할 수 있다.
 
-5. position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
+- position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
 
-   - 기본값: `bottom-left`
-   - devtools 패널을 열고 닫기 위한 로고 위치
+  - 기본값: `bottom-left`
+  - devtools 패널을 열고 닫기 위한 로고 위치
 
 <br />
 
-### 🤔 캐싱 라이프 사이클
+## 📃 캐싱 라이프 사이클
 
 - React-Query 캐시 라이플 사이클
 
@@ -233,12 +230,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 <br />
 
-### 🤔 isFetching isLoading
-
-- isFetching : 데이터가 `fetch`될 때 false에서 true가 된다. 캐싱 데이터가 있어서 백그라운드에서 fetch 되더라도 true이다.
-- isLoading : `캐싱된 데이터가 없을때!` fetch 과정 중에 true 즉, 캐싱 데이터가 있으면 false
-
-<br />
+## 📃 useQuery 주요 Options
 
 ### 🤔 staleTime cacheTime
 
@@ -615,6 +607,7 @@ const InfiniteQueries = () => {
 ```jsx
 const CreateTodo = () => {
   const mutation = useMutation(createTodo, {
+    onMutate() {},
     onSuccess(data) {
       console.log(data);
     },
@@ -634,6 +627,7 @@ const CreateTodo = () => {
 
 - useMutation의 반환 값인 mutation 객체의 `mutate` 메서드를 이용해서 요청 함수를 호출할 수 있다.
 - mutate는 `onSuccess`, `onError` 메서드를 통해 성공 했을 시, 실패 했을 시 response 데이터를 핸들링할 수 있다.
+- `onMutate`는 mutation 함수가 실행되기 전에 실행되고 mutation 함수가 받을 동일한 변수가 전달된다.
 
 ```jsx
 const mutation = useMutation(addTodo);
