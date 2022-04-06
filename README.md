@@ -534,7 +534,7 @@ const queryClient = useQueryClient();
 
 ## 📃 Infinite Queries
 
-- 무한 쿼리는 무한 스크롤이나 lode more 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능 구현할 때 사용하면 유용하다.
+- 무한 쿼리는 무한 스크롤이나 load more 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능 구현할 때 사용하면 유용하다.
 
 ```jsx
 import { useInfiniteQuery } from "react-query";
