@@ -3,13 +3,12 @@ import { Link, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import HomePage from './pages/home';
-import ParamPage from './pages/params';
-import QueryPage from './pages/SuperHeroesReactQuery';
+import QueryPage from './pages/SuperHeroesReactQueries';
 import SuperHeroes from './pages/SuperHeroes';
 import ToolkitPage from './pages/toolkit';
-import RQSuperHeroDetailPage from './pages/RQSuperHeroDetail';
+import RQSuperHeroDetailPage from './pages/SuperHeroDetailQueries';
 import ParallelQueriesPage from './pages/ParallelQueries';
-import DynamicParallelPage from './pages/DynamicParallelPage';
+import DynamicParallelPage from './pages/DynamicParallelQueries';
 import DependantQueriesPage from './pages/DependantQueries';
 import PaginatedQueriesPage from './pages/PaginatedQueries';
 import ScrollDomPage from './pages/ScrollDom';
@@ -66,7 +65,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/toolkit" element={<ToolkitPage />} />
           <Route path="/query" element={<QueryPage />} />
-          <Route path="/param" element={<ParamPage />} />
           <Route path="/super-hero" element={<SuperHeroes />} />
           <Route
             path="/super-hero/:heroId"
