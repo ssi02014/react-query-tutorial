@@ -16,11 +16,11 @@
 12. [실패 쿼리에 대한 재 요청하는 retry](#retry)
 13. [onSuccess, onError, onSettled Callback](#onsuccess-onerror-onsettled)
 14. [select를 이용한 데이터 변환](#select)
-15. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
-16. [종속 쿼리(Dependent Queries)](#dependent-queries)
-17. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
-18. [초기 데이터 설정할 수 있는 initialData](#initial-query-data)
-19. [Paginated 구현에 유용한 keepPreviousData](#keeppreviousdata)
+15. [Paginated 구현에 유용한 keepPreviousData](#keeppreviousdata)
+16. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
+17. [종속 쿼리(Dependent Queries)](#dependent-queries)
+18. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
+19. [초기 데이터 설정할 수 있는 initialData](#initial-query-data)
 20. [Infinite Queries](#infinite-queries)
 21. [서버와 Http CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
 22. [쿼리 무효화 queryClient.invalidateQueries](#쿼리-무효화)
@@ -429,7 +429,26 @@ return (
 
 <br />
 
-### 🤔 Parallel
+### 🤔 keepPreviousData
+
+```jsx
+const fetchColors = (pageNum: number) => {
+  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageNum}`);
+};
+
+const { isLoading, isError, error, data, isFetching, isPreviousData } =
+  useQuery(["colors", pageNum], () => fetchColors(pageNum), {
+    keepPreviousData: true,
+  });
+```
+
+- `keepPreviousData`를 true로 설정하면 쿼리 키가 변경되어서 새로운 데이터를 요청하는 동안에도 마지막 data 값을 유지한다.
+- `keepPreviousData`은 `페이지네이션`과 같은 기능을 구현할 때 편리하다. 캐시되지 않은 페이지를 가져올 때 목록이 `깜빡깜빡거리는 현상을 방지`할 수 있다.
+- 또한, `isPreviousData` 값으로 현재의 쿼리 키에 해당하는 값인지 확인할 수 있다.
+
+<br />
+
+## 📃 Parallel
 
 ```jsx
 const { data: superHeroes } = useQuery("super-heroes", fetchSuperHeroes);
@@ -452,7 +471,7 @@ const queryResults = useQueries(
 
 <br />
 
-### 🤔 Dependent Queries
+## 📃 Dependent Queries
 
 - `종속 쿼리`는 어떤 A라는 쿼리가 있는데 이 A쿼리를 실행하기 전에 사전에 완료되야 하는 B 쿼리가 있는데, 이러한 B쿼리에 의존하는 A쿼리를 종속 쿼리라고 한다.
 - react-query에서는 쿼리를 실행할 준비가 되었다는 것을 알려주는 `enabled` 옵션을 통해 종속 쿼리를 쉽게 구현할 수 있다.
@@ -474,7 +493,7 @@ const DependantQueriesPage = ({ email }: Props) => {
   );
 ```
 
-### 🤔 useQueryClient
+## 📃 useQueryClient
 
 - useQueryClient는 `QueryClient` 인스턴스를 반환한다.
 - `QueryClient`는 캐시와 상호작용 한다.
@@ -487,7 +506,7 @@ const queryClient = useQueryClient();
 
 <br />
 
-### 🤔 Initial Query Data
+## 📃 Initial Query Data
 
 - 쿼리에 대한 `초기 데이터`가 필요하기 전에 캐시에 제공하는 방법이 있다. 아래 예제 참고
 - initialData 옵션을 통해서 쿼리를 미리 채우는데 사용할 수 있으며, 초기 로드 상태도 건너띌 수 있다.
@@ -513,26 +532,7 @@ const queryClient = useQueryClient();
 
 <br />
 
-### 🤔 keepPreviousData
-
-```jsx
-const fetchColors = (pageNum: number) => {
-  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageNum}`);
-};
-
-const { isLoading, isError, error, data, isFetching, isPreviousData } =
-  useQuery(["colors", pageNum], () => fetchColors(pageNum), {
-    keepPreviousData: true,
-  });
-```
-
-- `keepPreviousData`를 true로 설정하면 쿼리 키가 변경되어서 새로운 데이터를 요청하는 동안에도 마지막 data 값을 유지한다.
-- `keepPreviousData`은 `페이지네이션`과 같은 기능을 구현할 때 편리하다. 캐시되지 않은 페이지를 가져올 때 목록이 `깜빡깜빡거리는 현상을 방지`할 수 있다.
-- 또한, `isPreviousData` 값으로 현재의 쿼리 키에 해당하는 값인지 확인할 수 있다.
-
-<br />
-
-### 🤔 Infinite Queries
+## 📃 Infinite Queries
 
 - 무한 쿼리는 무한 스크롤이나 lode more 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능 구현할 때 사용하면 유용하다.
 
@@ -598,7 +598,7 @@ const InfiniteQueries = () => {
 
 <br />
 
-### 🤔 useMutation mutate
+## 📃 useMutation mutate
 
 - react-query에서 기본적으로 서버에서 데이터를 Get 할 때는 useQuery를 사용한다.
 - 만약 서버의 data를 post, patch, put, delete와 같이 수정하고자 한다면 이때는 useMutation을 이용한다.
@@ -647,7 +647,7 @@ try {
 
 <br />
 
-### 🤔 쿼리 무효화
+## 📃 쿼리 무효화
 
 - 이것은 개념적으로 화면을 최신 상태로 유지하는 가장 간단한 방법이다..
 - 예를 들면, 게시판 목록에서 어떤 게시글을 `작성(Post)`하거나 게시글을 `제거(Delete)`했을 때 화면에 보여주는 게시판 목록을 실시간 최신화 해야될 때가 있다.
