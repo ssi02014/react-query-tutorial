@@ -643,7 +643,7 @@ try {
 ```
 
 - 만약, useMutation을 사용할 때 promise 형태의 response가 필요한 경우라면 `mutateAsync`를 사용해서 얻어올 수 있다.
-- 결과적으로 mutate는 onSuccess, onError와 같은 메서드를 같이 사용해야 되기때문에 `mutateAsync가 더 가독성이 좋다!`
+- Redux와 같은 Request 성공 액션을 미들웨어에서 확인하여 추가 액션을 실행하는 것 같은 작업을 할 때는, mutate는 onSuccess, onError와 같은 메서드를 같이 사용해야 되기때문에 `mutateAsync가 더 가독성이 좋다`
 
 <br />
 
