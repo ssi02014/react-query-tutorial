@@ -95,9 +95,9 @@ function App() {
 
 <br />
 
-## 📃 React-Query 기본 설정
+## 📃 useQuery
 
-### 🤔 useQuery
+### 🤔 useQuery 기본 문법
 
 - [useQuery 참고 사이트](https://react-query.tanstack.com/reference/useQuery)
 
