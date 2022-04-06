@@ -3,9 +3,9 @@
 ## 📃 목차
 
 1. [React-Query 기능](#기능)
-2. [기본 설정(QueryClientProvider, QueryClient)](#react-Query-기본-설정)
+2. [기본 설정(QueryClientProvider, QueryClient)](#react-query-기본-설정)
 3. [useQuery](#usequery)
-4. [useQuery Returns](#useQuery-주요-리턴-데이터)
+4. [useQuery Returns](#usequery-주요-리턴-데이터)
 5. [React Query Devtools](#devtools)
 6. [React Query 캐싱 라이프 사이클](#캐싱-라이프-사이클)
 7. [staleTime과 cacheTime](#staletime-cachetime)
