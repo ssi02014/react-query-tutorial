@@ -4,10 +4,10 @@
 
 1. [React-Query 기능](#기능)
 2. [기본 설정(QueryClientProvider, QueryClient)](#react-query-기본-설정)
-3. [useQuery](#usequery)
-4. [useQuery Returns](#usequery-주요-리턴-데이터)
-5. [React Query Devtools](#devtools)
-6. [React Query 캐싱 라이프 사이클](#캐싱-라이프-사이클)
+3. [React Query Devtools](#devtools)
+4. [React Query 캐싱 라이프 사이클](#캐싱-라이프-사이클)
+5. [useQuery](#usequery)
+6. [useQuery 주요 리턴 데이터](#usequery-주요-리턴-데이터)
 7. [staleTime과 cacheTime](#staletime-cachetime)
 8. [마운트 될 때마다 재요청하는 refetchOnMount](#refetchonmount)
 9. [윈도우 포커싱 될 때 재 요청하는 refetchOnWindowFocus](#refetchOnWindowFocus)
@@ -25,13 +25,13 @@
 21. [서버와 Http CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
 22. [쿼리 무효화 queryClient.invalidateQueries](#쿼리-무효화)
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#쿼리-무효화)
-24. [사용자UX를 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-Update)
+24. [사용자UX를 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
 
 <hr />
 
 ## 📃 React-Query 개요 및 기능
 
-### 👀 개요
+### 개요
 
 - react-query는 리액트 애플리케이션에서 `서버 상태 가져오기`, `캐싱`, `동기화 및 업데이트`를 보다 쉽게 다룰 수 있도록 도와주며 클라이언트 상태와 서버 상태를 명확히 구분하기 위해서 만들어진 라이브러리이다.
 - react-query에서 기존 상태 관리 라이브러리`(redux, mobX)`는 `클라이언트 상태 작업`에 적합하지만 `비동기 또는 서버 상태 작업`에는 그다지 좋지 않다고 말하고 있다.
@@ -39,7 +39,7 @@
 
 <br />
 
-### 👀 기능
+### 기능
 
 1. 자동
 
@@ -100,7 +100,7 @@ function App() {
 
 <br />
 
-## 📃 Devtools
+## Devtools
 
 ![스크린샷 2022-04-07 오후 11 53 32](https://user-images.githubusercontent.com/64779472/162228222-d1c7dd3e-ce62-484d-bfa0-8493f3e68cae.png)
 
@@ -130,7 +130,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 <br />
 
-## 📃 캐싱 라이프 사이클
+## 캐싱 라이프 사이클
 
 - React-Query 캐시 라이플 사이클
 
@@ -150,9 +150,9 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 <br />
 
-## 📃 useQuery
+## useQuery
 
-### 🤔 useQuery 기본 문법
+### useQuery 기본 문법
 
 - [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
 
@@ -209,7 +209,7 @@ const useSuperHeroData = (heroId: string) => {
 
 <br />
 
-### 🤔 useQuery 주요 리턴 데이터
+### useQuery 주요 리턴 데이터
 
 - [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
 - status: 쿼리 요청 함수의 상태를 표현하는 status는 4가지의 값이 존재한다.(문자열 형태)
@@ -233,12 +233,12 @@ const { isLoading, isError, error, data, isFetching } = useQuery(
 
 <br />
 
-## 📃 useQuery 주요 Options
+## useQuery 주요 Options
 
 - [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
 - 아래 예제들 제외하고 추가적인 옵션들은 위 사이트 참고
 
-### 🤔 staleTime cacheTime
+### staleTime cacheTime
 
 - stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다.
 - fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미이다.
@@ -269,7 +269,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 <br />
 
-### 🤔 refetchOnMount
+### refetchOnMount
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -288,7 +288,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 <br />
 
-### 🤔 refetchOnWindowFocus
+### refetchOnWindowFocus
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -307,7 +307,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 <br />
 
-### 🤔 Polling
+### Polling
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -326,7 +326,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 <br />
 
-### 🤔 enabled refetch
+### enabled refetch
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
@@ -357,7 +357,7 @@ return (
 
 <br />
 
-### 🤔 retry
+### retry
 
 ```jsx
 const result = useQuery(["todos", 1], fetchTodoListPage, {
@@ -372,7 +372,7 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 
 <br />
 
-### 🤔 onSuccess onError onSettled
+### onSuccess onError onSettled
 
 ```jsx
 const onSuccess = useCallback((data) => {
@@ -404,7 +404,7 @@ const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
 
 <br />
 
-### 🤔 select
+### select
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
@@ -434,7 +434,7 @@ return (
 
 <br />
 
-### 🤔 keepPreviousData
+### keepPreviousData
 
 ```jsx
 const fetchColors = (pageNum: number) => {
@@ -453,7 +453,7 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 
 <br />
 
-### 🤔 placeholderData
+### placeholderData
 
 ```js
 function Todos() {
@@ -466,7 +466,7 @@ function Todos() {
 
 <br />
 
-## 📃 Parallel
+## Parallel
 
 ```jsx
 const { data: superHeroes } = useQuery("super-heroes", fetchSuperHeroes);
@@ -489,7 +489,7 @@ const queryResults = useQueries(
 
 <br />
 
-## 📃 Dependent Queries
+## Dependent Queries
 
 - `종속 쿼리`는 어떤 A라는 쿼리가 있는데 이 A쿼리를 실행하기 전에 사전에 완료되야 하는 B 쿼리가 있는데, 이러한 B쿼리에 의존하는 A쿼리를 종속 쿼리라고 한다.
 - react-query에서는 쿼리를 실행할 준비가 되었다는 것을 알려주는 `enabled` 옵션을 통해 종속 쿼리를 쉽게 구현할 수 있다.
@@ -511,7 +511,7 @@ const DependantQueriesPage = ({ email }: Props) => {
   );
 ```
 
-## 📃 useQueryClient
+## useQueryClient
 
 - useQueryClient는 `QueryClient` 인스턴스를 반환한다.
 - `QueryClient`는 캐시와 상호작용 한다.
@@ -524,7 +524,7 @@ const queryClient = useQueryClient();
 
 <br />
 
-## 📃 Initial Query Data
+## Initial Query Data
 
 - 쿼리에 대한 `초기 데이터`가 필요하기 전에 캐시에 제공하는 방법이 있다. 아래 예제 참고
 - initialData 옵션을 통해서 쿼리를 미리 채우는데 사용할 수 있으며, 초기 로드 상태도 건너띌 수 있다.
@@ -550,7 +550,7 @@ const queryClient = useQueryClient();
 
 <br />
 
-## 📃 Infinite Queries
+## Infinite Queries
 
 - 무한 쿼리는 무한 스크롤이나 load more 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능 구현할 때 사용하면 유용하다.
 
@@ -616,7 +616,7 @@ const InfiniteQueries = () => {
 
 <br />
 
-## 📃 useMutation mutate
+## useMutation mutate
 
 - [useMutation 공식 사이트](https://react-query.tanstack.com/reference/useMutation)
 - react-query에서 기본적으로 서버에서 데이터를 Get 할 때는 useQuery를 사용한다.
@@ -666,7 +666,7 @@ try {
 
 <br />
 
-## 📃 쿼리 무효화
+## 쿼리 무효화
 
 - 이것은 개념적으로 화면을 최신 상태로 유지하는 가장 간단한 방법이다..
 - 예를 들면, 게시판 목록에서 어떤 게시글을 `작성(Post)`하거나 게시글을 `제거(Delete)`했을 때 화면에 보여주는 게시판 목록을 실시간 최신화 해야될 때가 있다.
@@ -698,7 +698,7 @@ queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
 
 <br />
 
-## 📃 캐시 데이터 즉시 업데이트
+## 캐시 데이터 즉시 업데이트
 
 - 바로 위에서 `queryClient.invalidateQueries`를 이용해 캐시 데이터를 최신화하는 방법을 알아봤는데 queryClient.setQueryData를 이용해서도 데이터를 즉시 업데이트 할 수 있다.
 - `queryClient.setQueryData`는 쿼리의 캐시된 데이터를 즉시 업데이트하는 데 사용할 수 있는 `동기 함수`이다.
@@ -722,7 +722,7 @@ const useAddSuperHeroData = () => {
 };
 ```
 
-## 📃 Optimistic Update
+## Optimistic Update
 
 - `Optimistic Update(낙관적 업데이트)`란 서버 업데이트 시 UI에서도 어차피 업데이트 할 것이라고(낙관적인) 가정해서 `미리 UI를 업데이트` 시켜주고 서버를 통해 검증을 받고 업데이트 또는 롤백하는 방식이다.
 - 예를 들어 facebook에 좋아요 버튼이 있는데 이것을 유저가 누른다면 일단 client 쪽 state를 먼저 업데이트한다. 그리고 만약에 실패 한다면 예전 state로 돌아가고 성공하면 필요한 데이터를 다시 fetch해서 서버 데이터와 확실히 연동을 진행한다.
