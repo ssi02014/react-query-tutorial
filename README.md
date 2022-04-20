@@ -181,7 +181,7 @@ const { isLoading, data } = useQuery("super-heroes", getSuperHero);
 
 - useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
 - useQuery는 첫 번째 인자인 `queryKey`를 기반으로 `데이터 캐싱`을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제 처럼 `문자열`로 지정할 수 있지만, 만약 쿼리가 특정 변수에 의존하는 경우에는 아래 예제처럼 `배열`로 지정해 해당 변수를 추가해주어야 합니다.
-- 사용법 1번과 2번 둘다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
+- 사용법 `(1)`번과 `(2)`번 둘다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
 
 ```jsx
 // (1)
@@ -206,6 +206,36 @@ const useSuperHeroData = (heroId: string) => {
 
 - useQuery의 두 번째 인자인 queryFn는 `promise`를 반환하는 함수를 넣어주어야 합니다.
 - useQuery의 세 번째 인자인 `options`에 많이 쓰이는 옵션들을 밑에서 설명하였습니다. 그외에는 위에 useQuery 참고 사이트를 통해 확인하면된다.
+
+<br />
+
+- 참고로 나중에 queryClient로 특정 key에 해당하는 query에 접근할 때는 초기에 설정해둔 포맷을 지켜줘야 제대로 가져올 수 있다.
+- 아래 예제를 참고하면 useQuery에서 queryKey에 해당하는 포맷이 배열`["super-hero", heroId]`이다. 그렇다면 밑에 useMutation에서 setQueryData를 이용할 때 똑같이 `["super-hero", heroId]` 포맷을 가져야한다.
+
+```js
+// 예
+const useSuperHeroData = (heroId: string) => {
+  return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId));
+};
+
+const useAddSuperHeroData = () => {
+  const queryClient = useQueryClient();
+  return useMutation(addSuperHero, {
+    onSuccess(data) {
+      // 제대로 못가져옴! 포맷안맞음! ["super-hero", heroId] 로해야됌
+      queryClient.setQueryData("super-hero", (oldData: any) => {
+        return {
+          ...oldData,
+          data: [...oldData.data, data.data],
+        };
+      });
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
+};
+```
 
 <br />
 

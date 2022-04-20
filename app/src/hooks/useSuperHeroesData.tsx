@@ -35,17 +35,21 @@ const useSuperHeroesData = (
 const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
-    // onSuccess(data) {
-    //   queryClient.setQueryData('super-heroes', (oldData: any) => {
-    //     return {
-    //       ...oldData,
-    //       data: [...oldData.data, data.data],
-    //     };
-    //   });
-    // },
-    // onError(err) {
-    //   console.log(err);
-    // },
+    /* 일반적인 쿼리 최신화
+      onSuccess(data) {
+        queryClient.setQueryData('super-heroes', (oldData: any) => {
+          return {
+            ...oldData,
+            data: [...oldData.data, data.data],
+          };
+        });
+      },
+      onError(err) {
+        console.log(err);
+      },
+    */
+
+    // Optimistic Update
     async onMutate(newHero) {
       await queryClient.cancelQueries('super-heroes');
       const previousHeroData = queryClient.getQueryData('super-heroes');
