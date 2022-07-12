@@ -542,6 +542,8 @@ const DependantQueriesPage = ({ email }: Props) => {
   );
 ```
 
+<br />
+
 ## useQueryClient
 
 - useQueryClient는 `QueryClient` 인스턴스를 반환한다.
@@ -726,6 +728,9 @@ const useAddSuperHeroData = () => {
 ```tsx
 queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
 ```
+
+- 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법들 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
+  - [Disabling/Pausing Queries](https://tanstack.com/query/v4/docs/guides/disabling-queries?from=reactQueryV3&original=https://react-query-v3.tanstack.com/guides/disabling-queries) 사이트 참고
 
 <br />
 
