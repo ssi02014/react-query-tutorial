@@ -35,7 +35,7 @@
 
 - react-query는 리액트 애플리케이션에서 `서버 상태 가져오기`, `캐싱`, `동기화 및 업데이트`를 보다 쉽게 다룰 수 있도록 도와주며 클라이언트 상태와 서버 상태를 명확히 구분하기 위해서 만들어진 라이브러리이다.
 - react-query에서 기존 상태 관리 라이브러리`(redux, mobX)`는 `클라이언트 상태 작업`에 적합하지만 `비동기 또는 서버 상태 작업`에는 그다지 좋지 않다고 말하고 있다.
-- 클라이언트 상태(Client State) 와 서버 상태(Server State)는 완전히 다르며 클라이언트 상태는 컴포넌트에서 관리하는 각각의 input 값으로 예를 들 수 있고 서버 상태는 database에 저장되어있는 데이터로 예를 들 수 있다.
+- 클라이언트 상태(Client State) 와 서버 상태(Server State)는 완전히 다르며, 클라이언트 상태는 컴포넌트에서 관리하는 각각의 input 값으로 예를 들 수 있고 서버 상태는 database에 저장되어있는 데이터로 예를 들 수 있다.
 
 <br />
 
@@ -76,8 +76,12 @@ const queryClient = new QueryClient({
 });
 ```
 
+<br />
+
 - QueryClient를 사용하여 `캐시`와 상호 작용할 수 있습니다.
 - QueryClient에서 `모든 query` 또는 `mutation`에 기본 옵션들을 추가할 수 있는데 종류가 상당하니 상단에 공식 사이트를 참고하자.
+
+<br />
 
 ```jsx
 // QueryClientProvider + QueryClient
@@ -94,9 +98,11 @@ function App() {
 }
 ```
 
+<br />
+
 - App 전체에서 리액트 쿼리를 사용하기 위해서는 `QueryClientProvider`를 최상단에서 감싸주고 `QueryClient`를 Props로 넣어줘야 한다.
-- App.js에 `QueryClientProvider`로 이하 컴포넌트를 감싸고 `queryClient`를 내려보내줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 background 계층이된다.
-- `QueryClientProvider`는 구성 요소를 사용하여 QueryClient를 연결하고 응용 프로그램을 제공한다.
+- App.js에 QueryClientProvider로 이하 컴포넌트를 감싸고 QueryClient를 내려보내줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 `background` 계층이된다.
+- QueryClientProvider 컴포넌트를 사용하여 App에 QueryClient를 연결하고 제공한다.
 
 <br />
 
@@ -107,7 +113,9 @@ function App() {
 <br />
 
 - React Query는 `전용 devtools`를 제공한다.
-- devtools를 사용하면 React Query의 모든 내부 동작을 시각화하는데 도움이 되며 문제가 발생하면 디버깅 시간을 절약할 수 있다.
+- devtools를 사용하면 React Query의 모든 내부 동작을 `시각화`하는데 도움이 되며 문제가 발생하면 `디버깅 시간을 절약`할 수 있다.
+
+<br />
 
 ```jsx
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -120,19 +128,26 @@ import { ReactQueryDevtools } from "react-query/devtools";
 </AppContext.Provider>;
 ```
 
-- initialIsOpen (Boolean): `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
-- panelProps (PropsObject): 패널에 `props`을 추가할 수 있다. 예를 들어 className, style, onClick 등
-- closeButtonProps( PropsObject): 닫기 버튼에 props를 추가할 수 있다.
-- toggleButtonProps (PropsObject): 토글 버튼에 props를 추가할 수 있다.
+<br />
+
+- initialIsOpen (Boolean)
+  - `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
 - position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
   - 기본값: `bottom-left`
   - devtools 패널을 열고 닫기 위한 로고 위치
+- 일반적으로 initialIsOpen, position을 자주 사용하지만, 아래와 같은 옵션들도 존재하다.
+- panelProps
+  - 패널에 `props`을 추가할 수 있다. 예를 들어 className, style, onClick 등
+- closeButtonProps
+  - `닫기 버튼`에 props를 추가할 수 있다.
+- toggleButtonProps
+  - `토글 버튼`에 props를 추가할 수 있다.
 
 <br />
 
 ## 캐싱 라이프 사이클
 
-- React-Query 캐시 라이플 사이클
+- React-Query 캐시 라이프 사이클
 
 ```
 * Query Instances with and without cache data(캐시 데이터가 있거나 없는 쿼리 인스턴스)
@@ -141,12 +156,16 @@ import { ReactQueryDevtools } from "react-query/devtools";
 * Garbage Collection(가비지 컬렉션)
 ```
 
-1. A 쿼리 인스턴스가 `mount` 됨
-2. 네트워크에서 데이터 `fetch` 하고 A라는 `query key`로 캐싱함
-3. 이 데이터는 `fresh` 상태에서 `staleTime(기본값 0)` 이후 `stale` 상태로 변경됨
+<br />
+
+- cacheTime의 기본값 5분, staleTime 기본 값0을 가정
+
+1. `A`라는 queryKey를 가진 A 쿼리 인스턴스가 `mount` 됨
+2. 네트워크에서 데이터 fetch 하고, 불러온 데이터는 A라는 queryKey로 `캐싱`함
+3. 이 데이터는 `fresh`상태에서 `staleTime(기본값 0)` 이후 `stale` 상태로 변경됨
 4. A 쿼리 인스턴스가 `unmount` 됨
-5. 캐시는 `cacheTime(기본값 5min)` 만큼 유지되다가 `가비지 콜렉터`로 수집됨
-6. 만일 cacheTime이 지나기 전이고, 데이터가 stale 상태일 경우 A 쿼리 인스턴스가 새롭게 mount되면, fetch가 실행되고 fresh한 값을 가져오는 동안 캐시 데이터를 보여줌
+5. 캐시는 `cacheTime(기본값 5min)` 만큼 유지되다가 `가비지 콜렉터(GC)`로 수집됨
+6. 만일, cacheTime이 지나기 전이고, A 쿼리 인스턴스가 새롭게 mount 되면, fetch 가 실행되고, fresh 한 값을 가져오는 동안 캐시 데이터를 보여줌.
 
 <br />
 
@@ -179,9 +198,13 @@ const getSuperHero = useCallback(() => {
 const { isLoading, data } = useQuery("super-heroes", getSuperHero);
 ```
 
+<br />
+
 - useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
 - useQuery는 첫 번째 인자인 `queryKey`를 기반으로 `데이터 캐싱`을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제 처럼 `문자열`로 지정할 수 있지만, 만약 쿼리가 특정 변수에 의존하는 경우에는 아래 예제처럼 `배열`로 지정해 해당 변수를 추가해주어야 합니다.
-- 사용법 `(1)`번과 `(2)`번 둘다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
+- `사용법 (1)`과 `(2)`번 둘다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
+
+<br />
 
 ```jsx
 // (1)
@@ -204,13 +227,17 @@ const useSuperHeroData = (heroId: string) => {
 };
 ```
 
-- useQuery의 두 번째 인자인 queryFn는 `promise`를 반환하는 함수를 넣어주어야 합니다.
+<br />
+
+- useQuery의 두 번째 인자인 queryFn는 `Promise`를 반환하는 함수를 넣어주어야 합니다.
 - useQuery의 세 번째 인자인 `options`에 많이 쓰이는 옵션들을 밑에서 설명하였습니다. 그외에는 위에 useQuery 참고 사이트를 통해 확인하면된다.
 
 <br />
 
 - 참고로 나중에 queryClient로 특정 key에 해당하는 query에 접근할 때는 초기에 설정해둔 포맷을 지켜줘야 제대로 가져올 수 있다.
 - 아래 예제를 참고하면 useQuery에서 queryKey에 해당하는 포맷이 배열`["super-hero", heroId]`이다. 그렇다면 밑에 useMutation에서 setQueryData를 이용할 때 똑같이 `["super-hero", heroId]` 포맷을 가져야한다.
+
+<br />
 
 ```js
 // 예
@@ -243,16 +270,18 @@ const useAddSuperHeroData = () => {
 
 - [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
 - status: 쿼리 요청 함수의 상태를 표현하는 status는 4가지의 값이 존재한다.(문자열 형태)
-  1. idle: 쿼리 데이터가 없고 비었을 때, { enabled: false } 상태로 쿼리가 호출되면 이 상태로 시작된다.
-  2. loading: 말 그대로 로딩중일 때 상태
-  3. error: 에러 발생했을 때 상태
-  4. success: 요청 성공했을 때 상태
+  - idle: 쿼리 데이터가 없고 비었을 때, { enabled: false } 상태로 쿼리가 호출되면 이 상태로 시작된다.
+  - loading: 말 그대로 로딩중일 때 상태
+  - error: 에러 발생했을 때 상태
+  - success: 요청 성공했을 때 상태
 - data: 쿼리 함수가 리턴한 Promise에서 `resolved`된 데이터
 - isLoading: `캐싱된 데이터가 없을때!` fetch 과정 중에 true 즉, 캐싱 데이터가 있으면 false
 - isFetching: 데이터가 `fetch`될 때 false에서 true가 된다. 캐싱 데이터가 있어서 백그라운드에서 fetch 되더라도 true이다.
 - error: 쿼리 함수가 오류가 발생한 경우에 대한 오류 객체
-- isError: 에러가 발생한 경우 true
-- 그외 리턴 데이터들을 확인하고 싶으면 상단에 공식 사이트 참고
+- isError: 에러가 발생한 경우 `true`
+- 그외 리턴 데이터들을 확인하고 싶으면 [공식 사이트](https://react-query.tanstack.com/reference/useQuery) 참고
+
+<br />
 
 ```js
 const { isLoading, isError, error, data, isFetching } = useQuery(
@@ -273,6 +302,8 @@ const { isLoading, isError, error, data, isFetching } = useQuery(
 - stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다.
 - fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미이다.
 
+<br />
+
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   "super-heroes",
@@ -284,18 +315,23 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 );
 ```
 
-1. staleTime
+<br />
+
+1. staleTime (number | Infinity)
    - staleTime은 데이터가 `fresh에서 stale` 상태로 변경되는데 걸리는 시간, 만약 staleTime이 3000이면 fresh상태에서 3초뒤에 stale로 변환
    - `fresh` 상태일때는 쿼리 인스턴스가 새롭게 mount 되어도 네트워크 요청(fetch)이 일어나지 않는다.
-   - 데이터가 한번 fetch 되고 나서 `staleTime`이 지나지 않았다면(fresh상태) unmount 후 mount 되어도 fetch가 일어나지 않는다.
+   - 데이터가 한번 fetch 되고 나서 `staleTime`이 지나지 않았다면(fresh상태) unmount 후 다시 mount 되어도 fetch가 일어나지 않는다.
    - staleTime의 기본값은 `0`이기 때문에 일반적으로 fetch 후에 바로 stale이 된다.
-2. cacheTime
+2. cacheTime (number | Infinity)
    - 데이터가 `inactive` 상태일 때 `캐싱된 상태로` 남아있는 시간
    - 쿼리 인스턴스가 unmount 되면 데이터는 `inactive 상태로 변경`되며, 캐시는 `cacheTime`만큼 유지된다.
    - cacheTime이 지나면 `가비지 콜렉터`로 수집된다.
    - cacheTime이 지나기 전에 쿼리 인스턴스가 다시 mount 되면, 데이터를 fetch하는 동안 캐시 데이터를 보여준다.
    - cacheTime은 staleTime과 관계없이, 무조건 inactive 된 시점을 기준으로 캐시 데이터 삭제를 결정한다.
-   - cacheTime의 기본값은 `5분`
+   - cacheTime의 기본값은 `5분`이다.
+
+- 여기서 주의할 점은 staleTime과 cacheTime의 기본값은 각각 `0분`과 `5분`이다. 따라서 staleTime에 어떠한 설정도 하지 않으면 캐싱이 전혀되지 않는다. 왜냐하면 항상 캐싱되어 있는 데이터가 `stale`하다고 여기기 때문이다.
+- staleTime을 길게 설정하더라도 cacheTime이 짧다면 이 또한 캐싱이 원활하게 진행되지 않을 것이다. 결국에는 두개의 옵션을 적절하게 설정해줘야 한다.
 
 <br />
 
@@ -311,9 +347,11 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 );
 ```
 
-- refetchOnMount는 데이터가 `stale` 상태일 경우 마운트 시 마다 `refetch`를 실행하는 옵션이다.
-- 기본값은 `true`인데 이게 베스트다.
-- `'always'` 로 설정하면 마운트 시 마다 매번 refetch를 실행한다.
+<br />
+
+- refetchOnMount (boolean | "always")
+- refetchOnMount는 데이터가 `stale` 상태일 경우 mount 마다 `refetch`를 실행하는 옵션이다. 기본값은 `true`이다.
+- `always` 로 설정하면 마운트 시 마다 매번 refetch를 실행한다.
 - `false`로 설정하면 최초 fetch 이후에는 refetch하지 않는다.
 
 <br />
@@ -330,9 +368,11 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 );
 ```
 
-- refetchOnWindowFocus는 데이터가 `stale` 상태일 경우 `윈도우 포커싱` 될 때 마다 refetch를 실행하는 옵션이다.
+<br />
+
+- refetchOnWindowFocus (boolean | "always")
+- refetchOnWindowFocus는 데이터가 `stale` 상태일 경우 `윈도우 포커싱` 될 때 마다 refetch를 실행하는 옵션이다. 기본값은 `true`이다.
 - 예를 들어, 크롬에서 다른 탭을 눌렀다가 다시 원래 보던 중인 탭을 눌렀을 때도 이 경우에 해당한다. 심지어 F12로 개발자 도구 창을 켜서 네트워크 탭이든, 콘솔 탭이든 개발자 도구 창에서 놀다가 페이지 내부를 다시 클릭했을 때도 이 경우에 해당한다.
-- 기본값은 `true`이다.
 - `always` 로 설정하면 항상 윈도우 포커싱 될 때 마다 refetch를 실행한다는 의미이다.
 
 <br />
@@ -349,6 +389,8 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
   }
 );
 ```
+
+<br />
 
 - 폴링이란? 리얼타임 웹을 위한 기법으로 `일정한 주기(특정한 시간)`를 가지고 서버와 응답을 주고받는 방식이 폴링 방식이다.
 - react-query에서는 `refetchInterval`을 이용해서 구현할 수 있다.
@@ -381,6 +423,8 @@ return (
 );
 ```
 
+<br />
+
 - `enabled`는 쿼리가 자동으로 실행되지 않도록 할 때 설정할 수 있다. `false`를 주면 자동 실행되지 않는다. 또한 useQuery 리턴 데이터중 status가 idle 상태로 시작한다.
 - `refetch`는 쿼리를 `수동`으로 다시 요청하는 기능이다. 쿼리 오류가 발생하면 오류만 기록된다. 오류를 발생시키려면 `throwOnError`속성을 `true`로해서 전달해야 한다.
 - 보통 자동으로 쿼리 요청을 하지 않고 버튼 클릭이나 특정 이벤트를 통해 요청을 시도할 때 같이 사용한다.
@@ -396,7 +440,10 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 });
 ```
 
-- retry는 쿼리가 실패하면 useQuery를 특정 횟수(기본값3)만큼 재요청하는 옵션이다.
+<br />
+
+- retry (boolean | number | (failureCount: number, error: TError) => boolean)
+- retry는 쿼리가 `실패`하면 useQuery를 `특정 횟수(기본값 3)`만큼 재요청하는 옵션이다.
 - retry가 `false`인 경우 실패한 쿼리는 기본적으로 다시 시도하지 않는다.
 - `true`인 경우에는 실패한 쿼리에 대해서 무한 재요청을 시도한다.
 - 값으로 `숫자`를 넣을 경우 실패한 쿼리가 해당 숫자를 충족할 때까지 요청을 재시도한다.
@@ -428,6 +475,8 @@ const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
   }
 );
 ```
+
+<br />
 
 - `onSuccess` 함수는 쿼리 요청이 성공적으로 진행되서 새 데이터를 가져오거나 캐시가 업데이트될 때마다 실행된다.
 - `onError` 함수는 쿼리에 오류가 발생하고 오류가 전달되면 실행된다.
@@ -461,6 +510,8 @@ return (
 );
 ```
 
+<br />
+
 - `select` 옵션을 사용하여 쿼리 함수에서 반환된 데이터의 일부를 변환하거나 선택할 수 있다.
 
 <br />
@@ -478,8 +529,10 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
   });
 ```
 
-- `keepPreviousData`를 true로 설정하면 쿼리 키가 변경되어서 새로운 데이터를 요청하는 동안에도 마지막 data 값을 유지한다.
-- `keepPreviousData`은 `페이지네이션`과 같은 기능을 구현할 때 편리하다. 캐시되지 않은 페이지를 가져올 때 목록이 `깜빡깜빡거리는 현상을 방지`할 수 있다.
+<br />
+
+- keepPreviousData를 `true`로 설정하면 쿼리 키가 변경되어서 새로운 데이터를 요청하는 동안에도 `마지막 data 값을 유지한다.`
+- keepPreviousData은 `페이지네이션`과 같은 기능을 구현할 때 편리하다. 캐시되지 않은 페이지를 가져올 때 목록이 `깜빡깜빡거리는 현상을 방지`할 수 있다.
 - 또한, `isPreviousData` 값으로 현재의 쿼리 키에 해당하는 값인지 확인할 수 있다.
 
 <br />
@@ -493,6 +546,8 @@ function Todos() {
 }
 ```
 
+<br />
+
 - placeholderData를 사용하면 `mock 데이터` 설정도 가능하다. 대신 캐싱이 안된다는 단점이있다.
 
 <br />
@@ -504,8 +559,12 @@ const { data: superHeroes } = useQuery("super-heroes", fetchSuperHeroes);
 const { data: friends } = useQuery("friends", fetchFriends);
 ```
 
+<br />
+
 - 몇 가지 상황을 제외하면 쿼리 여러개가 선언되어 있는 일반적인 상황일 때 쿼리 함수들은 `그냥 병렬로 요청되서 처리`된다.
 - 이러한 특징은 쿼리 처리의 `동시성`을 극대화 시킨다.
+
+<br />
 
 ```jsx
 const queryResults = useQueries(
@@ -524,6 +583,8 @@ const queryResults = useQueries(
 
 - `종속 쿼리`는 어떤 A라는 쿼리가 있는데 이 A쿼리를 실행하기 전에 사전에 완료되야 하는 B 쿼리가 있는데, 이러한 B쿼리에 의존하는 A쿼리를 종속 쿼리라고 한다.
 - react-query에서는 쿼리를 실행할 준비가 되었다는 것을 알려주는 `enabled` 옵션을 통해 종속 쿼리를 쉽게 구현할 수 있다.
+
+<br />
 
 ```jsx
 const DependantQueriesPage = ({ email }: Props) => {
@@ -549,6 +610,8 @@ const DependantQueriesPage = ({ email }: Props) => {
 - useQueryClient는 `QueryClient` 인스턴스를 반환한다.
 - `QueryClient`는 캐시와 상호작용 한다.
 
+<br />
+
 ```jsx
 import { useQueryClient } from "react-query";
 
@@ -561,6 +624,8 @@ const queryClient = useQueryClient();
 
 - 쿼리에 대한 `초기 데이터`가 필요하기 전에 캐시에 제공하는 방법이 있다. 아래 예제 참고
 - initialData 옵션을 통해서 쿼리를 미리 채우는데 사용할 수 있으며, 초기 로드 상태도 건너띌 수 있다.
+
+<br />
 
 ```jsx
   const useSuperHeroData = (heroId: string) => {
@@ -579,6 +644,8 @@ const queryClient = useQueryClient();
   };
 ```
 
+<br />
+
 - 참고로 위 예제에서 `queryClient.getQueryData` 메서드는 기존 쿼리의 `캐시된 데이터`를 가져오는데 사용할 수 있는 동기 함수이다. 쿼리가 존재하지 않으면 `undefined`를 반환한다.
 
 <br />
@@ -586,6 +653,8 @@ const queryClient = useQueryClient();
 ## Infinite Queries
 
 - 무한 쿼리는 무한 스크롤이나 load more 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능 구현할 때 사용하면 유용하다.
+
+<br />
 
 ```jsx
 import { useInfiniteQuery } from "react-query";
@@ -730,7 +799,7 @@ queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
 ```
 
 - 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법들 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
-  - [Disabling/Pausing Queries](https://tanstack.com/query/v4/docs/guides/disabling-queries?from=reactQueryV3&original=https://react-query-v3.tanstack.com/guides/disabling-queries) 사이트 참고
+  - [Disabling/Pausing Queries](https://tanstack.com/query/v4/docs/guides/disabling-queries?from=reactQueryV3&original=https://react-query-v3.tanstack.com/guides/disabling-queries) 참고
 
 <br />
 
@@ -738,6 +807,8 @@ queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
 
 - 바로 위에서 `queryClient.invalidateQueries`를 이용해 캐시 데이터를 최신화하는 방법을 알아봤는데 queryClient.setQueryData를 이용해서도 데이터를 즉시 업데이트 할 수 있다.
 - `queryClient.setQueryData`는 쿼리의 캐시된 데이터를 즉시 업데이트하는 데 사용할 수 있는 `동기 함수`이다.
+
+<br />
 
 ```tsx
 const useAddSuperHeroData = () => {
@@ -758,18 +829,22 @@ const useAddSuperHeroData = () => {
 };
 ```
 
+<br />
+
 ## Optimistic Update
 
 - `Optimistic Update(낙관적 업데이트)`란 서버 업데이트 시 UI에서도 어차피 업데이트 할 것이라고(낙관적인) 가정해서 `미리 UI를 업데이트` 시켜주고 서버를 통해 검증을 받고 업데이트 또는 롤백하는 방식이다.
 - 예를 들어 facebook에 좋아요 버튼이 있는데 이것을 유저가 누른다면 일단 client 쪽 state를 먼저 업데이트한다. 그리고 만약에 실패 한다면 예전 state로 돌아가고 성공하면 필요한 데이터를 다시 fetch해서 서버 데이터와 확실히 연동을 진행한다.
 - Optimistic Update가 정말 유용할 때는 인터넷 속도가 느리거나 서버가 느릴 때 유저가 한 액션을 기다릴 필요 없이 바로 업데이트 되는 것처럼 보이기 때문에 UX적으로 좋다.
 
+<br />
+
 ```js
 const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
     async onMutate(newHero) {
-      // 낙관적 업데이트를 덮어쓰지 않기 위해 Cancel한다.
+      // 낙관적 업데이트를 덮어쓰지 않기 위해 쿼리를 수동으로 삭제한다.
       await queryClient.cancelQueries("super-heroes");
 
       // 이전 값
@@ -803,7 +878,9 @@ const useAddSuperHeroData = () => {
 };
 ```
 
-- 참고로 위 예제에서 cancelQueries는 쿼리를 취소시킬 수 있다. 취소시킬 query의 key를 cancelQueries의 인자로 보내 실행시킨다.
-- cancelQueries가 실행되면 처음 query에서 반환한 promise 객체의 cancel을 자동으로 호출한다고 한다.
+<br />
+
+- 참고로 위 예제에서 `cancelQueries`는 쿼리를 `수동으로 취소`시킬 수 있다. 취소시킬 query의 queryKey를 cancelQueries의 인자로 보내 실행시킨다.
+- 예를 들어, 요청을 완료하는 데 시간이 오래 걸리는 경우, 사용자가 취소 버튼을 클릭하여 요청을 중지하는 경우 이용할 수 있다.
 
 <br />
