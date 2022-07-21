@@ -11,7 +11,6 @@ import ParallelQueriesPage from './pages/ParallelQueries';
 import DynamicParallelPage from './pages/DynamicParallelQueries';
 import DependantQueriesPage from './pages/DependantQueries';
 import PaginatedQueriesPage from './pages/PaginatedQueries';
-import ScrollDomPage from './pages/ScrollDom';
 import InfiniteQueries from './pages/InfiniteQueries';
 
 const queryClient = new QueryClient();
@@ -34,9 +33,6 @@ function App() {
             <Link to="/toolkit">툴킷(동기)</Link>
           </li>
           <li>
-            <Link to="/param">파라미터</Link>
-          </li>
-          <li>
             <Link to="/super-hero">슈퍼히어로(Normal)</Link>
           </li>
           <li>
@@ -56,9 +52,6 @@ function App() {
           </li>
           <li>
             <Link to="/infinite-queries">Infinite queries(RQ)</Link>
-          </li>
-          <li>
-            <Link to="/scroll-dom">ScrollDom(etc)</Link>
           </li>
         </ul>
         <Routes>
@@ -81,7 +74,6 @@ function App() {
           />
           <Route path="/paginated-queries" element={<PaginatedQueriesPage />} />
           <Route path="/infinite-queries" element={<InfiniteQueries />} />
-          <Route path="/scroll-dom" element={<ScrollDomPage />} />
         </Routes>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
