@@ -27,7 +27,8 @@
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#쿼리-무효화)
 24. [사용자UX를 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
 
-<hr />
+<br />
+<br />
 
 ## 📃 React-Query 개요 및 기능
 
