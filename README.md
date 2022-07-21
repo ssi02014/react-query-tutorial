@@ -152,7 +152,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 3. 이 데이터는 `fresh`상태에서 `staleTime(기본값 0)` 이후 `stale` 상태로 변경됨
 4. A 쿼리 인스턴스가 `unmount` 됨
 5. 캐시는 `cacheTime(기본값 5min)` 만큼 유지되다가 `가비지 콜렉터(GC)`로 수집됨
-6. 만일, cacheTime이 지나기 전이고, A 쿼리 인스턴스가 새롭게 mount 되면, fetch 가 실행되고, fresh 한 값을 가져오는 동안 캐시 데이터를 보여줌.
+6. 만일, cacheTime이 지나기 전이고, A 쿼리 인스턴스 fresh한 상태라면 새롭게 mount되면 캐시 데이터를 보여준다.
 
 <br />
 
