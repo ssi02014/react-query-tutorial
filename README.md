@@ -185,8 +185,6 @@ const getSuperHero = useCallback(() => {
 const { isLoading, data } = useQuery("super-heroes", getSuperHero);
 ```
 
-<br />
-
 - useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
 - useQuery는 첫 번째 인자인 `queryKey`를 기반으로 `데이터 캐싱`을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제 처럼 `문자열`로 지정할 수 있지만, 만약 쿼리가 특정 변수에 의존하는 경우에는 아래 예제처럼 `배열`로 지정해 해당 변수를 추가해주어야 합니다.
 - `사용법 (1)`과 `(2)`번 둘다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
@@ -213,8 +211,6 @@ const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId));
 };
 ```
-
-<br />
 
 - useQuery의 두 번째 인자인 queryFn는 `Promise`를 반환하는 함수를 넣어주어야 합니다.
 - useQuery의 세 번째 인자인 `options`에 많이 쓰이는 옵션들을 밑에서 설명하였습니다. 그외에는 위에 useQuery 참고 사이트를 통해 확인하면된다.
@@ -255,7 +251,14 @@ const useAddSuperHeroData = () => {
 
 ### useQuery 주요 리턴 데이터
 
-- [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
+```js
+const { isLoading, isError, error, data, isFetching } = useQuery(
+  ["colors", pageNum],
+  () => fetchColors(pageNum)
+);
+```
+
+- [react-query: useQuery 공식 사이트](https://react-query.tanstack.com/reference/useQuery)
 - status: 쿼리 요청 함수의 상태를 표현하는 status는 4가지의 값이 존재한다.(문자열 형태)
   - idle: 쿼리 데이터가 없고 비었을 때, { enabled: false } 상태로 쿼리가 호출되면 이 상태로 시작된다.
   - loading: 말 그대로 로딩중일 때 상태
@@ -267,15 +270,6 @@ const useAddSuperHeroData = () => {
 - error: 쿼리 함수가 오류가 발생한 경우에 대한 오류 객체
 - isError: 에러가 발생한 경우 `true`
 - 그외 리턴 데이터들을 확인하고 싶으면 [공식 사이트](https://react-query.tanstack.com/reference/useQuery) 참고
-
-<br />
-
-```js
-const { isLoading, isError, error, data, isFetching } = useQuery(
-  ["colors", pageNum],
-  () => fetchColors(pageNum)
-);
-```
 
 <br />
 
