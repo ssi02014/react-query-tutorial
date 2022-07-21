@@ -25,7 +25,7 @@
 21. [서버와 Http CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
 22. [쿼리 무효화 queryClient.invalidateQueries](#쿼리-무효화)
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#쿼리-무효화)
-24. [사용자UX를 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
+24. [사용자 경험(UX) 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
 
 <br />
 <br />
