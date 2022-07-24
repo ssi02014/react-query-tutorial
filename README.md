@@ -1,5 +1,11 @@
 # 💻 React-query
 
+- 해당 저장소는 `react-query`에서 자주 사용하는 개념들을 정리한 저장소입니다. react-query의 모든 활용 방법이 작성된 상태는 아니며, 추가가 필요한 내용은 추가, 보완할 예정입니다.
+- 오탈자 및 가독성이 안좋거나 수정이 필요한 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다. 많관부 🙇‍♂️
+- react-query의 자세한 활용법은 [공식 사이트](https://react-query-v3.tanstack.com/overview)를 참고해주시길 바랍니다.
+
+<br />
+
 ## 📃 목차
 
 1. [React-Query 기능](#기능)
