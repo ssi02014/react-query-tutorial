@@ -32,6 +32,7 @@
 22. [쿼리 무효화 queryClient.invalidateQueries](#쿼리-무효화)
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#쿼리-무효화)
 24. [사용자 경험(UX) 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
+25. [에러 처리 useQueryErrorResetBoundary](#usequeryerrorresetboundary)
 
 <br />
 <br />
@@ -541,6 +542,7 @@ const queryResults = useQueries(
 - 하지만, 쿼리 여러개를 동시에 수행해야 하는데, 렌더링이 거듭되는 사이사이에 계속 쿼리가 수행되어야 한다면 쿼리를 수행하는 로직이 hook룰에 위배될 수도 있다. 이럴 때는 `useQueries`를 사용한다.
 
 <br />
+<br />
 
 ## Dependent Queries
 
@@ -831,5 +833,86 @@ const useAddSuperHeroData = () => {
 
 - 참고로 위 예제에서 `cancelQueries`는 쿼리를 `수동으로 취소`시킬 수 있다. 취소시킬 query의 queryKey를 cancelQueries의 인자로 보내 실행시킨다.
 - 예를 들어, 요청을 완료하는 데 시간이 오래 걸리는 경우, 사용자가 취소 버튼을 클릭하여 요청을 중지하는 경우 이용할 수 있다.
+
+<br />
+
+## useQueryErrorResetBoundary
+
+- [useQueryErrorResetBoundary 공식 문서](https://react-query-v3.tanstack.com/reference/useQueryErrorResetBoundary)
+- react-query에서는 `Error`가 발생했을 때 대응할 수 있는 `useQueryErrorResetBoundary hook`을 제공한다.
+- 자세한 내용을 설명하기보다는 간단하게 사용할 수 있는 방법을 알아보고, 응용해서 사용하면 될 것 같다.
+- 우선, useQueryErrorResetBoundary는 `ErrorBoundary`와 함께 사용되는데 이는, `react-error-boundary` 라이브러리 설치가 필요하다.
+
+```
+npm i react-error-boundary
+또는
+yarn add react-error-boundary
+```
+
+- 설치 후에 아래와 같은 QueryErrorBoundary라는 컴포넌트를 생성하고, 그 내부에 `useQueryErrorResetBoundary` 훅을 호출해 `reset` 함수를 가져온다.
+- 아래 코드 내용은 단순하다.
+  - Error가 발생하면 ErrorBoundary의 `fallbackRender` prop으로 넘긴 내용이 렌더링되고, 그렇지 않으면 children 내용이 렌더링된다.
+  - 또한, fallbackRender에 넣어주는 콜백 함수 매개 변수로 `resetErrorBoundary`를 구조 분해 할당을 통해 가져올 수 있는데, 이를 통해 모든 쿼리 에러를 `초기화` 할 수 있다. 아래 코드 같은 경우에는 button을 클릭하면 에러를 초기화하게끔 작성했다.
+
+```jsx
+import { useQueryErrorResetBoundary } from "react-query";
+import { ErrorBoundary } from "react-error-boundary";
+
+interface Props {
+  children: React.ReactNode;
+}
+
+const QueryErrorBoundary = ({ children }: Props) => {
+  const { reset } = useQueryErrorResetBoundary();
+
+  return (
+    <ErrorBoundary
+      onReset={reset}
+      fallbackRender={({ resetErrorBoundary }) => (
+        <div>
+          Error!!{" "}
+          <button onClick={() => resetErrorBoundary()}>Try again</button>
+        </div>
+      )}
+    >
+      {children}
+    </ErrorBoundary>
+  );
+};
+
+export default QueryErrorBoundary;
+```
+
+- 그리고 App.js에다 QueryErrorBoundary 컴포넌트를 추가하면된다. 여기서 주의 할점은 queryClient 옵션에다 `{ useErrorBoundary: true }`를 추가해야된다는 점이다. 그래야 오류가 발생했을 때 `ErrorBoundary` 컴포넌트가 감지할 수 있다.
+
+```jsx
+import QueryErrorBoundary from "./components/ErrorBoundary";
+import { QueryClientProvider, QueryClient } from "react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      useErrorBoundary: true,
+    },
+  },
+});
+
+export const AppContext = createContext < any > undefined;
+
+function App() {
+  return (
+    <AppContext.Provider value={user}>
+      <QueryClientProvider client={queryClient}>
+        <QueryErrorBoundary>{/* code */}</QueryErrorBoundary>
+      </QueryClientProvider>
+    </AppContext.Provider>
+  );
+}
+
+export default App;
+```
+
+- 추가적으로 useQueryErrorResetBoundary hook을 사용하지않고 `QueryErrorResetBoundary` 컴포넌트를 사용해서 Error를 처리하는 경우도 있는데, 결국 컨셉은 비슷해서 아래 공식 문서를 참고하면 충분히 이해할 수 있을 것이다.
+- [QueryErrorResetBoundary](https://react-query-v3.tanstack.com/reference/QueryErrorResetBoundary)
 
 <br />
