@@ -855,22 +855,22 @@ yarn add react-error-boundary
   - 또한, fallbackRender에 넣어주는 콜백 함수 매개 변수로 `resetErrorBoundary`를 구조 분해 할당을 통해 가져올 수 있는데, 이를 통해 모든 쿼리 에러를 `초기화` 할 수 있다. 아래 코드 같은 경우에는 button을 클릭하면 에러를 초기화하게끔 작성했다.
 
 ```jsx
-import { useQueryErrorResetBoundary } from "react-query";
-import { ErrorBoundary } from "react-error-boundary";
+import { useQueryErrorResetBoundary } from "react-query"; // (*)
+import { ErrorBoundary } from "react-error-boundary"; // (*)
 
 interface Props {
   children: React.ReactNode;
 }
 
 const QueryErrorBoundary = ({ children }: Props) => {
-  const { reset } = useQueryErrorResetBoundary();
+  const { reset } = useQueryErrorResetBoundary(); // (*)
 
   return (
     <ErrorBoundary
       onReset={reset}
       fallbackRender={({ resetErrorBoundary }) => (
         <div>
-          Error!!{" "}
+          Error!!
           <button onClick={() => resetErrorBoundary()}>Try again</button>
         </div>
       )}
@@ -886,13 +886,13 @@ export default QueryErrorBoundary;
 - 그리고 App.js에다 QueryErrorBoundary 컴포넌트를 추가하면된다. 여기서 주의 할점은 queryClient 옵션에다 `{ useErrorBoundary: true }`를 추가해야된다는 점이다. 그래야 오류가 발생했을 때 `ErrorBoundary` 컴포넌트가 감지할 수 있다.
 
 ```jsx
-import QueryErrorBoundary from "./components/ErrorBoundary";
 import { QueryClientProvider, QueryClient } from "react-query";
+import QueryErrorBoundary from "./components/ErrorBoundary"; // (*)
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      useErrorBoundary: true,
+      useErrorBoundary: true, // (*)
     },
   },
 });
