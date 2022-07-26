@@ -131,13 +131,15 @@ import { ReactQueryDevtools } from "react-query/devtools";
 - position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
   - 기본값: `bottom-left`
   - devtools 패널을 열고 닫기 위한 로고 위치
-- 일반적으로 initialIsOpen, position을 자주 사용하지만, 아래와 같은 옵션들도 존재하다.
+- 일반적으로 initialIsOpen, position을 자주 사용하지만, 아래와 같은 옵션들도 존재한다.
 - panelProps
   - 패널에 `props`을 추가할 수 있다. 예를 들어 className, style, onClick 등
 - closeButtonProps
   - `닫기 버튼`에 props를 추가할 수 있다.
 - toggleButtonProps
   - `토글 버튼`에 props를 추가할 수 있다.
+
+- Devtools는 기본값으로 `process.env.NODE_ENV === 'development'` 인 경우에만 실행된다, 즉 일반적으로 개발환경에서만 작동하므로 설정되어있으므로 프로젝트 배포시에 Devtools 삽입코드를 제거해줄 필요가 없다.
 
 <br />
 
