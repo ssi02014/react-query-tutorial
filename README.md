@@ -505,7 +505,7 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 
 - keepPreviousData를 `true`로 설정하면 쿼리 키가 변경되어서 새로운 데이터를 요청하는 동안에도 `마지막 data 값을 유지한다.`
 - keepPreviousData은 `페이지네이션`과 같은 기능을 구현할 때 편리하다. 캐시되지 않은 페이지를 가져올 때 목록이 `깜빡깜빡거리는 현상을 방지`할 수 있다.
-- 또한, `isPreviousData` 값으로 현재의 쿼리 키에 해당하는 값인지 확인할 수 있다.
+- 또한, `isPreviousData` 값으로 현재의 쿼리 키에 해당하는 값인지 확인할 수 있다. `페이지네이션`으로 예를들면, 아직 새로운 데이터가 캐싱되지 않았다면, 이전 데이터이므로 true를 반환하고 새로운 데이터가 정상적으로 받아져왔다면 이전데이터가 아니므로 false를 반환한다.
 
 <br />
 
