@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import customAxios from '../../utils/axios';
+import axios from 'axios';
 
 interface GithubState {
   loading: boolean;
@@ -7,6 +7,7 @@ interface GithubState {
   login: string;
   name: string;
   error: any;
+  errorData: any;
 }
 
 const initialState: GithubState = {
@@ -15,16 +16,19 @@ const initialState: GithubState = {
   login: '',
   name: '',
   error: null,
+  errorData: null,
 };
 
-export const fetchGithubUserData = createAsyncThunk(
-  'github/user',
-  async (userId: string, { rejectWithValue }) => {
+export const requestGetUserData = createAsyncThunk(
+  'user',
+  async (_, { rejectWithValue }) => {
     try {
-      const res = await customAxios.get(`/users/${userId}`);
+      const res = await axios.get(
+        'https://jsonplaceholder.typicode.com/todos/zz'
+      );
       return res.data;
     } catch (err: any) {
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err.response);
     }
   }
 );
@@ -35,20 +39,21 @@ export const githubSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGithubUserData.pending, (state: GithubState) => {
+      .addCase(requestGetUserData.pending, (state: GithubState) => {
         state.loading = true;
       })
-      .addCase(fetchGithubUserData.fulfilled, (state: GithubState, action) => {
+      .addCase(requestGetUserData.fulfilled, (state: GithubState, action) => {
         state.loading = false;
         state.location = action.payload.location;
         state.login = action.payload.login;
         state.name = action.payload.name;
       })
       .addCase(
-        fetchGithubUserData.rejected,
+        requestGetUserData.rejected,
         (state: GithubState, action: any) => {
           state.loading = false;
-          state.error = action.payload.message;
+          state.error = action.payload;
+          state.errorData = action.payload.data;
         }
       );
   },

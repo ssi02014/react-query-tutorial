@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import calculateSlice from '../features/calculate/calculateSlice';
 import githubSlice from '../features/github/githubSlice';
-import sayByeMiddleware from '../features/middleware/sayBye';
+import errorMiddleware from '../features/middleware/sayBye';
 import sayHelloMiddleware from '../features/middleware/sayHello';
 
 const rootReducer = combineReducers({
@@ -19,7 +19,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false })
       .concat(sayHelloMiddleware)
-      .concat(sayByeMiddleware),
+      .concat(errorMiddleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
