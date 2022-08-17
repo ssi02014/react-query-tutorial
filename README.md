@@ -6,6 +6,12 @@
 
 <br />
 
+## react-query v4 정식 릴리즈
+
+- react-query v4가 정식 릴리즈되면서 주요 변경 사항을 아래 문서에 추가하고 있습니다.
+- [react-query v4](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
+  <br />
+
 ## 📃 목차
 
 1. [React-Query 기능](#기능)
@@ -137,6 +143,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 - closeButtonProps
   - `닫기 버튼`에 props를 추가할 수 있다.
 - toggleButtonProps
+
   - `토글 버튼`에 props를 추가할 수 있다.
 
 - Devtools는 기본값으로 `process.env.NODE_ENV === 'development'` 인 경우에만 실행된다, 즉 일반적으로 개발환경에서만 작동하므로 설정되어있으므로 프로젝트 배포시에 Devtools 삽입코드를 제거해줄 필요가 없다.
