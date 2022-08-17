@@ -8,9 +8,17 @@
 
 ## react-query v4 정식 릴리즈
 
+![스크린샷 2022-08-17 오후 2 20 01](https://user-images.githubusercontent.com/64779472/185040681-2352e8c8-b2d7-40f7-893d-3ee2270904c9.png)
+
 - react-query v4가 정식 릴리즈되면서 주요 변경 사항을 아래 문서에 추가하고 있습니다.
-- [react-query v4](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
-  <br />
+- [react-query v3 vs v4 비교](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
+
+<br />
+
+- [react-query v4 tanstack 공식 문서](https://tanstack.com/)
+- [react-query v4 migration 공식 문서](https://tanstack.com/query/v4/docs/guides/migrating-to-react-query-4)
+
+<br />
 
 ## 📃 목차
 
