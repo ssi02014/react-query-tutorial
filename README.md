@@ -11,16 +11,13 @@
 ![스크린샷 2022-08-17 오후 2 20 01](https://user-images.githubusercontent.com/64779472/185040681-2352e8c8-b2d7-40f7-893d-3ee2270904c9.png)
 
 - react-query v4가 정식 릴리즈되면서 주요 변경 사항을 아래 문서에 추가하고 있습니다.
-- [react-query v3 vs v4 비교](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
-
-<br />
-
+- [react-query v3 vs v4 비교 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
 - [react-query v4 tanstack 공식 문서](https://tanstack.com/)
 - [react-query v4 migration 공식 문서](https://tanstack.com/query/v4/docs/guides/migrating-to-react-query-4)
 
 <br />
 
-## 📃 목차
+## 📃 주요 컨셉 및 가이드 목차
 
 1. [React-Query 기능](#기능)
 2. [기본 설정(QueryClientProvider, QueryClient)](#react-query-기본-설정)
@@ -47,6 +44,12 @@
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#쿼리-무효화)
 24. [사용자 경험(UX) 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
 25. [에러 처리 useQueryErrorResetBoundary](#usequeryerrorresetboundary)
+
+<br />
+
+## 📃 API Reference
+
+1. [QueryClient 주요 내용 정리 문서(v3/v4)](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
 
 <br />
 <br />
@@ -211,6 +214,7 @@ const { isLoading, data } = useQuery("super-heroes", getSuperHero);
 
 - useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
 - useQuery는 첫 번째 인자인 `queryKey`를 기반으로 `데이터 캐싱`을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제 처럼 `문자열`로 지정할 수 있지만, 만약 쿼리가 특정 변수에 의존하는 경우에는 아래 예제처럼 `배열`로 지정해 해당 변수를 추가해주어야 합니다.
+  - 참고로 해당 내용은 v3기준이고, react-query `v4`부터는 무조건 `배열`로 지정해야 됩니다.
 - `사용법 (1)`과 `(2)`번 둘다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
 
 <br />
@@ -256,7 +260,7 @@ const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
     onSuccess(data) {
-      // 제대로 못가져옴! 포맷안맞음! ["super-hero", heroId] 로해야됌
+      // 포맷이 안맞아서 제대로 못가져옴! ["super-hero", heroId] 로해야됌
       queryClient.setQueryData("super-hero", (oldData: any) => {
         return {
           ...oldData,
@@ -399,7 +403,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  "super-heroes",
+  ["super-heroes"],
   getSuperHero,
   {
     enabled: false,
@@ -459,7 +463,7 @@ const onSettled = useCallback(() => {
 }, []);
 
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  "super-heroes",
+  ["super-heroes"],
   getSuperHero,
   {
     onSuccess,
@@ -479,7 +483,7 @@ const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  "super-heroes",
+  ["super-heroes"],
   getSuperHero,
   {
     onSuccess,
@@ -529,7 +533,9 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 ```js
 function Todos() {
   const placeholderData = useMemo(() => generateFakeTodos(), []);
-  const result = useQuery("todos", () => fetch("/todos"), { placeholderData });
+  const result = useQuery(["todos"], () => fetch("/todos"), {
+    placeholderData,
+  });
 }
 ```
 
@@ -540,8 +546,8 @@ function Todos() {
 ## Parallel
 
 ```jsx
-const { data: superHeroes } = useQuery("super-heroes", fetchSuperHeroes);
-const { data: friends } = useQuery("friends", fetchFriends);
+const { data: superHeroes } = useQuery(["super-heroes"], fetchSuperHeroes);
+const { data: friends } = useQuery(["friends"], fetchFriends);
 ```
 
 - 몇 가지 상황을 제외하면 쿼리 여러개가 선언되어 있는 일반적인 상황일 때 쿼리 함수들은 `그냥 병렬로 요청되서 처리`된다.
@@ -608,7 +614,7 @@ const queryClient = useQueryClient();
     const queryClient = useQueryClient();
     return useQuery(['super-hero', heroId], fetchSuperHero, {
       initialData: () => {
-        const queryData = queryClient.getQueryData('super-heroes') as any;
+        const queryData = queryClient.getQueryData(['super-heroes']) as any;
         const hero = queryData?.data?.find(
           (hero: Hero) => hero.id === parseInt(heroId)
         );
@@ -639,7 +645,7 @@ const fetchColors = ({ pageParam = 1 }) => {
 
 const InfiniteQueries = () => {
   const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } =
-    useInfiniteQuery("colors", fetchColors, {
+    useInfiniteQuery(["colors"], fetchColors, {
       getNextPageParam: (lastPage, allPages) => {
         if (allPages.length < 4) {
           return allPages.length + 1;
@@ -756,7 +762,7 @@ const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
     onSuccess(data) {
-      queryClient.invalidateQueries("super-heroes"); // 이 key에 해당 하는 쿼리가 무효화!
+      queryClient.invalidateQueries(["super-heroes"]); // 이 key에 해당 하는 쿼리가 무효화!
       console.log(data);
     },
     onError(err) {
@@ -787,7 +793,7 @@ const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
     onSuccess(data) {
-      queryClient.setQueryData("super-heroes", (oldData: any) => {
+      queryClient.setQueryData(["super-heroes"], (oldData: any) => {
         return {
           ...oldData,
           data: [...oldData.data, data.data],
@@ -815,13 +821,13 @@ const useAddSuperHeroData = () => {
   return useMutation(addSuperHero, {
     async onMutate(newHero) {
       // 낙관적 업데이트를 덮어쓰지 않기 위해 쿼리를 수동으로 삭제한다.
-      await queryClient.cancelQueries("super-heroes");
+      await queryClient.cancelQueries(["super-heroes"]);
 
       // 이전 값
       const previousHeroData = queryClient.getQueryData("super-heroes");
 
       // 새로운 값으로 낙관적 업데이트 진행
-      queryClient.setQueryData("super-heroes", (oldData: any) => {
+      queryClient.setQueryData(["super-heroes"], (oldData: any) => {
         return {
           ...oldData,
           data: [
@@ -838,11 +844,11 @@ const useAddSuperHeroData = () => {
     },
     // mutation이 실패하면 onMutate에서 반환된 context를 사용하여 롤백 진행
     onError(error, hero, context: any) {
-      queryClient.setQueryData("super-heroes", context.previousHeroData);
+      queryClient.setQueryData(["super-heroes"], context.previousHeroData);
     },
     // 오류 또는 성공 후에는 항상 리프레쉬
     onSettled() {
-      queryClient.invalidateQueries("super-heroes");
+      queryClient.invalidateQueries(["super-heroes"]);
     },
   });
 };
