@@ -96,6 +96,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: Infinity,
+      // ...
     },
   },
 });
@@ -209,7 +210,7 @@ const getSuperHero = useCallback(() => {
   return axios.get("http://localhost:4000/superheroes");
 }, []);
 
-const { isLoading, data } = useQuery("super-heroes", getSuperHero);
+const { data, isLoading } = useQuery(["super-heroes"], getSuperHero);
 ```
 
 - useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
@@ -293,8 +294,10 @@ const { isLoading, isError, error, data, isFetching } = useQuery(
   - error: 에러 발생했을 때 상태
   - success: 요청 성공했을 때 상태
 - data: 쿼리 함수가 리턴한 Promise에서 `resolved`된 데이터
-- isLoading: `캐싱된 데이터가 없을때!` fetch 과정 중에 true 즉, 캐싱 데이터가 있으면 false
-- isFetching: 데이터가 `fetch`될 때 false에서 true가 된다. 캐싱 데이터가 있어서 백그라운드에서 fetch 되더라도 true이다.
+- isLoading: `캐싱된 데이터가 없을때!` 즉, 처음 실행된 쿼리 일 때 로딩 여부에 따라 true/false로 반환된다.
+  - 이는 캐싱된 데이터가 있다면 로딩 여부에 상관없이 false를 반환한다.
+- isFetching: 캐싱된 데이터가 있더라도 쿼리가 실행되면 로딩 여부에 따라 true/false로 반환된다.
+  - 이는 캐싱된 데이터가 있더라도 쿼리 로딩 여부에 따라 true/false를 반환한다.
 - error: 쿼리 함수가 오류가 발생한 경우에 대한 오류 객체
 - isError: 에러가 발생한 경우 `true`
 - 그외 리턴 데이터들을 확인하고 싶으면 [공식 사이트](https://react-query.tanstack.com/reference/useQuery) 참고
@@ -313,7 +316,7 @@ const { isLoading, isError, error, data, isFetching } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
-  "super-heroes",
+  ["super-heroes"],
   getSuperHero,
   {
     cacheTime: 3000,
@@ -346,7 +349,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
-  "super-heroes",
+  ["super-heroes"],
   getSuperHero,
   {
     refetchOnMount: true,
@@ -384,7 +387,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
-  "super-heroes",
+  ["super-heroes"],
   getSuperHero,
   {
     // refetchInterval: 2000,
