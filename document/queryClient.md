@@ -162,7 +162,7 @@ queryClient.setQueriesData(["super-hero"], (oldData) => {
 
 ### invalidateQueries
 
-- queryClient.invalidateQueries는 setQueryData와 `캐시 데이터를 최신화`할 때 많이 사용하는 함수이다. ([쿼리 무효화 참고](https://github.com/ssi02014/react-query-tutorial#%EC%BF%BC%EB%A6%AC-%EB%AC%B4%ED%9A%A8%ED%99%94)) 단일 또는 여러 쿼리를 무효화하고 다시 가져오는데 많이 사용한다.
+- queryClient.invalidateQueries는 setQueryData와 더불어 `캐시 데이터를 최신화`할 때 많이 사용하는 함수이다. ([쿼리 무효화 예제](https://github.com/ssi02014/react-query-tutorial#%EC%BF%BC%EB%A6%AC-%EB%AC%B4%ED%9A%A8%ED%99%94)) 단일 또는 여러 쿼리를 무효화하고, 다시 가져오는데 많이 사용한다.
 - 기본적으로 일치하는 모든 쿼리는 즉시 유효하지 않은 것으로 표시되고, 활성 쿼리는 백드라운드에서 다시 가져온다.
 - 만약, 활성 쿼리를 다시 가져오는 것을 원하지 않으면 v3에서는 `refetchActive: false`, v4에서는 `refetchType: 'none'`를 사용할 수 있다.
 - 반대로 비 활성화 쿼리를 다시 가져오기를 원한다면 v3에서는 `refetchInactive: true`, v4에서는 `refetchType: 'all'`을 사용할 수 있다.
@@ -190,12 +190,28 @@ await queryClient.invalidateQueries(
   { throwOnError, cancelRefetch }
 );
 
-// exact옵션을 줬기 때문에 쿼리 키와 정확히 일치하는 쿼리를 무효화하고 다시 가져온다.
+// exact옵션을 줬기 때문에 쿼리 키와 정확히 일치하는 쿼리만을 무효화하고 다시 가져온다.
 ```
 
-- 옵션은 내용이 길고 v3, v4 차이가 좀 있어 관련 문서 참고
-  - [queryClient.invalidateQueries v3 문서](https://react-query-v3.tanstack.com/reference/QueryClient#queryclientsetqueriesdata)
-  - [queryClient.invalidateQueries v4 문서](https://tanstack.com/query/v4/docs/reference/QueryClient#queryclientinvalidatequeries)
+- 추가적으로 invalidateQueries가 무효화하는 `쿼리 범위`는 기본적으로`상위 -> 하위`로 전파된다. 이게 무슨 말이냐면 아래와 같이 `['super-heros']` 쿼리를 무효화 하게 되면 아래 하위 쿼리들도 모두 초기화된다.
+
+```js
+queryClient.invalidateQueries({
+  queryKey: ["super-heroes"],
+});
+
+["super-heros"],
+["super-heros", 'superman'],
+["super-heros", { id: 1} ],
+```
+
+- 위와 같이 `['super-heros']` 쿼리를 무효화 하게 되면 아래 하위 쿼리들도 모두 초기화된다.
+- 하지만 `해당 key만` 무효화 시키려면 첫 번째 예제 코드에서도 언급했듯이 `exact` 옵션을 주면 된다.
+
+<br />
+
+- [queryClient.invalidateQueries v3 문서](https://react-query-v3.tanstack.com/reference/QueryClient#queryclientsetqueriesdata)
+- [queryClient.invalidateQueries v4 문서](https://tanstack.com/query/v4/docs/reference/QueryClient#queryclientinvalidatequeries)
 
 <br />
 
@@ -253,9 +269,10 @@ await queryClient.refetchQueries(
 );
 ```
 
-- v3와 v4에 인자, 옵션 등에서 차이가 있으니 주의하길 바랍니다.
-  - [queryClient.refetchQueries v3 문서](https://react-query-v3.tanstack.com/reference/QueryClient#queryclientrefetchqueries)
-  - [queryClient.refetchQueries v4 문서](https://tanstack.com/query/v4/docs/reference/QueryClient#queryclientrefetchqueries)
+<br />
+
+- [queryClient.refetchQueries v3 문서](https://react-query-v3.tanstack.com/reference/QueryClient#queryclientrefetchqueries)
+- [queryClient.refetchQueries v4 문서](https://tanstack.com/query/v4/docs/reference/QueryClient#queryclientrefetchqueries)
 
 <br />
 

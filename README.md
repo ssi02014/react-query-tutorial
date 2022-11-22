@@ -753,9 +753,9 @@ try {
 
 ## 쿼리 무효화
 
-- 이것은 개념적으로 화면을 최신 상태로 유지하는 가장 간단한 방법이다..
+- invalidateQueries은 화면을 최신 상태로 유지하는 가장 간단한 방법이다.
 - 예를 들면, 게시판 목록에서 어떤 게시글을 `작성(Post)`하거나 게시글을 `제거(Delete)`했을 때 화면에 보여주는 게시판 목록을 실시간 최신화 해야될 때가 있다.
-- 하지만 이때, `query Key`가 변하지 않으므로 이럴때 강제 리프레쉬를 진행해야 하는데 이때, `queryClient`의 `invalidateQueries()` 메소드를 이용한다.
+- 하지만 이때, `query Key`가 변하지 않으므로 이럴때 강제로 쿼리를 무효화하고 최신화를 진행해야 하는데 이때, `invalidateQueries()` 메소드를 이용할 수 있다.
 - 즉, query가 오래 되었다는 것을 판단하고 다시 `refetch`를 할 때 사용한다!
 
 ```tsx
@@ -783,6 +783,7 @@ queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
 
 - 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법들 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
   - [Disabling/Pausing Queries](https://tanstack.com/query/v4/docs/guides/disabling-queries?from=reactQueryV3&original=https://react-query-v3.tanstack.com/guides/disabling-queries) 참고
+- 자세한건 [queryClient.invalidateQueries 정리](https://github.com/ssi02014/react-query-tutorial/blob/master/document/queryClient.md#invalidateQueries)를 참고하자.
 
 <br />
 
