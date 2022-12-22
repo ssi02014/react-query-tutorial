@@ -67,6 +67,10 @@ const queryClient = new QueryClient({
 
 <br />
 
+## 🙏 참고로 v3 형태를 v4에서 대부분 지원합니다 🙏
+
+<br />
+
 ### useQueryClient
 
 - 일반적으로 QueryClient의 옵션들을 이용할 때는 현재 QueryClient의 인스턴스를 반환하는 `useQueryClient Hook`을 사용합니다.

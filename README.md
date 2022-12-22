@@ -7,6 +7,7 @@
 <br />
 
 ## 🌟 Contributors
+
 [![contributors](https://contrib.rocks/image?repo=ssi02014/react-query-tutorial)](https://github.com/ssi02014/react-query-tutorial/graphs/contributors)
 
 <br />
@@ -49,6 +50,7 @@
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
 24. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
 25. [에러 처리를 위한 useQueryErrorResetBoundary](#usequeryerrorresetboundary)
+26. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
 
 <br />
 
@@ -946,5 +948,94 @@ export default App;
 
 - 추가적으로 useQueryErrorResetBoundary hook을 사용하지 않고 `QueryErrorResetBoundary` 컴포넌트를 사용해서 Error를 처리하는 경우도 있는데, 결국 컨셉은 비슷해서 아래 공식 문서를 참고하면 충분히 이해할 수 있을 것이다.
 - [QueryErrorResetBoundary](https://react-query-v3.tanstack.com/reference/QueryErrorResetBoundary)
+
+<br />
+
+## React Query Typescript
+
+- React Query는 TypeScript의 `제네릭(Generics)`을 많이 사용한다. 이는 라이브러리가 실제로 데이터를 가져오지 않고 API가 반환하는 데이터 유형을 알 수 없기 때문이다.
+- 공식 문서에서는 타입스크립트를 그다지 광범위하게 다루지는 않고, useQuery를 호출할 때 기대하는 제네릭을 명시적으로 지정하도록 알려준다.
+
+<br />
+
+### useQuery
+
+- 현재 useQuery가 갖고 있는 제네릭은 `4개`이며, 다음과 같다.
+  1. TQueryFnData: useQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
+  2. TError: query function의 `error` 형식을 정하는 제네릭 타입이다.
+  3. TData: useQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
+  4. TQueryKey: useQuery의 첫 번째 인자로 주는 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
+
+```ts
+// useQuery의 타입
+export function useQuery<
+  TQueryFnData = unknown,
+  TError = unknown,
+  TData = TQueryFnData,
+  TQueryKey extends QueryKey = QueryKey
+>
+```
+
+```ts
+// useQuery 타입 적용 예시
+const { data } = useQuery<
+  SuperHeros,
+  AxiosError,
+  SuperHeroName[],
+  [string, number]
+>(["super-heros", id], getSuperHero, {
+  select: (data) => {
+    const superHeroNames = data.data.map((hero) => hero.name);
+    return superHeroNames;
+  },
+});
+```
+
+- data: `SuperHeroName[]`
+- error: `AxiosError<any, any>`
+- select: `(data: SuperHeros): SuperHeroName[]`
+
+<br />
+
+### useMutation
+
+- useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
+  1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
+     - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
+  2. TError: useMutaion에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
+  3. TVariables: `mutate 함수`에 전달 할 인자를 지정하는 제네릭 타입이다.
+     - onSuccess(2번째 인자), onError(2번째 인자), onMutate(1번째 인자), onSettled(3번째 인자) 인자의 타입으로 활용된다.
+  4. TContext: mutation function을 실행하기 전에 수행하는 `onMutate 함수의 return값`을 지정하는 제네릭 타입이다.
+     - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
+
+```ts
+export function useMutaion<
+  TData = unknown,
+  TError = unknown,
+  TVariables = void,
+  TContext = unknown
+>
+```
+
+```ts
+// useMutation 타입 적용 예시
+const { mutate } = useMutation<Todo, AxiosError, number, number>(postTodo, {
+  onSuccess: (res, id, nextId) => {},
+  onError: (err, id, nextId) => {},
+  onMutate: (id) => id + 1,
+  onSettled: (res, err, id, nextId) => {},
+});
+
+const onClick = () => {
+  mutate(5);
+};
+```
+
+- data: `Todo`
+- error: `AxiosError<any, any>`
+- onSuccess: `(res: Todo, id: number, nextId: number)`
+- onError: `(err: AxiosError, id: number, nextId: number)`
+- onMutate: `(id: number)`
+- onSettled: `(res: Todo, err: AxiosError, id: number, nextId: number)`,
 
 <br />
