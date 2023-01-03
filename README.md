@@ -1,8 +1,7 @@
-# 💻 React-query
+# 💻 React Query (v4: TanStack Query)
 
-- 해당 저장소는 `react-query`에서 자주 사용하는 개념들을 정리한 저장소입니다. react-query의 모든 활용 방법이 작성된 상태는 아니며, 추가가 필요한 내용은 추가, 보완할 예정입니다.
+- 해당 저장소는 react-query에서 자주 사용하는 개념들을 정리한 저장소입니다. react-query의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
 - 오탈자 및 가독성이 안 좋거나 수정이 필요한 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다. 많관부 🙇‍♂️
-- react-query의 자세한 활용법은 [공식 사이트](https://react-query-v3.tanstack.com/overview)를 참고해주시길 바랍니다.
 
 <br />
 
@@ -12,7 +11,7 @@
 
 <br />
 
-## react-query v4 정식 릴리즈
+## react-query v4 (TanStack Query) 정식 릴리즈
 
 ![스크린샷 2022-08-17 오후 2 20 01](https://user-images.githubusercontent.com/64779472/185040681-2352e8c8-b2d7-40f7-893d-3ee2270904c9.png)
 
@@ -43,7 +42,7 @@
 18. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
 19. [초기 데이터를 설정할 수 있는 initialData](#initial-query-data)
 20. [Infinite Queries](#infinite-queries)
-21. [서버와 Http CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
+21. [서버와 HTTP CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
 22. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
 24. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
@@ -603,6 +602,8 @@ const DependantQueriesPage = ({ email }: Props) => {
 
 - useQueryClient는 `QueryClient` 인스턴스를 반환한다.
 - `QueryClient`는 캐시와 상호작용한다.
+- QueryClient는 다음 문서에서 더 자세하게 다룬다
+  - [QueryClient](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
 
 ```jsx
 import { useQueryClient } from "react-query";
@@ -642,7 +643,8 @@ const queryClient = useQueryClient();
 
 ## Infinite Queries
 
-- 무한 쿼리는 무한 스크롤이나 load more과 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능을 구현할 때 사용하면 유용하다.
+- Infinite Queries(무한 쿼리)는 `무한 스크롤`이나 `load more(더 보기)`과 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능을 구현할 때 사용하면 유용하다.
+- react-query는 이러한 무한 쿼리를 지원하기 위해 useQuery의 유용한 버전인 `useInfiniteQuery`을 지원한다.
 
 ```jsx
 import { useInfiniteQuery } from "react-query";
@@ -687,6 +689,8 @@ const InfiniteQueries = () => {
   - hasNextPage: 가져올 수 있는 `다음 페이지`가 있을 경우 true이다.
   - hasPreviousPage: 가져올 수 있는 `이전 페이지`가 있을 경우 true이다.
 
+<br />
+
 <b>옵션</b>
 
 - `pageParam`이라는 프로퍼티가 존재하며, `queryFn`에 할당해줘야 한다. 이때 기본값으로 초기 페이지 값을 설정 해줘야한다.
@@ -695,7 +699,9 @@ const InfiniteQueries = () => {
   - 두 번째 인자 `allPages`는 현재까지 가져온 모든 페이지 데이터이다.
 - `getPreviousPageParam`도 존재하며, `getNextPageParam`와 반대의 속성을 갖고 있다.
 
-<b>(+)pageParam</b>
+<br />
+
+<b>pageParam</b>
 
 - `queryFn`에 넘겨주는 pageParam가 단순히 다음 page의 값만을 관리할 수 있는 것은 아니다.
 - pageParam 값은 `getNextPageParam`에서 원하는 형태로 변경시켜줄 수 있다.
@@ -729,6 +735,24 @@ const fetchColors = ({ pageParam }) => {
 ```
 
 - 즉, getNextPageParam의 반환 값이 pageParams로 들어가기 때문에 pageParams를 원하는 형태로 변경하고 싶다면 getNextPageParam의 반환 값을 설정하면 된다.
+
+<br />
+
+<b>refetchPage</b>
+
+- 전체 페이지 중 일부만 직접 refetch하고 싶을 때에는, `useInfiniteQuery`가 반환하는 refetch 함수에 `refetchPage`를 넘겨주면 된다.
+- `refetchPage`는 각 페이지에 대해 실행되며, 이 함수가 true를 반환하는 페이지만 refetch가 된다.
+
+```js
+const { refetch } = useInfiniteQuery(["colors"], fetchColors, {
+  getNextPageParam: (lastPage, allPages) => {
+    return allPages.length < 4 && allPages.length + 1;
+  },
+});
+
+// 첫번째 페이지만 refetch 합니다.
+refetch({ refetchPage: (page, index) => index === 0 });
+```
 
 <br />
 
