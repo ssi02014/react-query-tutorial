@@ -20,7 +20,7 @@
 
 <br />
 
-## 📃 주요 컨셉 및 가이드 목차
+## 주요 컨셉 및 가이드 목차
 
 1. [React-Query 기능](#기능)
 2. [기본 설정(QueryClientProvider, QueryClient)](#react-query-기본-설정)
@@ -41,7 +41,7 @@
 17. [종속 쿼리(Dependent Queries)](#dependent-queries)
 18. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
 19. [초기 데이터를 설정할 수 있는 initialData](#initial-query-data)
-20. [Infinite Queries](#infinite-queries)
+20. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
 21. [서버와 HTTP CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
 22. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
@@ -89,6 +89,8 @@
 
 ## React-Query 기본 설정
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - [QueryClientProvider 공식 사이트 참고](https://react-query.tanstack.com/reference/QueryClientProvider)
 - [QueryClient 공식 사이트 참고](https://react-query.tanstack.com/reference/QueryClient)
 
@@ -134,6 +136,8 @@ function App() {
 
 ![스크린샷 2022-04-07 오후 11 53 32](https://user-images.githubusercontent.com/64779472/162228222-d1c7dd3e-ce62-484d-bfa0-8493f3e68cae.png)
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - React Query는 `전용 devtools`를 제공한다.
 - devtools를 사용하면 React Query의 모든 내부 동작을 `시각화`하는 데 도움이 되며 문제가 발생하면 `디버깅 시간을 절약`할 수 있다.
 
@@ -168,6 +172,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 ## 캐싱 라이프 사이클
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - React-Query 캐시 라이프 사이클
 
 ```
@@ -191,6 +197,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 ## useQuery
 
 ### useQuery 기본 문법
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
 
@@ -250,7 +258,7 @@ const useSuperHeroData = (heroId: string) => {
 
 <br />
 
-- 참고로 나중에 queryClient로 특정 key에 해당하는 query에 접근할 때는 초기에 설정해둔 포맷을 지켜줘야 제대로 가져올 수 있다.
+- 참고로 나중에 queryClient로 특정 key에 해당하는 query에 접근할 때는 `초기에 설정해둔 포맷`을 지켜줘야 제대로 가져올 수 있다.
 - 아래 예제를 참고하면 useQuery에서 queryKey에 해당하는 포맷이 배열`["super-hero", heroId]`이다. 그렇다면 밑에 useMutation에서 setQueryData를 이용할 때 똑같이 `["super-hero", heroId]` 포맷을 가져야 한다.
 
 <br />
@@ -261,12 +269,14 @@ const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId));
 };
 
-const useAddSuperHeroData = () => {
+const useAddSuperHeroData = (heroId: string) => {
   const queryClient = useQueryClient();
+
   return useMutation(addSuperHero, {
     onSuccess(data) {
-      // 포맷이 안 맞아서 제대로 못 가져옴! ["super-hero", heroId]로 해야 됨
-      queryClient.setQueryData("super-hero", (oldData: any) => {
+      // 포맷이 안 맞아서 해당 쿼리 데이터를 제대로 못 가져옴!
+      // ["super-hero", heroId]로 해야 됨
+      queryClient.setQueryData(["super-hero"], (oldData: any) => {
         return {
           ...oldData,
           data: [...oldData.data, data.data],
@@ -284,18 +294,20 @@ const useAddSuperHeroData = () => {
 
 ### useQuery 주요 리턴 데이터
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 ```js
-const { isLoading, isError, error, data, isFetching } = useQuery(
+const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
   ["colors", pageNum],
   () => fetchColors(pageNum)
 );
 ```
 
-- [react-query: useQuery 공식 사이트](https://react-query.tanstack.com/reference/useQuery)
 - status: 쿼리 요청 함수의 상태를 표현하는 status는 4가지의 값이 존재한다.(문자열 형태)
   - idle: 쿼리 데이터가 없고 비었을 때, { enabled: false } 상태로 쿼리가 호출되면 이 상태로 시작된다.
-  - loading: 말 그대로 로딩중일 때 상태
-  - error: 에러 발생했을 때 상태
+    - `참고로 v4부터는 idle 상태는 제거된다.`
+  - loading: 말 그대로 아직 캐시된 데이터가 없고 로딩중일 때 상태
+  - error: 요청 에러 발생했을 때 상태
   - success: 요청 성공했을 때 상태
 - data: 쿼리 함수가 리턴한 Promise에서 `resolved`된 데이터
 - isLoading: `캐싱 된 데이터가 없을 때!` 즉, 처음 실행된 쿼리 일 때 로딩 여부에 따라 true/false로 반환된다.
@@ -304,11 +316,15 @@ const { isLoading, isError, error, data, isFetching } = useQuery(
   - 이는 캐싱 된 데이터가 있더라도 쿼리 로딩 여부에 따라 true/false를 반환한다.
 - error: 쿼리 함수에 오류가 발생한 경우, 쿼리에 대한 오류 객체
 - isError: 에러가 발생한 경우 `true`
-- 그외 리턴 데이터들을 확인하고 싶으면 [공식 사이트](https://react-query.tanstack.com/reference/useQuery) 참고
+- 그 외 리턴 데이터들을 자세히 알고 싶으면 공식 사이트 참고
+  - [v3 useQuery](https://react-query-v3.tanstack.com/reference/useQuery)
+  - [v4 useQuery](https://react-query.tanstack.com/reference/useQuery)
 
 <br />
 
-## useQuery 주요 Options
+## useQuery 주요 옵션
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
 - 아래 예제들 제외하고 추가적인 옵션들은 위 사이트 참고
@@ -351,6 +367,8 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### refetchOnMount
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-heroes"],
@@ -369,6 +387,8 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 <br />
 
 ### refetchOnWindowFocus
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -389,24 +409,29 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### Polling
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-heroes"],
   getSuperHero,
   {
-    // refetchInterval: 2000,
+    refetchInterval: 2000,
     refetchIntervalInBackground: true,
   }
 );
 ```
 
-- 폴링이란? 리얼타임 웹을 위한 기법으로 `일정한 주기(특정한 시간)`를 가지고 서버와 응답을 주고받는 방식이 폴링 방식이다.
-- react-query에서는 `refetchInterval`을 이용해서 구현할 수 있다.
-- `refetchIntervalInBackground`로도 폴링을 구현할 수 있는데 `refetchInterval` 탭/창이 백그라운드에 있는 동안 계속 다시 가져옵니다.
+- Polling(폴링)이란? 리얼타임 웹을 위한 기법으로 `일정한 주기(특정한 시간)`를 가지고 서버와 응답을 주고받는 방식이 폴링 방식이다.
+- react-query에서는 `refetchInterval`, `refetchIntervalInBackground`을 이용해서 구현할 수 있다.
+- `refetchInterval`은 시간(ms)를 값으로 넣어주면 일정 시간마다 자동으로 refetch를 시켜준다.
+- `refetchIntervalInBackground`는 `refetchInterval`과 함께 사용하는 옵션이다. 탭/창이 백그라운드에 있는 동안 refetch 시켜준다. 즉, 브라우저에 focus되어 있지 않아도 refetch를 시켜주는 것을 의미한다.
 
 <br />
 
 ### enabled refetch
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
@@ -440,6 +465,8 @@ return (
 
 ### retry
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 ```jsx
 const result = useQuery(["todos", 1], fetchTodoListPage, {
   retry: 10, // 오류를 표시하기 전에 실패한 요청을 10번 재시도합니다.
@@ -455,6 +482,8 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 <br />
 
 ### onSuccess onError onSettled
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
 const onSuccess = useCallback((data) => {
@@ -488,6 +517,8 @@ const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
 
 ### select
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
   ["super-heroes"],
@@ -518,6 +549,8 @@ return (
 
 ### keepPreviousData
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 ```jsx
 const fetchColors = (pageNum: number) => {
   return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageNum}`);
@@ -537,6 +570,8 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 
 ### placeholderData
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 ```js
 function Todos() {
   const placeholderData = useMemo(() => generateFakeTodos(), []);
@@ -551,6 +586,8 @@ function Todos() {
 <br />
 
 ## Parallel
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
 const { data: superHeroes } = useQuery(["super-heroes"], fetchSuperHeroes);
@@ -576,6 +613,8 @@ const queryResults = useQueries(
 
 ## Dependent Queries
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - `종속 쿼리`는 어떤 A라는 쿼리가 있는데 이 A쿼리를 실행하기 전에 사전에 완료되어야 하는 B 쿼리가 있는데, 이러한 B쿼리에 의존하는 A쿼리를 종속 쿼리라고 한다.
 - react-query에서는 쿼리를 실행할 준비가 되었다는 것을 알려주는 `enabled` 옵션을 통해 종속 쿼리를 쉽게 구현할 수 있다.
 
@@ -600,9 +639,11 @@ const DependantQueriesPage = ({ email }: Props) => {
 
 ## useQueryClient
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - useQueryClient는 `QueryClient` 인스턴스를 반환한다.
 - `QueryClient`는 캐시와 상호작용한다.
-- QueryClient는 다음 문서에서 더 자세하게 다룬다
+- QueryClient는 다음 문서에서 자세하게 다룬다
   - [QueryClient](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
 
 ```jsx
@@ -615,7 +656,9 @@ const queryClient = useQueryClient();
 
 ## Initial Query Data
 
-- 쿼리에 대한 `초기 데이터`가 필요하기 전에 캐시에 제공하는 방법이 있다. 아래 예제 참고
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- 쿼리에 대한 `초기 데이터`가 필요하기 전에 캐시에 제공하는 방법이 있다.
 - initialData 옵션을 통해서 쿼리를 미리 채우는 데 사용할 수 있으며, 초기 로드 상태도 건너뛸 수도 있다.
 
 ```jsx
@@ -642,6 +685,8 @@ const queryClient = useQueryClient();
 <br />
 
 ## Infinite Queries
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - Infinite Queries(무한 쿼리)는 `무한 스크롤`이나 `load more(더 보기)`과 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능을 구현할 때 사용하면 유용하다.
 - react-query는 이러한 무한 쿼리를 지원하기 위해 useQuery의 유용한 버전인 `useInfiniteQuery`을 지원한다.
@@ -758,6 +803,8 @@ refetch({ refetchPage: (page, index) => index === 0 });
 
 ## useMutation mutate
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - [useMutation 공식 사이트](https://react-query.tanstack.com/reference/useMutation)
 - react-query에서 기본적으로 서버에서 데이터를 Get 할 때는 useQuery를 사용한다.
 - 만약 서버의 data를 post, patch, put, delete와 같이 수정하고자 한다면 이때는 useMutation을 이용한다.
@@ -808,6 +855,8 @@ try {
 
 ## 쿼리 무효화
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - invalidateQueries은 화면을 최신 상태로 유지하는 가장 간단한 방법이다.
 - 예를 들면, 게시판 목록에서 어떤 게시글을 `작성(Post)`하거나 게시글을 `제거(Delete)`했을 때 화면에 보여주는 게시판 목록을 실시간으로 최신화 해야할 때가 있다.
 - 하지만 이때, `query Key`가 변하지 않으므로 강제로 쿼리를 무효화하고 최신화를 진행해야 하는데, 이런 경우에 `invalidateQueries()` 메소드를 이용할 수 있다.
@@ -844,6 +893,8 @@ queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
 
 ## 캐시 데이터 즉시 업데이트
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - 바로 위에서 `queryClient.invalidateQueries`를 이용해 캐시 데이터를 최신화하는 방법을 알아봤는데 queryClient.setQueryData를 이용해서도 데이터를 즉시 업데이트할 수 있다.
 - `queryClient.setQueryData`는 쿼리의 캐시 된 데이터를 즉시 업데이트하는 데 사용할 수 있는 `동기 함수`이다.
 
@@ -869,6 +920,8 @@ const useAddSuperHeroData = () => {
 <br />
 
 ## Optimistic Update
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - `Optimistic Update(낙관적 업데이트)`란 서버 업데이트 시 UI에서도 어차피 업데이트할 것이라고(낙관적인) 가정해서 `미리 UI를 업데이트` 시켜주고 서버를 통해 검증을 받고 업데이트 또는 롤백하는 방식이다.
 - 예를 들어 facebook에 좋아요 버튼이 있는데 이것을 유저가 누른다면, 일단 client 쪽 state를 먼저 업데이트한다. 그리고 만약에 실패한다면, 예전 state로 돌아가고 성공하면 필요한 데이터를 다시 fetch해서 서버 데이터와 확실히 연동을 진행한다.
@@ -919,6 +972,8 @@ const useAddSuperHeroData = () => {
 <br />
 
 ## useQueryErrorResetBoundary
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - [useQueryErrorResetBoundary 공식 문서](https://react-query-v3.tanstack.com/reference/useQueryErrorResetBoundary)
 - react-query에서는 `Error`가 발생했을 때 대응할 수 있는 `useQueryErrorResetBoundary hook`을 제공한다.
@@ -1000,6 +1055,8 @@ export default App;
 <br />
 
 ## React Query Typescript
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - React Query는 TypeScript의 `제네릭(Generics)`을 많이 사용한다. 이는 라이브러리가 실제로 데이터를 가져오지 않고 API가 반환하는 데이터 유형을 알 수 없기 때문이다.
 - 공식 문서에서는 타입스크립트를 그다지 광범위하게 다루지는 않고, useQuery를 호출할 때 기대하는 제네릭을 명시적으로 지정하도록 알려준다.
