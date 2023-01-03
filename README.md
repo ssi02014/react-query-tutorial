@@ -18,8 +18,6 @@
 
 - react-query v4가 정식 릴리즈되면서 주요 변경 사항을 아래 문서에 추가하고 있습니다.
 - [react-query v3 vs v4 비교 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
-- [react-query v4 tanstack 공식 문서](https://tanstack.com/)
-- [react-query v4 migration 공식 문서](https://tanstack.com/query/v4/docs/guides/migrating-to-react-query-4)
 
 <br />
 
@@ -648,6 +646,7 @@ const queryClient = useQueryClient();
 
 ```jsx
 import { useInfiniteQuery } from "react-query";
+// import { useInfiniteQuery } from '@tanstack/react-query' v4
 
 const fetchColors = ({ pageParam = 1 }) => {
   return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageParam}`);
@@ -657,25 +656,15 @@ const InfiniteQueries = () => {
   const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery(["colors"], fetchColors, {
       getNextPageParam: (lastPage, allPages) => {
-        if (allPages.length < 4) {
-          return allPages.length + 1;
-        } else {
-          return undefined;
-        }
+        return allPages.length < 4 && allPages.length + 1;
       },
     });
 
   return (
     <div>
-      {data?.pages.map((group, idx) => (
-        <Fragment key={idx}>
-          {group.data.map((color: any) => (
-            <h2 key={color.id}>
-              {color.id}. {color.label}
-            </h2>
-          ))}
-        </Fragment>
-      ))}
+      {data?.pages.map((group, idx) => ({
+        /* ... */
+      }))}
       <div>
         <button disabled={!hasNextPage} onClick={() => fetchNextPage()}>
           LoadMore
@@ -687,24 +676,59 @@ const InfiniteQueries = () => {
 };
 ```
 
-<b>Returns</b>
+<b>주요 반환</b>
 
 - `useInfiniteQuery`는 기본적으로 useQuery와 사용법은 비슷하지만, 차이점이 있다.
-- useInfiniteQuery는 반환값으로 isFetchingNextPage, isFetchingPreviousPage, fetchNextPage, fetchPreviousPage 등이 추가적으로 있다.
-  - `fetchNextPage`를 호출하면 다음 페이지를 fetch 할 수 있다.
-  - `fetchPreviousPage`를 호출하면 이전 페이지를 fetch 할 수 있다.
-  - `isFetchingNextPage`은 `fetchNextPage` 메서드가 다음 페이지를 가져오는 동안 true이다. 즉, 초깃값은 true이고, 데이터를 가져오면 false가 된다.
-  - `isFetchingPreviousPage`은 `fetchPreviousPage` 메서드가 이전 페이지를 가져오는 동안 true이다. 즉, 초깃값은 true이고, 데이터를 가져오면 false가 된다.
-  - `hasNextPage`는 가져올 수 있는 다음 페이지가 있을 경우 true이다.
+- useInfiniteQuery는 반환값으로`isFetchingNextPage`, `isFetchingPreviousPage`, `fetchNextPage`, `fetchPreviousPage`, `hasNextPage` 등이 추가적으로 있다.
+  - fetchNextPage: `다음 페이지`를 fetch 할 수 있다.
+  - fetchPreviousPage: `이전 페이지`를 fetch 할 수 있다.
+  - isFetchingNextPage: `fetchNextPage` 메서드가 다음 페이지를 가져오는 동안 true이다.
+  - isFetchingPreviousPage: `fetchPreviousPage` 메서드가 이전 페이지를 가져오는 동안 true이다.
+  - hasNextPage: 가져올 수 있는 `다음 페이지`가 있을 경우 true이다.
+  - hasPreviousPage: 가져올 수 있는 `이전 페이지`가 있을 경우 true이다.
 
 <b>옵션</b>
 
-- `pageParam`이라는 프로퍼티가 존재하며 queryFn에 할당해줘야 한다. 이때 기본값을 `1`로 해줘야한다.
-- 그리고 `getNextPageParam`을 이용해서 페이지를 증가시킨다.
-  - 이때, getNextPageParam의 첫 번째 인자 `lastPage`는 fetch 해온 가장 최근에 가져온 페이지 목록이다.
+- `pageParam`이라는 프로퍼티가 존재하며, `queryFn`에 할당해줘야 한다. 이때 기본값으로 초기 페이지 값을 설정 해줘야한다.
+- `getNextPageParam`을 이용해서 페이지를 증가시킬 수 있다.
+  - getNextPageParam의 첫 번째 인자 `lastPage`는 fetch 해온 가장 최근에 가져온 페이지 목록이다.
   - 두 번째 인자 `allPages`는 현재까지 가져온 모든 페이지 데이터이다.
 - `getPreviousPageParam`도 존재하며, `getNextPageParam`와 반대의 속성을 갖고 있다.
-- 그리고 요청이 성공하고 반환되는 data는 `pages`라는 프로퍼티를 갖고 있으며, pages는 `group`이라는 프로퍼티를 갖고 있다.
+
+<b>(+)pageParam</b>
+
+- `queryFn`에 넘겨주는 pageParam가 단순히 다음 page의 값만을 관리할 수 있는 것은 아니다.
+- pageParam 값은 `getNextPageParam`에서 원하는 형태로 변경시켜줄 수 있다.
+- 무슨 말인지 예시를 보면 이해가 쉽다. 👍 아래와 같이 getNextPageParam에서 반환 데이터가 단순히 다음 페이지 값이 아닌 객체로 반환한다고 해보자.
+
+```js
+const { data } = useInfiniteQuery(["colors"], fetchColors, {
+  getNextPageParam: (lastPage, allPages) => {
+    return (
+      allPages.length < 4 && {
+        page: allPages.length + 1,
+        etc: "hi",
+      };
+    )
+  },
+});
+```
+
+- 그러면 `queryFn`에 넣은 pageParams에서 getNextPageParam에서 반환한 객체를 받아올 수 있다.
+
+```js
+/**
+ * pageParam
+ * { page, etc }
+ */
+const fetchColors = ({ pageParam }) => {
+  const { page = 1, etc } = pageParam;
+
+  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${page}`);
+};
+```
+
+- 즉, getNextPageParam의 반환 값이 pageParams로 들어가기 때문에 pageParams를 원하는 형태로 변경하고 싶다면 getNextPageParam의 반환 값을 설정하면 된다.
 
 <br />
 
