@@ -46,8 +46,9 @@
 22. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
 24. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
-25. [에러 처리를 위한 useQueryErrorResetBoundary](#usequeryerrorresetboundary)
-26. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+25. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
+26. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
+27. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
 
 <br />
 
@@ -976,9 +977,12 @@ const useAddSuperHeroData = () => {
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
 - [useQueryErrorResetBoundary 공식 문서](https://react-query-v3.tanstack.com/reference/useQueryErrorResetBoundary)
-- react-query에서는 `Error`가 발생했을 때 대응할 수 있는 `useQueryErrorResetBoundary hook`을 제공한다.
-- 자세한 내용을 설명하기보다는 간단하게 사용할 수 있는 방법을 알아보고, 응용해서 사용하면 될 것 같다.
-- 우선, useQueryErrorResetBoundary는 `ErrorBoundary`와 함께 사용되는데 이는, `react-error-boundary` 라이브러리 설치가 필요하다.
+- react-query에서 ErrorBoundary와 useQueryErrorResetBoundary를 결합해 `선언적`으로 에러가 발생했을 때 Fallback UI를 보여줄 수 있다.
+- ErrorBoundary에 대한 설명은 해당 문서 참고 [ErrorBoundary](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
+
+<br />
+
+- `useQueryErrorResetBoundary`는 `ErrorBoundary`와 함께 사용되는데 이는, 기본적으로 리액트 공식문서에서 기본 코드 베이스가 제공되긴 하지만 좀 더 쉽게 활용할 수 있는 `react-error-boundary` 라이브러리가 존재하고, react-query 공식문서에서도 해당 라이브러리 사용을 예시로 제공해주기 때문에 `react-error-boundary`를 설치해서 사용해보자.
 
 ```
 npm i react-error-boundary
@@ -999,7 +1003,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const QueryErrorBoundary = ({ children }: Props) => {
+const QueryErrorBoundary = ({ children, fallback }: Props) => {
   const { reset } = useQueryErrorResetBoundary(); // (*)
 
   return (
@@ -1029,28 +1033,63 @@ import QueryErrorBoundary from "./components/ErrorBoundary"; // (*)
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      useErrorBoundary: true, // (*)
+      useErrorBoundary: true, // (*) 여기서는 글로벌로 셋팅했지만 개별 쿼리로 셋팅가능
     },
   },
 });
 
-export const AppContext = createContext < any > undefined;
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <QueryErrorBoundary>{/* 하위 컴포넌트들 */}</QueryErrorBoundary>
+    </QueryClientProvider>
+  );
+}
+```
+
+<br />
+
+## Suspense
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- ErrorBoundary는 에러가 발생했을 때 보여주는 Fallback UI를 `선언적`으로 작성할 수 있고, 리액트 쿼리는 Suspense와도 결합해서 `서버 통신 상태가 로딩중`일 때 Fallback UI를 보여줄 수 있게 선언적으로 작성할 수 있다.
+- 참고로, Suspense 컴포넌트는 리액트 v16부터 제공되는 `Component Lazy Loading`이나 `Data Fetching` 등의 비동기 처리를 할 때, 응답을 기다리는 동안 Fallback UI(ex: Loader)를 보여주는 기능을 하는 컴포넌트입니다.
+
+```jsx
+import { Suspense } from "react";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      useErrorBoundary: true,
+      suspense: true,  // (*) 여기서는 글로벌로 셋팅했지만 개별 쿼리로 셋팅가능
+    },
+  },
+});
 
 function App() {
   return (
-    <AppContext.Provider value={user}>
-      <QueryClientProvider client={queryClient}>
-        <QueryErrorBoundary>{/* code */}</QueryErrorBoundary>
-      </QueryClientProvider>
-    </AppContext.Provider>
+    <QueryErrorBoundary>
+      <Suspense fallback={<Loader />}>{/* 하위 컴포넌트들 */}</Suspense>
+    </QueryErrorBoundary>;
   );
 }
-
-export default App;
 ```
 
-- 추가적으로 useQueryErrorResetBoundary hook을 사용하지 않고 `QueryErrorResetBoundary` 컴포넌트를 사용해서 Error를 처리하는 경우도 있는데, 결국 컨셉은 비슷해서 아래 공식 문서를 참고하면 충분히 이해할 수 있을 것이다.
-- [QueryErrorResetBoundary](https://react-query-v3.tanstack.com/reference/QueryErrorResetBoundary)
+- 코드를 보면 우리는 서버 상태가 로딩일떄 Loader 컴포넌트를 보여주겠다!라고 이해할 수 있다.
+- Suspense컴포넌트 내부에서 어떤 로직이 동작하는지 우리는 신경쓰지 않아도된다. 이처럼 `내부 복잡성을 추상화`하는게 바로 `선언형 컴포넌트`이다.
+- 또한, 위와 같이 react-query와 결합한 Suspense는 아래와 같은 과정으로 동작을한다. 참고해보자.
+
+```
+1. Suspense mount
+2. MainComponent mount
+3. MainComponent에서 useQuery에 있는 api Call
+4. MainComponent unmount, fallback UI인 Loader mount
+5. api Call Success일 경우, useQuery에 있는 onSuccess 동작
+6. onSuccess 완료 이후 Loader unmount
+7. MainComponent mount
+```
 
 <br />
 
