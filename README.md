@@ -978,7 +978,7 @@ const useAddSuperHeroData = () => {
 
 - [useQueryErrorResetBoundary 공식 문서](https://react-query-v3.tanstack.com/reference/useQueryErrorResetBoundary)
 - react-query에서 ErrorBoundary와 useQueryErrorResetBoundary를 결합해 `선언적`으로 에러가 발생했을 때 Fallback UI를 보여줄 수 있다.
-- ErrorBoundary에 대한 설명은 해당 문서 참고 [ErrorBoundary](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
+- ErrorBoundary에 대한 설명은 해당 문서 참고 [ErrorBoundary](https://github.com/ssi02014/react-query-tutorial/blob/master/document/errorBoundary.md)
 
 <br />
 
