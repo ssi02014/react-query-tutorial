@@ -42,7 +42,7 @@
 18. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
 19. [초기 데이터를 설정할 수 있는 initialData](#initial-query-data)
 20. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
-21. [서버와 HTTP CUD관련 작업을 위한 useMutation과 mutate](#usemutation-mutate)
+21. [서버와 HTTP CUD관련 작업을 위한 useMutation](#usemutation)
 22. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
 23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
 24. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
@@ -802,9 +802,7 @@ refetch({ refetchPage: (page, index) => index === 0 });
 
 <br />
 
-## useMutation mutate
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
+## useMutation
 
 - [useMutation 공식 사이트](https://react-query.tanstack.com/reference/useMutation)
 - react-query에서 기본적으로 서버에서 데이터를 Get 할 때는 useQuery를 사용한다.
@@ -814,12 +812,17 @@ refetch({ refetchPage: (page, index) => index === 0 });
 ```jsx
 const CreateTodo = () => {
   const mutation = useMutation(createTodo, {
-    onMutate() {},
+    onMutate() {
+      /* ... */
+    },
     onSuccess(data) {
       console.log(data);
     },
     onError(err) {
       console.log(err);
+    },
+    onSettled() {
+      /* ... */
     },
   });
 
@@ -833,8 +836,9 @@ const CreateTodo = () => {
 ```
 
 - useMutation의 반환 값인 mutation 객체의 `mutate` 메서드를 이용해서 요청 함수를 호출할 수 있다.
-- mutate는 `onSuccess`와 `onError` 메서드를 통해 요청이 성공했을 시와 실패했을 시에 대한 response 데이터를 핸들링할 수 있다.
-- `onMutate`는 mutation 함수가 실행되기 전에 실행되고 mutation 함수가 받을 동일한 변수가 전달된다.
+- mutate는 `onSuccess`, `onError` 메서드를 통해 성공 했을 시, 실패 했을 시 response 데이터를 핸들링할 수 있다.
+- `onMutate`는 mutation 함수가 실행되기 전에 실행되고, mutation 함수가 받을 동일한 변수가 전달된다.
+- `onSettled`는 try...catch...finally 구문의 `finally`처럼 요청이 성공하든 에러가 발생되든 상관없이 마지막에 실행된다.
 
 ```jsx
 const mutation = useMutation(addTodo);
@@ -850,7 +854,13 @@ try {
 ```
 
 - 만약, useMutation을 사용할 때 promise 형태의 response가 필요한 경우라면 `mutateAsync`를 사용해서 얻어올 수 있다.
-- Redux와 같은 Request 성공 액션을 미들웨어에서 확인하여 추가 액션을 실행하는 것 같은 작업을 할 때는, mutate는 onSuccess, onError와 같은 메서드를 같이 사용해야 하기 때문에 `mutateAsync가 더 가독성이 좋다`
+
+### mutate와 mutateAsync는 무엇을 사용하는게 좋을까?
+
+- 대부분의 경우 우리는 mutate를 사용하는 것이 유리하다. 왜냐하면 mutate는 콜백(onSuccess, onError)를 통해 data와 error에 접근할 수 있기 때문에 우리가 특별히 핸들링 해 줄 필요가 없다.
+- 하지만 mutateAsync는 Promise를 직접 다루기 때문에 이런 에러 핸들링 같은 부분을 직접 다뤄야한다.
+  - 만약 이를 다루지 않으면 `unhandled promise rejection` 에러가 발생 할 수 있다.
+- [tkdodo mutate, mutateAsync 블로그 참고](https://tkdodo.eu/blog/mastering-mutations-in-react-query#mutate-or-mutateasync)
 
 <br />
 
