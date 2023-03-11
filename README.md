@@ -63,28 +63,22 @@
 
 ### 개요
 
-- react-query는 리액트 애플리케이션에서 `서버 상태 가져오기`, `캐싱`, `동기화 및 업데이트`를 보다 쉽게 다룰 수 있도록 도와주며 클라이언트 상태와 서버 상태를 명확히 구분하기 위해서 만들어진 라이브러리이다.
-- react-query에서 기존 상태 관리 라이브러리`(redux, mobX)`는 `클라이언트 상태 작업`에 적합하지만 `비동기 또는 서버 상태 작업`에는 그다지 좋지 않다고 말하고 있다.
-- 클라이언트 상태(Client State)와 서버 상태(Server State)는 완전히 다르며, 클라이언트 상태는 컴포넌트에서 관리하는 각각의 input 값으로 예를 들 수 있고 서버 상태는 database에 저장되어있는 데이터로 예를 들 수 있다.
+- react-query는 리액트 애플리케이션에서 `서버 상태 가져오기`, `캐싱`, `동기화 및 업데이트`를 보다 쉽게 다룰 수 있도록 도와주는 라이브러리이다. 클라이언트 상태와 서버 상태를 명확히 구분하기 위해 만들어다.
+- react-query에서는 기존 상태 관리 라이브러리인 `redux`, `mobX`가 `클라이언트 상태 작업`에 적합하지만, `비동기 또는 서버 상태 작업`에는 그다지 좋지 않다고 언급한다.
+- 클라이언트 상태(Client State)와 서버 상태(Server State)는 완전히 다른 개념이며, 클라이언트 상태는 각각의 input 값으로 예를 들 수 있고, 서버 상태는 데이터베이스에 저장되어 있는 데이터로 예를 들 수 있다.
 
 <br />
 
 ### 기능
 
-1. 자동
-
-   - React Query에 데이터를 가져올 위치와 데이터가 얼마나 필요한지 알려주면 나머지는 자동이다. React Query는 구성이 필요 없는 즉시 `캐싱`, `백그라운드 업데이트` 및 오래된 데이터를 처리합니다.
-
-2. 친숙하고 간단하다.
-
-   - `promise` 또는 `async/await`로 작업하는 방법을 알고 있다면 이미 React Query를 사용하는 방법을 알고 있는 것이다. 관리할 전역 상태, 감속기, 정규화 시스템 또는 이해해야 할 무거운 구성이 없다. 데이터를 해결하는(또는 오류를 발생시키는) 함수를 전달하기만 하면 된다.
-
-3. 강력한 도구 및 구성
-
-   - React Query는 모든 사용 사례에 맞는 노브와 옵션을 사용하여 쿼리의 각 관찰자 인스턴스까지 구성할 수 있다. `전용 devtools`, `무한 로딩 API` 및 `데이터 업데이트`를 쉽게 만들어주는 mutation 도구가 있다.
-
-4. 적은 코드. 더 적은 엣지 케이스.
-   - `리듀서`, `캐싱 로직`, `타이머`, `재사용 로직`, `복잡한 비동기/대기 스크립팅`을 평소 하던 코드보다 적은 양의 코드로 작성할 수 있다.
+- 캐싱
+- 동일한 데이터에 대한 중복 요청을 단일 요청으로 통합합니다.
+- 백그라운드에서 `오래된` 데이터 업데이트
+- 데이터가 `오래되었는지` 알기
+- 데이터 업데이트를 가능한 빠르게 반영하기
+- 페이지네이션 및 데이터 지연 로드와 같은 성능 최적화
+- 서버 상태의 메모리 및 가비지 수집 관리
+- 구조 공유를 사용하여 쿼리 결과를 메모화합니다.
 
 <br />
 
@@ -92,12 +86,16 @@
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [QueryClientProvider 공식 사이트 참고](https://react-query.tanstack.com/reference/QueryClientProvider)
-- [QueryClient 공식 사이트 참고](https://react-query.tanstack.com/reference/QueryClient)
+- [QueryClient 공식 사이트 참고](https://tanstack.com/query/v4/docs/react/reference/QueryClient#queryclientsetquerydata)
+- [QueryClientProvider 공식 사이트 참고](https://tanstack.com/query/v4/docs/react/reference/QueryClientProvider)
 
 ```jsx
 // QueryClient 예제
+// v3
 import { QueryClient } from "react-query";
+
+// v4
+import { QueryClient } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -109,12 +107,16 @@ const queryClient = new QueryClient({
 });
 ```
 
-- QueryClient를 사용하여 `캐시`와 상호 작용할 수 있습니다.
-- QueryClient에서 `모든 query` 또는 `mutation`에 기본 옵션들을 추가할 수 있는데 종류가 상당하니 상단에 공식 사이트를 참고하자.
+- QueryClient를 사용하여 `캐시`와 상호 작용할 수 있다.
+- QueryClient에서 모든 `query` 또는 `mutation`에 기본 옵션을 추가할 수 있으며, 종류가 상당하기 때문에 공식 사이트를 참고해보자.
 
 ```jsx
 // QueryClientProvider + QueryClient
+// v3
 import { QueryClient, QueryClientProvider } from "react-query";
+
+// v4
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient();
 
@@ -127,9 +129,8 @@ function App() {
 }
 ```
 
-- App 전체에서 리액트 쿼리를 사용하기 위해서는 `QueryClientProvider`를 최상단에서 감싸주고 `QueryClient`를 Props로 넣어줘야 한다.
-- App.js에 QueryClientProvider로 이하 컴포넌트를 감싸고 QueryClient를 내려보내 줌 ⇒ 이 context는 앱에서 비동기 요청을 알아서 처리하는 `background` 계층이 된다.
-- QueryClientProvider 컴포넌트를 사용하여 App에 QueryClient를 연결하고 제공한다.
+- 리액트 쿼리를 사용하기 위해서는 `QueryClientProvider`를 최상단에서 감싸주고 `QueryClient`를 Props로 넣어 연결해야 한다.
+- 위 예시에서 App.js에 QueryClientProvider로 이하 컴포넌트를 감싸고, QueryClient를 연결함으로써, 이 context는 앱에서 비동기 요청을 알아서 처리하는 `background` 계층이 된다.
 
 <br />
 
@@ -139,35 +140,55 @@ function App() {
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- React Query는 `전용 devtools`를 제공한다.
+- react-query는 `전용 devtools`를 제공한다.
 - devtools를 사용하면 React Query의 모든 내부 동작을 `시각화`하는 데 도움이 되며 문제가 발생하면 `디버깅 시간을 절약`할 수 있다.
+- devtools는 기본값으로 `process.env.NODE_ENV === 'development'` 인 경우에만 실행된다, 즉 일반적으로 개발환경에서만 작동하므로 설정되어있으므로 프로젝트 배포 시에 Devtools 삽입코드를 제거해줄 필요가 없다.
 
 ```jsx
+// v3
 import { ReactQueryDevtools } from "react-query/devtools";
 
 <AppContext.Provider value={user}>
   <QueryClientProvider client={queryClient}>
     // ...
-    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+    <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
 </AppContext.Provider>;
 ```
+
+### options
 
 - initialIsOpen (Boolean)
   - `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
 - position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
   - 기본값: `bottom-left`
   - devtools 패널을 열고 닫기 위한 로고 위치
-- 일반적으로 initialIsOpen, position을 자주 사용하지만, 아래와 같은 옵션들도 존재한다.
-- panelProps
-  - 패널에 `props`을 추가할 수 있다. 예를 들어 className, style, onClick 등
-- closeButtonProps
-  - `닫기 버튼`에 props를 추가할 수 있다.
-- toggleButtonProps
+- 일반적으로 initialIsOpen, position을 자주 사용하지만, panelProps, closeButtonProps, toggleButtonProps와 같은 옵션들도 존재한다.
 
-  - `토글 버튼`에 props를 추가할 수 있다.
+<br />
 
-- Devtools는 기본값으로 `process.env.NODE_ENV === 'development'` 인 경우에만 실행된다, 즉 일반적으로 개발환경에서만 작동하므로 설정되어있으므로 프로젝트 배포 시에 Devtools 삽입코드를 제거해줄 필요가 없다.
+### v4
+
+- v4부터는 devtools를 위한 별도의 패키지 설치가 필요하다.
+
+```
+npm i @tanstack/react-query-devtools
+or
+yarn add @tanstack/react-query-devtools
+```
+
+```js
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      {/* The rest of your application */}
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
+}
+```
 
 <br />
 
@@ -227,11 +248,10 @@ const { data, isLoading } = useQuery(["super-heroes"], getSuperHero);
 ```
 
 - useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
-- useQuery는 첫 번째 인자인 `queryKey`를 기반으로 `데이터 캐싱`을 관리합니다. `문자열` 또는 `배열`로 지정할 수 있는데, 일반적으로는 위 예제처럼 `문자열`로 지정할 수 있지만, 만약 쿼리가 특정 변수에 의존하는 경우에는 아래 예제처럼 `배열`로 지정해 해당 변수를 추가해주어야 합니다.
-  - 참고로 해당 내용은 v3기준이고, react-query `v4`부터는 무조건 `배열`로 지정해야 합니다.
-- `사용법 (1)`과 `(2)`번 둘 다 사용되는데. 접근 방식의 차이입니다. 두 가지 방식 모두 잘 이해하고 사용합시다.
 
-<br />
+<br >
+
+**queryKey**
 
 ```jsx
 // (1)
@@ -240,9 +260,17 @@ const fetchSuperHero = ({ queryKey }: any) => {
   return axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 const useSuperHeroData = (heroId: string) => {
+  // 해당 쿼리는 heroId에 의존
   return useQuery(["super-hero", heroId], fetchSuperHero);
 };
 ```
+
+- useQuery는 첫 번째 인자인 `queryKey`를 기반으로 `데이터 캐싱`을 관리합니다.
+- 만약, 쿼리가 특정 변수에 의존한다면 배열에다 이어서 넣어주면 된다.
+- 🙏 **v3까지는 문자열 또는 배열 모두 지정할 수 있는데, `v4`부터는 무조건 `배열`로 지정해야 한다.**
+  <br />
+
+**queryFn**
 
 ```jsx
 // (2)
@@ -254,13 +282,13 @@ const useSuperHeroData = (heroId: string) => {
 };
 ```
 
-- useQuery의 두 번째 인자인 queryFn는 `Promise`를 반환하는 함수를 넣어주어야 합니다.
-- useQuery의 세 번째 인자인 `options`에 많이 쓰이는 옵션들을 밑에서 설명하였습니다. 그 외에는 위에 useQuery 참고 사이트를 통해 확인하면 된다.
+- useQuery의 두 번째 인자인 queryFn는 `Promise`를 반환하는 함수를 넣어야한다.
 
 <br />
 
-- 참고로 나중에 queryClient로 특정 key에 해당하는 query에 접근할 때는 `초기에 설정해둔 포맷`을 지켜줘야 제대로 가져올 수 있다.
-- 아래 예제를 참고하면 useQuery에서 queryKey에 해당하는 포맷이 배열`["super-hero", heroId]`이다. 그렇다면 밑에 useMutation에서 setQueryData를 이용할 때 똑같이 `["super-hero", heroId]` 포맷을 가져야 한다.
+**options**
+
+- useQuery의 세 번째 인자인 `options`에 많이 쓰이는 옵션들은 아래 내용에서 설명 할 예정이다. 문서 외에 옵션들을 알고싶다면 useQuery 참고 사이트를 통해 확인해보자.
 
 <br />
 
@@ -275,7 +303,7 @@ const useAddSuperHeroData = (heroId: string) => {
 
   return useMutation(addSuperHero, {
     onSuccess(data) {
-      // 포맷이 안 맞아서 해당 쿼리 데이터를 제대로 못 가져옴!
+      // 포맷이 안 맞아서 해당 쿼리를 제대로 셋팅하지 못함
       // ["super-hero", heroId]로 해야 됨
       queryClient.setQueryData(["super-hero"], (oldData: any) => {
         return {
@@ -290,6 +318,9 @@ const useAddSuperHeroData = (heroId: string) => {
   });
 };
 ```
+
+- 참고로 나중에 queryClient로 특정 queryKey에 해당하는 query에 접근할 때는 `초기에 설정해둔 포맷`을 지켜줘야 의도하는 결과를 가져올 수 있다.
+- 아래 예제를 참고하면 useQuery에서 queryKey에 해당하는 포맷이 배열`["super-hero", heroId]`이다. 그렇다면 밑에 useMutation에서 setQueryData를 이용할 때 똑같이 `["super-hero", heroId]` 포맷을 가져야 한다.
 
 <br />
 
@@ -393,7 +424,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
-  "super-heroes",
+  ["super-heroes"],
   getSuperHero,
   {
     refetchOnWindowFocus: true,
