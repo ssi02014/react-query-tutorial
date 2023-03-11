@@ -22,7 +22,7 @@
 
 ## 주요 컨셉 및 가이드 목차
 
-1. [React-Query 기능](#기능)
+1. [React-Query 개요 및 기능](#개요)
 2. [기본 설정(QueryClientProvider, QueryClient)](#react-query-기본-설정)
 3. [React Query Devtools](#devtools)
 4. [React Query 캐싱 라이프 사이클](#캐싱-라이프-사이클)
@@ -118,7 +118,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 // v4
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({ /* options */});
 
 function App() {
   return (
@@ -129,8 +129,8 @@ function App() {
 }
 ```
 
-- 리액트 쿼리를 사용하기 위해서는 `QueryClientProvider`를 최상단에서 감싸주고 `QueryClient`를 Props로 넣어 연결해야 한다.
-- 위 예시에서 App.js에 QueryClientProvider로 이하 컴포넌트를 감싸고, QueryClient를 연결함으로써, 이 context는 앱에서 비동기 요청을 알아서 처리하는 `background` 계층이 된다.
+- react-query를 사용하기 위해서는 `QueryClientProvider`를 최상단에서 감싸주고 `QueryClient` 인스턴스를 client props로 넣어 애플리케이션에 연결시켜야 한다.
+- 위 예시에서 App.js에 QueryClientProvider로 컴포넌트를 감싸고, client prosp에다 queryClient를 연결함으로써, 이 context는 앱에서 비동기 요청을 알아서 처리하는 `background` 계층이 된다.
 
 <br />
 
@@ -142,7 +142,7 @@ function App() {
 
 - react-query는 `전용 devtools`를 제공한다.
 - devtools를 사용하면 React Query의 모든 내부 동작을 `시각화`하는 데 도움이 되며 문제가 발생하면 `디버깅 시간을 절약`할 수 있다.
-- devtools는 기본값으로 `process.env.NODE_ENV === 'development'` 인 경우에만 실행된다, 즉 일반적으로 개발환경에서만 작동하므로 설정되어있으므로 프로젝트 배포 시에 Devtools 삽입코드를 제거해줄 필요가 없다.
+- devtools는 기본값으로 `process.env.NODE_ENV === 'development'` 인 경우에만 실행된다, 즉 일반적으로 개발환경에서만 작동하므로 설정되어있으므로, 프로젝트 배포 시에 Devtools 삽입코드를 제거해줄 필요가 없다.
 
 ```jsx
 // v3
