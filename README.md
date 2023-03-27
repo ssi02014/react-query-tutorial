@@ -1,4 +1,4 @@
-# 💻 React Query (v4: TanStack Query)
+# 💻 TanStack Query(aka. React Query)
 
 - 해당 저장소는 react-query에서 자주 사용하는 개념들을 정리한 저장소입니다. react-query의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
 - 오탈자 및 가독성이 안 좋거나 수정이 필요한 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다. 많관부 🙇‍♂️
@@ -11,18 +11,19 @@
 
 <br />
 
-## react-query v4 (TanStack Query) 정식 릴리즈
+## TanStack Query v4 정식 릴리즈
 
 ![스크린샷 2022-08-17 오후 2 20 01](https://user-images.githubusercontent.com/64779472/185040681-2352e8c8-b2d7-40f7-893d-3ee2270904c9.png)
 
-- react-query v4가 정식 릴리즈되면서 주요 변경 사항을 아래 문서에 추가하고 있습니다.
-- [react-query v3 vs v4 비교 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
+- react-query v4가 정식 릴리즈되면서 기존의 react-query 이름이 `TanStack Query`로 변경되었습니다.
+- v4는 v3의 대부분의 기능을 호환합니다. 주요 달라진 부분은 아래 문서에 간략하게 정리했습니다. 참고해주시면 감사드립니다 🙇‍♂️
+- [TanStack Query v3 vs v4 비교 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
 
 <br />
 
 ## 주요 컨셉 및 가이드 목차
 
-1. [React-Query 개요 및 기능](#개요)
+1. [React Query 개요 및 기능](#개요)
 2. [기본 설정(QueryClientProvider, QueryClient)](#react-query-기본-설정)
 3. [React Query Devtools](#devtools)
 4. [React Query 캐싱 라이프 사이클](#캐싱-라이프-사이클)
@@ -342,15 +343,15 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
   - error: 요청 에러 발생했을 때 상태
   - success: 요청 성공했을 때 상태
 - data: 쿼리 함수가 리턴한 Promise에서 `resolved`된 데이터
-- isLoading: `캐싱 된 데이터가 없을 때!` 즉, 처음 실행된 쿼리 일 때 로딩 여부에 따라 true/false로 반환된다.
+- isLoading: `캐싱 된 데이터가 없을 때` 즉, 처음 실행된 쿼리 일 때 로딩 여부에 따라 true/false로 반환된다.
   - 이는 캐싱 된 데이터가 있다면 로딩 여부에 상관없이 false를 반환한다.
 - isFetching: 캐싱 된 데이터가 있더라도 쿼리가 실행되면 로딩 여부에 따라 true/false로 반환된다.
   - 이는 캐싱 된 데이터가 있더라도 쿼리 로딩 여부에 따라 true/false를 반환한다.
 - error: 쿼리 함수에 오류가 발생한 경우, 쿼리에 대한 오류 객체
 - isError: 에러가 발생한 경우 `true`
 - 그 외 리턴 데이터들을 자세히 알고 싶으면 공식 사이트 참고
-  - [v3 useQuery](https://react-query-v3.tanstack.com/reference/useQuery)
-  - [v4 useQuery](https://react-query.tanstack.com/reference/useQuery)
+  - [v3 useQuery](https://tanstack.com/query/v3/docs/react/reference/useQuery)
+  - [v4 useQuery](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 
 <br />
 
@@ -456,7 +457,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 );
 ```
 
-- refetchOnWindowFocus (boolean | "always")
 - refetchOnWindowFocus는 데이터가 `stale` 상태일 경우 `윈도우 포커싱` 될 때마다 refetch를 실행하는 옵션이다. 기본값은 `true`이다.
 - 예를 들어, 크롬에서 다른 탭을 눌렀다가 다시 원래 보던 중인 탭을 눌렀을 때도 이 경우에 해당한다. 심지어 F12로 개발자 도구 창을 켜서 네트워크 탭이든, 콘솔 탭이든 개발자 도구 창에서 놀다가 페이지 내부를 다시 클릭했을 때도 이 경우에 해당한다.
 - `always` 로 설정하면 항상 윈도우 포커싱 될 때마다 refetch를 실행한다는 의미이다.
