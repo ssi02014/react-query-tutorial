@@ -30,7 +30,7 @@
 6. [useQuery 주요 리턴 데이터](#usequery-주요-리턴-데이터)
 7. [staleTime과 cacheTime](#staletime-cachetime)
 8. [마운트 될 때마다 재요청하는 refetchOnMount](#refetchonmount)
-9. [윈도우가 포커싱 될 때마다 재요청하는 refetchOnWindowFocus](#refetchOnWindowFocus)
+9. [윈도우가 포커싱 될 때마다 재요청하는 refetchOnWindowFocus](#refetchonwindowfocus)
 10. [Polling 방식을 구현하기 위한 refetchInterval와 refetchIntervalInBackground)](#polling)
 11. [자동 실행의 enabled와 수동으로 쿼리를 다시 요청하는 refetch](#enabled-refetch)
 12. [실패한 쿼리에 대해 재요청하는 retry](#retry)
@@ -43,12 +43,13 @@
 19. [초기 데이터를 설정할 수 있는 initialData](#initial-query-data)
 20. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
 21. [서버와 HTTP CUD관련 작업을 위한 useMutation](#usemutation)
-22. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
-23. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
-24. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
-25. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
-26. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
-27. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+22. [쿼리 수동 무효화 cancelQueries](#cancelqueries)
+23. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
+24. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
+25. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
+26. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
+27. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
+28. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
 
 <br />
 
@@ -336,8 +337,7 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 ```
 
 - status: 쿼리 요청 함수의 상태를 표현하는 status는 4가지의 값이 존재한다.(문자열 형태)
-  - idle: 쿼리 데이터가 없고 비었을 때, { enabled: false } 상태로 쿼리가 호출되면 이 상태로 시작된다.
-    - `참고로 v4부터는 idle 상태는 제거된다.`
+  - idle: 쿼리 데이터가 없고 비었을 때, `{ enabled: false }` 상태로 쿼리가 호출되면 이 상태로 시작된다.
   - loading: 말 그대로 아직 캐시된 데이터가 없고 로딩중일 때 상태
   - error: 요청 에러 발생했을 때 상태
   - success: 요청 성공했을 때 상태
@@ -351,6 +351,30 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 - 그 외 리턴 데이터들을 자세히 알고 싶으면 공식 사이트 참고
   - [v3 useQuery](https://react-query-v3.tanstack.com/reference/useQuery)
   - [v4 useQuery](https://react-query.tanstack.com/reference/useQuery)
+
+<br />
+
+### v4부터는 status의 idle 상태값이 제거되고 fetchStatus가 추가
+
+- TanStack Query(v4) 부터는 status의 `idle이 제거`되고, 새로운 상태값인 `fetchStatus`가 추가됐다.
+- fetchStatus
+  - fetching: 쿼리가 현재 실행중이다.
+  - paused: 쿼리를 요청했지만, 잠시 중단된 상태이다.
+  - idle: 쿼리가 현재 아무 작업도 수행하지 않는 상태이다.
+
+<br />
+
+### v4부터는 왜 status, fetchStatus 나눠서 다루는 걸까?
+
+- fetchStatus는 HTTP 네트워크 연결 상태와 좀 더 관련된 상태 데이터이다.
+  - 예를 들어, status가 `success` 상태라면 주로 fetchStatus는 `idle` 상태지만, 백그라운드에서 re-fetch가 발생할 때 `fetching` 상태일 수 있다.
+  - status가 보통 `loading` 상태일 때 fetchStatus는 주로 `fetching`를 갖지만, 네트워크 연결이 되어 있지 않은 경우 `paused` 상태를 가질 수 있다.
+- 정리하자면 아래와 같다.
+
+  - status는 `data`가 있는지 없는지에 대한 상태를 의미한다.
+  - fetchStatus는 쿼리 즉, `queryFn 요청`이 진행중인지 아닌지에 대한 상태를 의미한다.
+
+- [why-two-different-states](https://tanstack.com/query/v4/docs/react/guides/queries#why-two-different-states)
 
 <br />
 
@@ -892,6 +916,33 @@ try {
 - 하지만 mutateAsync는 Promise를 직접 다루기 때문에 이런 에러 핸들링 같은 부분을 직접 다뤄야한다.
   - 만약 이를 다루지 않으면 `unhandled promise rejection` 에러가 발생 할 수 있다.
 - [tkdodo mutate, mutateAsync 블로그 참고](https://tkdodo.eu/blog/mastering-mutations-in-react-query#mutate-or-mutateasync)
+
+<br />
+
+## cancelQueries
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- 쿼리를 `수동으로 취소`하고 싶을 수도 있다.
+  - 예를 들어 요청을 완료하는 데 시간이 오래 걸리는 경우 사용자가 취소 버튼을 클릭하여 요청을 중지하도록 허용할 수 있다.
+  - 또는, 아직 HTTP 요청이 끝나지 않았을 때, 페이지를 벗어날 경우에도 중간에 취소해서 불 필요한 네트워크 리소스를 개선할 수 있다.
+- 이렇게 하려면 쿼리를 취소하고 이전 상태로 되돌리기 위해 `queryClient.cancelQueries(queryKey)`를 사용할 수 있다. 또한 react-query는 쿼리 취소뿐만아니라 queryFn의 Promise도 취소한다.
+- [query-cancellation](https://tanstack.com/query/v4/docs/react/guides/query-cancellation)
+
+```jsx
+const query = useQuery(["super-heroes"], {
+  /* options */
+});
+
+const queryClient = useQueryClient();
+
+const onCancelQuery = (e) => {
+  e.preventDefault();
+  queryClient.cancelQueries(["super-heroes"]);
+};
+
+return <button onClick={onCancelQuery}>Cancel</button>;
+```
 
 <br />
 
