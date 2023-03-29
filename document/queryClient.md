@@ -214,6 +214,16 @@ queryClient.invalidateQueries({
 
 <br />
 
+- **v4에서는 v3 형태로 지원합니다**
+
+```ts
+// type
+invalidateQueries<TPageData = unknown>(filters?: InvalidateQueryFilters<TPageData>, options?: InvalidateOptions): Promise<void>;
+invalidateQueries<TPageData = unknown>(queryKey?: QueryKey, filters?: InvalidateQueryFilters<TPageData>, options?: InvalidateOptions): Promise<void>;
+```
+
+<br />
+
 - [queryClient.invalidateQueries v3 문서](https://react-query-v3.tanstack.com/reference/QueryClient#queryclientsetqueriesdata)
 - [queryClient.invalidateQueries v4 문서](https://tanstack.com/query/v4/docs/reference/QueryClient#queryclientinvalidatequeries)
 
@@ -275,6 +285,14 @@ await queryClient.refetchQueries(
 
 <br />
 
+- **v4에서는 v3형태로 지원합니다.**
+
+```tsx
+// type
+refetchQueries<TPageData = unknown>(filters?: RefetchQueryFilters<TPageData>, options?: RefetchOptions): Promise<void>;
+refetchQueries<TPageData = unknown>(queryKey?: QueryKey, filters?: RefetchQueryFilters<TPageData>, options?: RefetchOptions): Promise<void>;
+```
+
 - [queryClient.refetchQueries v3 문서](https://react-query-v3.tanstack.com/reference/QueryClient#queryclientrefetchqueries)
 - [queryClient.refetchQueries v4 문서](https://tanstack.com/query/v4/docs/reference/QueryClient#queryclientrefetchqueries)
 
@@ -293,11 +311,13 @@ await queryClient.cancelQueries(["super-heroes"], { exact: true });
 await queryClient.cancelQueries({ queryKey: ["super-heroes"], exact: true });
 ```
 
-- v3 옵션
-  - queryKey?: Query Keys
-  - filters?: Query Filters
-- v4 옵션
-  - filters?: QueryFilters
+- **v4에서는 v3형태도 지원합니다.**
+
+```ts
+// type
+cancelQueries(filters?: QueryFilters, options?: CancelOptions): Promise<void>;
+cancelQueries(queryKey?: QueryKey, filters?: QueryFilters, options?: CancelOptions): Promise<void>;
+```
 
 <br />
 
@@ -313,11 +333,12 @@ queryClient.removeQueries(["super-heroes"], { exact: true });
 queryClient.removeQueries({ queryKey: ["super-heroes"], exact: true });
 ```
 
-- v3 옵션
-  - queryKey?: Query Keys
-  - filters?: Query Filters
-- v4 옵션
-  - filters?: QueryFilters
+- **v4에서는 v3형태도 지원합니다.**
+
+```ts
+removeQueries(filters?: QueryFilters): void;
+removeQueries(queryKey?: QueryKey, filters?: QueryFilters): void;
+```
 
 <br />
 
@@ -333,6 +354,14 @@ queryClient.resetQueries(["super-heroes"], { exact: true });
 
 // v4
 queryClient.resetQueries({ queryKey: ["super-heroes"], exact: true });
+```
+
+- **v4에서는 v3형태도 지원합니다.**
+
+```ts
+// type
+resetQueries<TPageData = unknown>(filters?: ResetQueryFilters<TPageData>, options?: ResetOptions): Promise<void>;
+resetQueries<TPageData = unknown>(queryKey?: QueryKey, filters?: ResetQueryFilters<TPageData>, options?: ResetOptions): Promise<void>;
 ```
 
 <br />
