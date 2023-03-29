@@ -1,6 +1,6 @@
 # 💻 TanStack Query(aka. React Query)
 
-- 해당 저장소는 react-query에서 자주 사용하는 개념들을 정리한 저장소입니다. react-query의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
+- 해당 저장소는 TanStack Query(aka.React Query)에서 자주 사용하는 개념들을 정리한 저장소입니다. TanStack Query의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
 - 오탈자 및 가독성이 안 좋거나 수정이 필요한 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다. 많관부 🙇‍♂️
 
 <br />
@@ -56,7 +56,7 @@
 
 ## 📃 API Reference
 
-1. [QueryClient 주요 내용 정리 문서(v3/v4)](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
+1. [QueryClient 주요 내용 정리 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
 
 <br />
 <br />
@@ -383,7 +383,7 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
+- [useQuery 공식 사이트 참고](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 - 아래 예제들 제외하고 추가적인 옵션들은 위 사이트 참고
 
 ### staleTime cacheTime

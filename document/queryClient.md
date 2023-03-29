@@ -108,6 +108,11 @@ const data = queryClient.getQueryData({ queryKey });
 const queryData = queryClient.getQueryData(["super-heroes"]);
 ```
 
+```ts
+// type
+getQueryData<TQueryFnData = unknown>(queryKey: QueryKey, filters?: QueryFilters): TQueryFnData | undefined;
+```
+
 <br />
 
 ### getQueriesData
@@ -118,6 +123,14 @@ const queryData = queryClient.getQueryData(["super-heroes"]);
 ```js
 // v3/v4
 const data = queryClient.getQueriesData(queryKey | filters);
+```
+
+- **v4에서는 v3 형태도 지원합니다**
+
+```ts
+// type
+getQueriesData<TQueryFnData = unknown>(queryKey: QueryKey): [QueryKey, TQueryFnData | undefined][];
+getQueriesData<TQueryFnData = unknown>(filters: QueryFilters): [QueryKey, TQueryFnData | undefined][];
 ```
 
 <br />
@@ -137,9 +150,12 @@ queryClient.setQueryData(["super-hero"], (oldData) => {
 });
 ```
 
-- 옵션
-  - queryKey: 쿼리 키
-  - updater: TData | (oldData: TData | undefined) => TData
+- **v4에서는 v3 형태도 지원합니다**
+
+```ts
+// type
+setQueryData<TQueryFnData>(queryKey: QueryKey, updater: Updater<TQueryFnData | undefined, TQueryFnData | undefined>, options?: SetDataOptions): TQueryFnData | undefined;
+```
 
 <br />
 
@@ -158,9 +174,12 @@ queryClient.setQueriesData(["super-hero"], (oldData) => {
 });
 ```
 
-- 옵션
-  - queryKey | filters: 쿼리 키 또는 쿼리 필터
-  - updater: TQueryFnData | (oldData: TQueryFnData | undefined) => TQueryFnData
+- **v4에서는 v3 형태도 지원합니다**
+
+```ts
+setQueriesData<TQueryFnData>(queryKey: QueryKey, updater: Updater<TQueryFnData | undefined, TQueryFnData | undefined>, options?: SetDataOptions): [QueryKey, TQueryFnData | undefined][];
+setQueriesData<TQueryFnData>(filters: QueryFilters, updater: Updater<TQueryFnData | undefined, TQueryFnData | undefined>, options?: SetDataOptions): [QueryKey, TQueryFnData | undefined][];
+```
 
 <br />
 
@@ -214,18 +233,13 @@ queryClient.invalidateQueries({
 
 <br />
 
-- **v4에서는 v3 형태로 지원합니다**
+- **v4에서는 v3 형태도 지원합니다**
 
 ```ts
 // type
 invalidateQueries<TPageData = unknown>(filters?: InvalidateQueryFilters<TPageData>, options?: InvalidateOptions): Promise<void>;
 invalidateQueries<TPageData = unknown>(queryKey?: QueryKey, filters?: InvalidateQueryFilters<TPageData>, options?: InvalidateOptions): Promise<void>;
 ```
-
-<br />
-
-- [queryClient.invalidateQueries v3 문서](https://react-query-v3.tanstack.com/reference/QueryClient#queryclientsetqueriesdata)
-- [queryClient.invalidateQueries v4 문서](https://tanstack.com/query/v4/docs/reference/QueryClient#queryclientinvalidatequeries)
 
 <br />
 
@@ -283,8 +297,6 @@ await queryClient.refetchQueries(
 );
 ```
 
-<br />
-
 - **v4에서는 v3형태로 지원합니다.**
 
 ```tsx
@@ -292,9 +304,6 @@ await queryClient.refetchQueries(
 refetchQueries<TPageData = unknown>(filters?: RefetchQueryFilters<TPageData>, options?: RefetchOptions): Promise<void>;
 refetchQueries<TPageData = unknown>(queryKey?: QueryKey, filters?: RefetchQueryFilters<TPageData>, options?: RefetchOptions): Promise<void>;
 ```
-
-- [queryClient.refetchQueries v3 문서](https://react-query-v3.tanstack.com/reference/QueryClient#queryclientrefetchqueries)
-- [queryClient.refetchQueries v4 문서](https://tanstack.com/query/v4/docs/reference/QueryClient#queryclientrefetchqueries)
 
 <br />
 
