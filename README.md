@@ -1,7 +1,7 @@
-# 💻 TanStack Query(aka. React Query)
+# 💻 TanStack Query(React Query v4)
 
-- 해당 저장소는 TanStack Query(aka.React Query)에서 자주 사용하는 개념들을 정리한 저장소입니다. TanStack Query의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
-- 오탈자 및 가독성이 안 좋거나 수정이 필요한 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다. 많관부 🙇‍♂️
+- 해당 저장소는 TanStack Query(React Query v4)에서 자주 사용하는 개념들을 정리한 저장소입니다. TanStack Query(React Query v4)의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
+- 오탈자 및 가독성이 안 좋거나 수정이 필요한 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다. 많관부 🙇‍♂️🙇‍♂️
 
 <br />
 
@@ -11,12 +11,11 @@
 
 <br />
 
-## TanStack Query v4 정식 릴리즈
+## TanStack Query(React Query v4) 정식 릴리즈
 
 ![스크린샷 2022-08-17 오후 2 20 01](https://user-images.githubusercontent.com/64779472/185040681-2352e8c8-b2d7-40f7-893d-3ee2270904c9.png)
 
-- react-query v4가 정식 릴리즈되면서 기존의 react-query 이름이 `TanStack Query`로 변경되었습니다.
-- v4는 v3의 대부분의 기능을 호환합니다. 주요 달라진 부분은 아래 문서에 간략하게 정리했습니다. 참고해주시면 감사드립니다 🙇‍♂️
+- React Query `v4는 v3의 대부분의 기능을 호환`합니다. 주요 달라진 부분은 아래 문서에 간략하게 정리했습니다. 참고해주시면 감사드립니다 🙇‍♂️
 - [TanStack Query v3 vs v4 비교 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
 
 <br />
@@ -61,7 +60,7 @@
 <br />
 <br />
 
-## 📃 React-Query 개요 및 기능
+## 📃 React Query 개요 및 기능
 
 ### 개요
 
@@ -84,7 +83,7 @@
 
 <br />
 
-## React-Query 기본 설정
+## React Query 기본 설정
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
@@ -224,7 +223,7 @@ function App() {
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [useQuery 공식 사이트 참고](https://react-query.tanstack.com/reference/useQuery)
+- [useQuery v4](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 
 ```jsx
 // 사용법(1)
@@ -349,9 +348,8 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
   - 이는 캐싱 된 데이터가 있더라도 쿼리 로딩 여부에 따라 true/false를 반환한다.
 - error: 쿼리 함수에 오류가 발생한 경우, 쿼리에 대한 오류 객체
 - isError: 에러가 발생한 경우 `true`
-- 그 외 리턴 데이터들을 자세히 알고 싶으면 공식 사이트 참고
-  - [v3 useQuery](https://tanstack.com/query/v3/docs/react/reference/useQuery)
-  - [v4 useQuery](https://tanstack.com/query/v4/docs/react/reference/useQuery)
+- **그 외 반환 데이터들을 자세히 알고 싶으면 useQuery 공식 사이트 문서 참고**
+  - [useQuery v4](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 
 <br />
 
@@ -383,7 +381,7 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [useQuery 공식 사이트 참고](https://tanstack.com/query/v4/docs/react/reference/useQuery)
+- [useQuery v4](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 - 아래 예제들 제외하고 추가적인 옵션들은 위 사이트 참고
 
 ### staleTime cacheTime
@@ -404,12 +402,12 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 <br />
 
-1. staleTime (number | Infinity)
+1. staleTime: `(number | Infinity)`
    - staleTime은 데이터가 `fresh에서 stale` 상태로 변경되는 데 걸리는 시간, 만약 staleTime이 3000이면 fresh상태에서 3초 뒤에 stale로 변환
    - `fresh` 상태일 때는 쿼리 인스턴스가 새롭게 mount 되어도 네트워크 요청(fetch)이 일어나지 않는다.
    - 데이터가 한번 fetch 되고 나서 `staleTime`이 지나지 않았다면(fresh상태) unmount 후 다시 mount 되어도 fetch가 일어나지 않는다.
    - staleTime의 기본값은 `0`이기 때문에 일반적으로 fetch 후에 바로 stale이 된다.
-2. cacheTime (number | Infinity)
+2. cacheTime: `(number | Infinity)`
    - 데이터가 `inactive` 상태일 때 `캐싱 된 상태로` 남아있는 시간
    - 쿼리 인스턴스가 unmount 되면 데이터는 `inactive 상태로 변경`되며, 캐시는 `cacheTime`만큼 유지된다.
    - cacheTime이 지나면 `가비지 콜렉터`로 수집된다.
@@ -859,7 +857,7 @@ refetch({ refetchPage: (page, index) => index === 0 });
 
 ## useMutation
 
-- [useMutation 공식 사이트](https://react-query.tanstack.com/reference/useMutation)
+- [useMutation v4](https://tanstack.com/query/v4/docs/react/reference/useMutation)
 - react-query에서 기본적으로 서버에서 데이터를 Get 할 때는 useQuery를 사용한다.
 - 만약 서버의 data를 post, patch, put, delete와 같이 수정하고자 한다면 이때는 useMutation을 이용한다.
 - 요약하자면 `R(read)는 useQuery`, `CUD(Create, Update, Delete)는 useMutation`을 사용한다.
@@ -1068,7 +1066,7 @@ const useAddSuperHeroData = () => {
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [useQueryErrorResetBoundary 공식 문서](https://react-query-v3.tanstack.com/reference/useQueryErrorResetBoundary)
+- [useQueryErrorResetBoundary v4](hhttps://tanstack.com/query/v4/docs/react/reference/useQueryErrorResetBoundary)
 - react-query에서 ErrorBoundary와 useQueryErrorResetBoundary를 결합해 `선언적`으로 에러가 발생했을 때 Fallback UI를 보여줄 수 있다.
 - ErrorBoundary에 대한 설명은 해당 문서 참고 [ErrorBoundary](https://github.com/ssi02014/react-query-tutorial/blob/master/document/errorBoundary.md)
 
