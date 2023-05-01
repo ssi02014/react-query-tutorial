@@ -652,17 +652,53 @@ const { data: friends } = useQuery(["friends"], fetchFriends);
 - 이러한 특징은 쿼리 처리의 `동시성`을 극대화 시킨다.
 
 ```jsx
+// v3
 const queryResults = useQueries(
   heroIds.map((id) => ({
     queryKey: ["super-hero", id],
     queryFn: () => fetchSuperHero(id),
   }))
 );
+/*
+  const queryResults = useQueries(
+    { 
+      queryKey: ['super-hero', 1], 
+      queryFn: () => fetchSuperHero(1) 
+    },
+    { 
+      queryKey: ['super-hero', 2], 
+      queryFn: () => fetchSuperHero(2) 
+    },
+    // ...
+  );
+*/
 ```
 
 - 하지만, 쿼리 여러 개를 동시에 수행해야 하는데, 렌더링이 거듭되는 사이사이에 계속 쿼리가 수행되어야 한다면 쿼리를 수행하는 로직이 hook 규칙에 어긋날 수도 있다. 이럴 때는 `useQueries`를 사용한다.
 
 <br />
+
+- useQueries가 v4부터 쿼리를 넘기는 방식이 변경됐다. 차이점으로는 queries프로퍼티를 가진 객체를 넘겨줘야 한다.
+
+```jsx
+// v4
+const queryResults = useQueries({
+  queries: [
+    {
+      queryKey: ["super-hero", 1],
+      queryFn: () => fetchSuperHero(1),
+      staleTime: Infinity, // 다음과 같이 option 추가 가능
+    },
+    {
+      queryKey: ["super-hero", 2],
+      queryFn: () => fetchSuperHero(2),
+      staleTime: 0,
+    },
+    // ...
+  ],
+});
+```
+
 <br />
 
 ## Dependent Queries
