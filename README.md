@@ -41,15 +41,16 @@
 17. [종속 쿼리(Dependent Queries)](#dependent-queries)
 18. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
 19. [초기 데이터를 설정할 수 있는 initialData](#initial-query-data)
-20. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
-21. [서버와 HTTP CUD관련 작업을 위한 useMutation](#usemutation)
-22. [쿼리 수동 무효화 cancelQueries](#cancelqueries)
-23. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
-24. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
-25. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
-26. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
-27. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
-28. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+20. [데이터를 미리 불러오는 PreFetching](#prefetching)
+21. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
+22. [서버와 HTTP CUD관련 작업을 위한 useMutation](#usemutation)
+23. [쿼리 수동 무효화 cancelQueries](#cancelqueries)
+24. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
+25. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
+26. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
+27. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
+28. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
+29. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
 
 <br />
 
@@ -771,6 +772,40 @@ const queryClient = useQueryClient();
 <br />
 
 - 참고로 위 예제에서 `queryClient.getQueryData` 메서드는 기존 쿼리의 `캐싱 된 데이터`를 가져오는 데 사용할 수 있는 동기 함수이다. 쿼리가 존재하지 않으면 `undefined`를 반환한다.
+
+<br />
+
+## Prefetching
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- prefetch는 말 그대로 미리 fetch해오겠다는 의미이다.
+- 비동기 요청은 데이터 양이 클 수록 받아오는 속도가 느리고, 시간이 오래걸린다. 사용자 경험을 위해 데이터를 미리 받아와서 캐싱해놓으면? 새로운 데이터를 받기전에 사용자가 캐싱된 데이터를 볼 수 있어 `UX에 좋은 영향`을 줄 수 있다.
+  - 예를 들어 페이지네이션을 구현했다고 가정하면, 페이지1에서 페이지2로 이동했을 때 페이지3의 데이터를 미리 받아놓는 것이다!
+- react query에서는 `queryClient.prefetchQuery`을 통해서 prefetch 기능을 제공한다.
+
+```tsx
+const prefetchNextPosts = async (nextPage: number) => {
+  const queryClient = useQueryClient();
+  // 해당 쿼리의 결과는 일반 쿼리들처럼 캐싱된다.
+  await queryClient.prefetchQuery(
+    ["posts", nextPage],
+    () => fetchPosts(nextPage),
+    { ...options }
+  );
+};
+
+// 단순 예
+useEffect(() => {
+  const nextPage = currentPage + 1;
+
+  if (nextPage < maxPage) {
+    prefetchNextPosts(nextPage);
+  }
+}, [currentPage]);
+```
+
+- 참고로 prefetchQuery를 통해 가져오는 쿼리에 대한 데이터가 `이미 캐싱되어 있으면 데이터를 가져오지 않는다.`
 
 <br />
 
