@@ -1,7 +1,7 @@
 # 💻 TanStack Query(React Query v4)
 
 - 해당 저장소는 TanStack Query(React Query v4)에서 자주 사용하는 개념들을 정리한 저장소입니다. TanStack Query(React Query v4)의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
-- 오탈자 및 가독성이 안 좋거나 수정이 필요한 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다. 많관부 🙇‍♂️🙇‍♂️
+- 오탈자, 가독성 안좋은 부분 또는 추가 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다.
 
 <br />
 
@@ -158,6 +158,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 </AppContext.Provider>;
 ```
 
+<br />
+
 ### options
 
 - initialIsOpen (Boolean)
@@ -229,15 +231,19 @@ function App() {
 ```jsx
 // 사용법(1)
 const { data, isLoading, ... } =  useQuery(queryKey, queryFn, {
-  //옵션들 ex) enabled, staleTime
+  // ...options ex) enabled, staleTime, ...
 });
 
 // 사용법(2)
 const result = useQuery({
   queryKey,
   queryFn,
-  //옵션들 ex) enabled, staleTime
+  // ...options ex) enabled, staleTime, ...
 });
+
+result.data
+result.isLoading
+// ...
 ```
 
 ```jsx
@@ -249,80 +255,72 @@ const getSuperHero = useCallback(() => {
 const { data, isLoading } = useQuery(["super-heroes"], getSuperHero);
 ```
 
-- useQuery는 기본적으로 3개의 인자를 받습니다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options`입니다.
+- useQuery는 기본적으로 3개의 인자를 받는다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options(optional)`이다.
 
 <br >
 
-**queryKey**
+**1. queryKey**
 
 ```jsx
 // (1)
 const fetchSuperHero = ({ queryKey }: any) => {
-  const heroId = queryKey[1]; // queryKey: (2) ['super-hero', '3']
+  const heroId = queryKey[1]; // queryKey: ['super-hero', '3']
   return axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
+
 const useSuperHeroData = (heroId: string) => {
   // 해당 쿼리는 heroId에 의존
   return useQuery(["super-hero", heroId], fetchSuperHero);
 };
 ```
 
-- useQuery는 첫 번째 인자인 `queryKey`를 기반으로 `데이터 캐싱`을 관리합니다.
-- 만약, 쿼리가 특정 변수에 의존한다면 배열에다 이어서 넣어주면 된다.
-- 🙏 **v3까지는 문자열 또는 배열 모두 지정할 수 있는데, `v4`부터는 무조건 `배열`로 지정해야 한다.**
-  <br />
+- **v3까지는 queryKey로 문자열 또는 배열 모두 지정할 수 있는데, `v4`부터는 무조건 `배열`로 지정해야 한다.**
+- useQuery는 첫 번째 인자인 `queryKey`를 기반으로 `데이터 캐싱`을 관리한다.
 
-**queryFn**
+  - 만약, 쿼리가 특정 변수에 `의존`한다면 배열에다 이어서 넣어주면 된다. `ex: ["super-hero", heroId, ...]`
+  - 이는 사실 굉장히 중요하다. 예를 들어, `queryClient.setQueryData` 등과 같이 특정 쿼리에 접근이 필요 할때 `초기에 설정해둔 포맷`을 지켜줘야 제대로 쿼리에 접근 할 수 있다.
+  - 아래 options 예제를 살펴보면 useSuperHeroData의 queryKey는 `["super-hero", heroId]`이다. 그렇다면 queryClient.setQueryData를 이용할 때 똑같이 `["super-hero", heroId]` 포맷을 가져야 한다. 안그러면 제대로 원하는 쿼리 접근이 안된다.
+
+<br />
+
+**2. queryFn**
 
 ```jsx
 // (2)
 const fetchSuperHero = (heroId: string) => {
   return axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
+
 const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId));
 };
 ```
 
 - useQuery의 두 번째 인자인 queryFn는 `Promise`를 반환하는 함수를 넣어야한다.
+- 참고로, queryKey의 예제와 queryFn 예제가 `약간 차이점`이 있다.
+  - queryKey 예제는 2번째 queryFn에 fetchSuperHero 함수를 바로 넘겨주고, fetchSuperHero에서 매개 변수로 객체를 받아와 해당 객체의 queryKey를 활용하고 있다.
+  - queryFn 예제는 그냥 2번째 queryFn에 화살표 함수를 사용하고, fetchSuperHero의 인자로 heroId를 넘겨주고 있다.
+  - 해당 두 가지 방법은 모두 알아야되고, 결과는 동일하다.
 
 <br />
 
-**options**
+**3. options**
 
-- useQuery의 세 번째 인자인 `options`에 많이 쓰이는 옵션들은 아래 내용에서 설명 할 예정이다. 문서 외에 옵션들을 알고싶다면 useQuery 참고 사이트를 통해 확인해보자.
+- useQuery의 세 번째 인자인 `options`에 많이 쓰이는 옵션들은 아래 내용에서 설명 할 예정이다. 문서 외에 더 많은 옵션들을 알고싶다면 [useQuery 공식 문서](https://tanstack.com/query/v4/docs/react/reference/useQuery)를 통해 확인해보자.
 
 <br />
 
 ```js
 // 예
 const useSuperHeroData = (heroId: string) => {
-  return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId));
-};
-
-const useAddSuperHeroData = (heroId: string) => {
-  const queryClient = useQueryClient();
-
-  return useMutation(addSuperHero, {
-    onSuccess(data) {
-      // 포맷이 안 맞아서 해당 쿼리를 제대로 셋팅하지 못함
-      // ["super-hero", heroId]로 해야 됨
-      queryClient.setQueryData(["super-hero"], (oldData: any) => {
-        return {
-          ...oldData,
-          data: [...oldData.data, data.data],
-        };
-      });
-    },
-    onError(err) {
-      console.log(err);
-    },
+  return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId), {
+    staleTime: 3000,
+    cacheTime: 5000,
+    retry: 1,
+    // ...options
   });
 };
 ```
-
-- 참고로 나중에 queryClient로 특정 queryKey에 해당하는 query에 접근할 때는 `초기에 설정해둔 포맷`을 지켜줘야 의도하는 결과를 가져올 수 있다.
-- 아래 예제를 참고하면 useQuery에서 queryKey에 해당하는 포맷이 배열`["super-hero", heroId]`이다. 그렇다면 밑에 useMutation에서 setQueryData를 이용할 때 똑같이 `["super-hero", heroId]` 포맷을 가져야 한다.
 
 <br />
 
@@ -1215,7 +1213,7 @@ function App() {
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
 - ErrorBoundary는 에러가 발생했을 때 보여주는 Fallback UI를 `선언적`으로 작성할 수 있고, 리액트 쿼리는 Suspense와도 결합해서 `서버 통신 상태가 로딩중`일 때 Fallback UI를 보여줄 수 있게 선언적으로 작성할 수 있다.
-- 참고로, Suspense 컴포넌트는 리액트 v16부터 제공되는 `Component Lazy Loading`이나 `Data Fetching` 등의 비동기 처리를 할 때, 응답을 기다리는 동안 Fallback UI(ex: Loader)를 보여주는 기능을 하는 컴포넌트입니다.
+- 참고로, Suspense 컴포넌트는 리액트 v16부터 제공되는 `Component Lazy Loading`이나 `Data Fetching` 등의 비동기 처리를 할 때, 응답을 기다리는 동안 Fallback UI(ex: Loader)를 보여주는 기능을 하는 컴포넌트다.
 
 ```jsx
 import { Suspense } from "react";
