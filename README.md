@@ -50,7 +50,8 @@
 26. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
 27. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
 28. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
-29. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+29. [앱의 기본 쿼리를 설정하는 Default Query Function](#default-query-function)
+30. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
 
 <br />
 
@@ -1249,6 +1250,47 @@ function App() {
 6. onSuccess 완료 이후 Loader unmount
 7. MainComponent mount
 ```
+
+<br />
+
+## Default Query Function
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- 앱 전체에서 사용하는 동일한 쿼리에서 `queryKey`를 사용해 가져와야 할 데이터를 식별하고 싶다면 `QueryClient`에 `queryFn` 옵션을 통해 Default Query Function을 지정해 줄 수 있다.
+- [Default Query Function v4](https://tanstack.com/query/v4/docs/react/guides/default-query-function)
+
+```jsx
+// 기본 쿼리 함수
+const getSuperHero = async ({ queryKey }: any) => {
+  return await axios.get(`http://localhost:4000/${queryKey[0]}`);
+};
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: getSuperHero,
+    },
+  },
+});
+```
+
+- `QueryClient`에 앱 전체에서 사용할 쿼리 함수를 지정해 준다.
+
+```jsx
+// 사용 예시 (1)
+const useSuperHeroData = () => {
+  return useQuery(["superheroes"]); // 2번째 인자에 queryFn을 넣지 않는다.
+};
+
+// 사용 예시 (2)
+const useSuperHeroDetailData = (heroId: string) => {
+  return useQuery([`superheroes/${heroId}`]);
+};
+```
+
+- useQuery의 첫 번째 인자로 `queryKey`만 넣어주면 두 번째 인자에 들어갈 `queryFn`은 자동으로 설정된 기본 쿼리 함수가 들어간다.
+- 일반적으로 `useQuery`를 사용할 때와 달리 `queryFn`을 지정하지 않기에 쿼리 함수에 직접 인자를 넣어주는 형태의 사용은 불가능하다.
 
 <br />
 
