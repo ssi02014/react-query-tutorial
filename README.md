@@ -50,7 +50,7 @@
 26. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
 27. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
 28. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
-29. [앱의 기본 쿼리를 설정하는 Default Query Function](#default-query-function)
+29. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
 30. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
 
 <br />
@@ -1263,16 +1263,24 @@ function App() {
 ```jsx
 // 기본 쿼리 함수
 const getSuperHero = async ({ queryKey }: any) => {
-  return await axios.get(`http://localhost:4000/${queryKey[0]}`);
+  const heroId = queryKey[1];
+  return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getSuperHero,
+      // ...queries options
     },
   },
 });
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>{/* ... */}</QueryClientProvider>
+  );
+}
 ```
 
 - `QueryClient`에 앱 전체에서 사용할 쿼리 함수를 지정해 준다.
