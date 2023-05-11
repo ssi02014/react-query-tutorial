@@ -50,7 +50,8 @@
 26. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
 27. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
 28. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
-29. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+29. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
+30. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
 
 <br />
 
@@ -1135,7 +1136,7 @@ const useAddSuperHeroData = () => {
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [useQueryErrorResetBoundary v4](hhttps://tanstack.com/query/v4/docs/react/reference/useQueryErrorResetBoundary)
+- [useQueryErrorResetBoundary v4](https://tanstack.com/query/v4/docs/react/reference/useQueryErrorResetBoundary)
 - react-query에서 ErrorBoundary와 useQueryErrorResetBoundary를 결합해 `선언적`으로 에러가 발생했을 때 Fallback UI를 보여줄 수 있다.
 - ErrorBoundary에 대한 설명은 해당 문서 참고 [ErrorBoundary](https://github.com/ssi02014/react-query-tutorial/blob/master/document/errorBoundary.md)
 
@@ -1249,6 +1250,57 @@ function App() {
 6. onSuccess 완료 이후 Loader unmount
 7. MainComponent mount
 ```
+
+<br />
+
+## Default Query Function
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- 앱 전체에서 동일한 쿼리 함수를 공유하고, `queryKey`를 사용해 가져와야 할 데이터를 식별하고 싶다면 `QueryClient`에 `queryFn` 옵션을 통해 Default Query Function을 지정해 줄 수 있다.
+- [Default Query Function v4](https://tanstack.com/query/v4/docs/react/guides/default-query-function)
+
+```jsx
+// 기본 쿼리 함수
+const getSuperHero = async ({ queryKey }: any) => {
+  const heroId = queryKey[1];
+  return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
+};
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: getSuperHero,
+      // ...queries options
+    },
+  },
+});
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>{/* ... */}</QueryClientProvider>
+  );
+}
+```
+
+- `QueryClient`에 앱 전체에서 사용할 쿼리 함수를 지정해 준다.
+
+```jsx
+// 사용 예시
+const useSuperHeroData = (heroId: string) => {
+  return useQuery(["superheroes", heroId]);
+};
+```
+
+```jsx
+// 다음 형태 불가능
+const useSuperHeroData = (heroId: string) => {
+  return useQuery(["superheroes", heroId], () => getSuperHero(heroId));
+};
+```
+
+- useQuery의 첫 번째 인자로 `queryKey`만 넣어주면 두 번째 인자에 들어갈 `queryFn`은 자동으로 설정된 기본 쿼리 함수가 들어간다.
+- 일반적으로 `useQuery`를 사용할 때와 달리 `queryFn`을 지정하지 않기에 쿼리 함수에 직접 인자를 넣어주는 형태의 사용은 불가능하다.
 
 <br />
 
