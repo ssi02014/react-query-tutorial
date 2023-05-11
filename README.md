@@ -1257,7 +1257,7 @@ function App() {
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- 앱 전체에서 사용하는 동일한 쿼리에서 `queryKey`를 사용해 가져와야 할 데이터를 식별하고 싶다면 `QueryClient`에 `queryFn` 옵션을 통해 Default Query Function을 지정해 줄 수 있다.
+- 앱 전체에서 동일한 쿼리 함수를 공유하고, `queryKey`를 사용해 가져와야 할 데이터를 식별하고 싶다면 `QueryClient`에 `queryFn` 옵션을 통해 Default Query Function을 지정해 줄 수 있다.
 - [Default Query Function v4](https://tanstack.com/query/v4/docs/react/guides/default-query-function)
 
 ```jsx
@@ -1286,14 +1286,16 @@ function App() {
 - `QueryClient`에 앱 전체에서 사용할 쿼리 함수를 지정해 준다.
 
 ```jsx
-// 사용 예시 (1)
-const useSuperHeroData = () => {
-  return useQuery(["superheroes"]); // 2번째 인자에 queryFn을 넣지 않는다.
+// 사용 예시
+const useSuperHeroData = (heroId: string) => {
+  return useQuery(["superheroes", heroId]);
 };
+```
 
-// 사용 예시 (2)
-const useSuperHeroDetailData = (heroId: string) => {
-  return useQuery([`superheroes/${heroId}`]);
+```jsx
+// 다음 형태 불가능
+const useSuperHeroData = (heroId: string) => {
+  return useQuery(["superheroes", heroId], () => getSuperHero(heroId));
 };
 ```
 
