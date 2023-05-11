@@ -249,9 +249,9 @@ result.isLoading
 
 ```jsx
 // 실제 예제
-const getAllSuperHero = useCallback(() => {
-  return axios.get("http://localhost:4000/superheroes");
-}, []);
+const getAllSuperHero = async () => {
+  return await axios.get("http://localhost:4000/superheroes");
+};
 
 const { data, isLoading } = useQuery(["super-heroes"], getAllSuperHero);
 ```
@@ -264,10 +264,10 @@ const { data, isLoading } = useQuery(["super-heroes"], getAllSuperHero);
 
 ```jsx
 // (1)
-const getSuperHero = ({ queryKey }: any) => {
+const getSuperHero = async ({ queryKey }: any) => {
   const heroId = queryKey[1]; // queryKey: ['super-hero', '3']
 
-  return axios.get(`http://localhost:4000/superheroes/${heroId}`);
+  return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 
 const useSuperHeroData = (heroId: string) => {
@@ -289,8 +289,8 @@ const useSuperHeroData = (heroId: string) => {
 
 ```jsx
 // (2)
-const getSuperHero = (heroId: string) => {
-  return axios.get(`http://localhost:4000/superheroes/${heroId}`);
+const getSuperHero = async (heroId: string) => {
+  return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 
 const useSuperHeroData = (heroId: string) => {
@@ -607,8 +607,10 @@ return (
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
-const fetchColors = (pageNum: number) => {
-  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageNum}`);
+const fetchColors = async (pageNum: number) => {
+  return await axios.get(
+    `http://localhost:4000/colors?_limit=2&_page=${pageNum}`
+  );
 };
 
 const { isLoading, isError, error, data, isFetching, isPreviousData } =
@@ -820,8 +822,10 @@ useEffect(() => {
 import { useInfiniteQuery } from "react-query";
 // import { useInfiniteQuery } from '@tanstack/react-query' v4
 
-const fetchColors = ({ pageParam = 1 }) => {
-  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageParam}`);
+const fetchColors = async ({ pageParam = 1 }) => {
+  return await axios.get(
+    `http://localhost:4000/colors?_limit=2&_page=${pageParam}`
+  );
 };
 
 const InfiniteQueries = () => {
@@ -897,10 +901,10 @@ const { data } = useInfiniteQuery(["colors"], fetchColors, {
  * pageParam
  * { page, etc }
  */
-const fetchColors = ({ pageParam }) => {
+const fetchColors = async ({ pageParam }) => {
   const { page = 1, etc } = pageParam;
 
-  return axios.get(`http://localhost:4000/colors?_limit=2&_page=${page}`);
+  return await axios.get(`http://localhost:4000/colors?_limit=2&_page=${page}`);
 };
 ```
 
@@ -1265,10 +1269,10 @@ function App() {
 
 ```jsx
 // 기본 쿼리 함수
-const getSuperHero = ({ queryKey }: any) => {
+const getSuperHero = async ({ queryKey }: any) => {
   const heroId = queryKey[1];
 
-  return axios.get(`http://localhost:4000/superheroes/${heroId}`);
+  return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 
 const queryClient = new QueryClient({
