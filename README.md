@@ -249,11 +249,11 @@ result.isLoading
 
 ```jsx
 // 실제 예제
-const getSuperHero = useCallback(() => {
+const getAllSuperHero = useCallback(() => {
   return axios.get("http://localhost:4000/superheroes");
 }, []);
 
-const { data, isLoading } = useQuery(["super-heroes"], getSuperHero);
+const { data, isLoading } = useQuery(["super-heroes"], getAllSuperHero);
 ```
 
 - useQuery는 기본적으로 3개의 인자를 받는다. 첫 번째 인자가 `queryKey(필수)`, 두 번째 인자가 `queryFn(필수)`, 세 번째 인자가 `options(optional)`이다.
@@ -264,14 +264,15 @@ const { data, isLoading } = useQuery(["super-heroes"], getSuperHero);
 
 ```jsx
 // (1)
-const fetchSuperHero = ({ queryKey }: any) => {
+const getSuperHero = ({ queryKey }: any) => {
   const heroId = queryKey[1]; // queryKey: ['super-hero', '3']
+
   return axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 
 const useSuperHeroData = (heroId: string) => {
   // 해당 쿼리는 heroId에 의존
-  return useQuery(["super-hero", heroId], fetchSuperHero);
+  return useQuery(["super-hero", heroId], getSuperHero);
 };
 ```
 
@@ -288,19 +289,19 @@ const useSuperHeroData = (heroId: string) => {
 
 ```jsx
 // (2)
-const fetchSuperHero = (heroId: string) => {
+const getSuperHero = (heroId: string) => {
   return axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 
 const useSuperHeroData = (heroId: string) => {
-  return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId));
+  return useQuery(["super-hero", heroId], () => getSuperHero(heroId));
 };
 ```
 
 - useQuery의 두 번째 인자인 queryFn는 `Promise`를 반환하는 함수를 넣어야한다.
 - 참고로, queryKey의 예제와 queryFn 예제가 `약간 차이점`이 있다.
-  - queryKey 예제는 2번째 queryFn에 fetchSuperHero 함수를 바로 넘겨주고, fetchSuperHero에서 매개 변수로 객체를 받아와 해당 객체의 queryKey를 활용하고 있다.
-  - queryFn 예제는 그냥 2번째 queryFn에 화살표 함수를 사용하고, fetchSuperHero의 인자로 heroId를 넘겨주고 있다.
+  - queryKey 예제는 2번째 queryFn에 getSuperHero 함수를 바로 넘겨주고, getSuperHero에서 매개 변수로 객체를 받아와 해당 객체의 queryKey를 활용하고 있다.
+  - queryFn 예제는 그냥 2번째 queryFn에 화살표 함수를 사용하고, getSuperHero의 인자로 heroId를 넘겨주고 있다.
   - 해당 두 가지 방법은 모두 알아야되고, 결과는 동일하다.
 
 <br />
@@ -314,7 +315,7 @@ const useSuperHeroData = (heroId: string) => {
 ```js
 // 예
 const useSuperHeroData = (heroId: string) => {
-  return useQuery(["super-hero", heroId], () => fetchSuperHero(heroId), {
+  return useQuery(["super-hero", heroId], () => getSuperHero(heroId), {
     staleTime: 3000,
     cacheTime: 5000,
     retry: 1,
@@ -391,7 +392,7 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
-  ["super-heroes"],
+  ["super-hero"],
   getSuperHero,
   {
     cacheTime: 3000,
@@ -426,7 +427,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
-  ["super-heroes"],
+  ["super-hero"],
   getSuperHero,
   {
     refetchOnMount: true,
@@ -447,7 +448,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
-  ["super-heroes"],
+  ["super-hero"],
   getSuperHero,
   {
     refetchOnWindowFocus: true,
@@ -467,7 +468,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
-  ["super-heroes"],
+  ["super-hero"],
   getSuperHero,
   {
     refetchInterval: 2000,
@@ -489,7 +490,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  ["super-heroes"],
+  ["super-hero"],
   getSuperHero,
   {
     enabled: false,
@@ -553,7 +554,7 @@ const onSettled = useCallback(() => {
 }, []);
 
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  ["super-heroes"],
+  ["super-hero"],
   getSuperHero,
   {
     onSuccess,
@@ -575,7 +576,7 @@ const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  ["super-heroes"],
+  ["super-hero"],
   getSuperHero,
   {
     onSuccess,
@@ -644,7 +645,7 @@ function Todos() {
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
-const { data: superHeroes } = useQuery(["super-heroes"], fetchSuperHeroes);
+const { data: superHeroes } = useQuery(["super-hero"], getSuperHero);
 const { data: friends } = useQuery(["friends"], fetchFriends);
 ```
 
@@ -656,7 +657,7 @@ const { data: friends } = useQuery(["friends"], fetchFriends);
 const queryResults = useQueries(
   heroIds.map((id) => ({
     queryKey: ["super-hero", id],
-    queryFn: () => fetchSuperHero(id),
+    queryFn: () => getSuperHero(id),
   }))
 );
 /*
@@ -999,13 +1000,14 @@ try {
 
 ```jsx
 const query = useQuery(["super-heroes"], {
-  /* options */
+  /* ...options */
 });
 
 const queryClient = useQueryClient();
 
 const onCancelQuery = (e) => {
   e.preventDefault();
+
   queryClient.cancelQueries(["super-heroes"]);
 };
 
@@ -1062,6 +1064,7 @@ queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
 ```tsx
 const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
+
   return useMutation(addSuperHero, {
     onSuccess(data) {
       queryClient.setQueryData(["super-heroes"], (oldData: any) => {
@@ -1262,9 +1265,10 @@ function App() {
 
 ```jsx
 // 기본 쿼리 함수
-const getSuperHero = async ({ queryKey }: any) => {
+const getSuperHero = ({ queryKey }: any) => {
   const heroId = queryKey[1];
-  return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
+
+  return axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 
 const queryClient = new QueryClient({
@@ -1288,14 +1292,14 @@ function App() {
 ```jsx
 // 사용 예시
 const useSuperHeroData = (heroId: string) => {
-  return useQuery(["superheroes", heroId]);
+  return useQuery(["super-hero", heroId]);
 };
 ```
 
 ```jsx
 // 다음 형태 불가능
 const useSuperHeroData = (heroId: string) => {
-  return useQuery(["superheroes", heroId], () => getSuperHero(heroId));
+  return useQuery(["super-hero", heroId], () => getSuperHero(heroId));
 };
 ```
 
