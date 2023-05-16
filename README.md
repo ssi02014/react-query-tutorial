@@ -405,10 +405,10 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
 - `cacheTime`의 기본값은 `300000ms`, 즉 5분이다. 
-- `staleTime`의 기본값은 `0ms`, 즉 0초이며, 이는 한번 fetch 된 데이터는 기본적으로 곧바로 `stale` 상태가 되는 것이다.
-- 만약 `staleTime`이 `cacheTime`보다 큰 값을 가지게 되면 어떻게 될까? 만약 `staleTime`이 `10분`, `cacheTime`이 `5분`이라고 가정해보자.
-  - `staleTime`에 의해 데이터는 `10분` 동안 `fresh`한 상태로 간주된다. 그러다 `10분`이 지나게 되면 `stale`한 상태가 되며, 따라서 query는 백그라운드에서 refetching을 시도한다.
-  - 그런데, `cacheTime`은 `5분`으로 설정이 돼 있다. 즉, 이미 `5분`이 지난 시점에 query의 `key`에 해당하는 데이터는 삭제되고, Garbage Collector에 의해 메모리의 할당이 해제된 것이다. 그렇다면 query는 다시 네트워크를 통해 데이터를 fetch해야 하는 것이다.
+- `staleTime`의 기본값은 `0ms`, 즉 0초이며, 이는 한번 fetch 된 데이터는 기본적으로 곧바로 `stale` 상태가 되는 것을 의미한다.
+- 만약 `staleTime`이 `cacheTime`보다 큰 값을 가지게 되면 어떻게 될까? 예를 들어, `staleTime`이 `10분`, `cacheTime`이 `5분`이라고 가정해보자.
+  - `staleTime`에 의해 데이터는 `10분`동안 `fresh`한 상태로 간주된다. 그러다 `10분`이 지나게 되면 `stale`한 상태가 되며, 그 즉시 query는 백그라운드에서 refetching을 시도한다.
+  - 그런데, `cacheTime`은 `5분`으로 설정이 돼 있다. 즉, 이미 `5분`이 지난 시점에 query의 `key`에 해당하는 데이터는 삭제되었고, Garbage Collector에 의해 메모리의 할당이 해제된 상태이다. 따라서 query는 다시 네트워크를 통해 데이터를 fetch해야 한다.
 - 만약 `cacheTime`이 `staleTime`보다 더 큰 값을 가지게 되면 어떻게 될까? `staleTime`이 지나 데이터가 `stale` 상태가 되면, 아직 유효한 cache로부터 데이터를 가져오면 되기 때문에, 네트워크 요청이 필요하지 않게 되며, cache의 기능을 제대로 활용한 동작이 된다.
 - 즉, `cacheTime`의 값을 `staleTime`의 값보다 크게 설정하는 것이 바람직하다고 할 수 있다. 
 
