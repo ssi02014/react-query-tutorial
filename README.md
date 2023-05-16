@@ -188,10 +188,12 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 - v4부터는 devtools를 위한 별도의 패키지 설치가 필요하다.
 
-```
-npm i @tanstack/react-query-devtools
-or
-yarn add @tanstack/react-query-devtools
+```bash
+$ npm i @tanstack/react-query-devtools
+# or
+$ pnpm add @tanstack/react-query-devtools
+# or
+$ yarn add @tanstack/react-query-devtools
 ```
 
 ```js
@@ -222,7 +224,7 @@ function App() {
 * Garbage Collection(가비지 컬렉션)
 ```
 
-- cacheTime의 기본값 5분, staleTime 기본값 0분을 가정
+- `cacheTime`의 기본값 5분, `staleTime` 기본값 0초를 가정
 
 1. `A`라는 queryKey를 가진 A 쿼리 인스턴스가 `mount`됨
 2. 네트워크에서 데이터 fetch하고, 불러온 데이터는 A라는 queryKey로 `캐싱`함
@@ -328,8 +330,8 @@ const useSuperHeroData = (heroId: string) => {
 // 예
 const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId], () => getSuperHero(heroId), {
-    staleTime: 3000,
-    cacheTime: 5000,
+    cacheTime: 5 * 60 * 1000, // 5분
+    staleTime: 1 * 60 * 1000, // 1분
     retry: 1,
     // ...options
   });
@@ -390,12 +392,22 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 <br />
 
+### `cacheTime`과 `staleTime`중 어떤 값을 더 크게 해야할까?
+- `cacheTime`의 기본값은 `300000ms`, 즉 5분이다. 
+- `staleTime`의 기본값은 `0ms`, 즉 0초이며, 이는 한번 fetch 된 데이터는 기본적으로 곧바로 `stale` 상태가 되는 것이다.
+- 만약 `staleTime`이 `cacheTime`보다 큰 값을 가지게 되면 어떻게 될까? 만약 `staleTime`이 `10분`, `cacheTime`이 `5분`이라고 가정해보자.
+  - `staleTime`에 의해 데이터는 `10분` 동안 `fresh`한 상태로 간주된다. 그러다 `10분`이 지나게 되면 `stale`한 상태가 되며, 따라서 query는 백그라운드에서 refetching을 시도한다.
+  - 그런데, `cacheTime`은 `5분`으로 설정이 돼 있다. 즉, 이미 `5분`이 지난 시점에 query의 `key`에 해당하는 데이터는 삭제되고, Garbage Collector에 의해 메모리의 할당이 해제된 것이다. 그렇다면 query는 다시 네트워크를 통해 데이터를 fetch해야 하는 것이다.
+- 만약 `cacheTime`이 `staleTime`보다 더 큰 값을 가지게 되면 어떻게 될까? `staleTime`이 지나 데이터가 `stale` 상태가 되면, 아직 유효한 cache로부터 데이터를 가져오면 되기 때문에, 네트워크 요청이 필요하지 않게 되며, cache의 기능을 제대로 활용한 동작이 된다.
+- 즉, `cacheTime`의 값을 `staleTime`의 값보다 크게 설정하는 것이 바람직하다고 할 수 있다. 
+
+<br/>   
+
 ## useQuery 주요 옵션
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [useQuery v4](https://tanstack.com/query/v4/docs/react/reference/useQuery)
-- 아래 예제들 제외하고 추가적인 옵션들은 위 사이트 참고
+- 추가적인 옵션들은 [useQuery v4 공식 문서](https://tanstack.com/query/v4/docs/react/reference/useQuery) 참고
 
 ### staleTime과 cacheTime
 
@@ -407,8 +419,8 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
   getSuperHero,
   {
-    cacheTime: 3000,
-    staleTime: 50000,
+    cacheTime: 5 * 60 * 1000, // 5분
+    staleTime: 1 * 60 * 1000, // 1분
   }
 );
 ```
@@ -545,40 +557,6 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 - retry가 `false`인 경우, 실패한 쿼리는 기본적으로 다시 시도하지 않는다.
 - `true`인 경우에는 실패한 쿼리에 대해서 무한 재요청을 시도한다.
 - 값으로 `숫자`를 넣을 경우, 실패한 쿼리가 해당 숫자를 충족할 때까지 요청을 재시도한다.
-
-<br />
-
-### onSuccess onError onSettled
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
-```jsx
-const onSuccess = useCallback((data) => {
-  console.log("Success", data);
-}, []);
-
-const onError = useCallback((err) => {
-  console.log("Error", err);
-}, []);
-
-const onSettled = useCallback(() => {
-  console.log("Settled");
-}, []);
-
-const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  ["super-hero"],
-  getSuperHero,
-  {
-    onSuccess,
-    onError,
-    onSettled,
-  }
-);
-```
-
-- `onSuccess` 함수는 쿼리 요청이 성공적으로 진행돼서 새 데이터를 가져오거나 캐시가 업데이트될 때마다 실행된다.
-- `onError` 함수는 쿼리에 오류가 발생하고 오류가 전달되면 실행된다.
-- `onSettled` 함수는 쿼리 요청이 성공, 실패 모두 실행된다.
 
 <br />
 
@@ -944,6 +922,8 @@ refetch({ refetchPage: (page, index) => index === 0 });
 
 ## useMutation
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - [useMutation v4](https://tanstack.com/query/v4/docs/react/reference/useMutation)
 - react-query에서 기본적으로 서버에서 데이터를 Get 할 때는 useQuery를 사용한다.
 - 만약 서버의 data를 post, patch, put, delete와 같이 수정하고자 한다면 이때는 useMutation을 이용한다.
@@ -1060,9 +1040,9 @@ const useAddSuperHeroData = () => {
 
 - 만약 무효화 하려는 키가 여러 개라면 아래 예제와 같이 다음과 같이 배열로 보내주면 된다.
 
-```tsx
-queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
-```
+    ```tsx
+    queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
+    ```
 
 - 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
   - [Disabling/Pausing Queries](https://tanstack.com/query/v4/docs/guides/disabling-queries?from=reactQueryV3&original=https://react-query-v3.tanstack.com/guides/disabling-queries) 참고
@@ -1163,11 +1143,13 @@ const useAddSuperHeroData = () => {
 
 - `useQueryErrorResetBoundary`는 `ErrorBoundary`와 함께 사용되는데 이는, 기본적으로 리액트 공식문서에서 기본 코드 베이스가 제공되긴 하지만 좀 더 쉽게 활용할 수 있는 `react-error-boundary` 라이브러리가 존재하고, react-query 공식문서에서도 해당 라이브러리 사용을 예시로 제공해주기 때문에 `react-error-boundary`를 설치해서 사용해보자.
 
-```
-npm i react-error-boundary
-또는
-yarn add react-error-boundary
-```
+    ```bash
+    $ npm i react-error-boundary
+    # or
+    $ pnpm add react-error-boundary
+    # or
+    $ yarn add react-error-boundary
+    ```
 
 - 설치 후에 아래와 같은 QueryErrorBoundary라는 컴포넌트를 생성하고, 그 내부에 `useQueryErrorResetBoundary` 훅을 호출해 `reset` 함수를 가져온다.
 - 아래 코드 내용은 단순하다.
@@ -1335,11 +1317,12 @@ const useSuperHeroData = (heroId: string) => {
 
 ### useQuery
 
-- 현재 useQuery가 갖고 있는 제네릭은 `4개`이며, 다음과 같다.
-  1. TQueryFnData: useQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
-  2. TError: query function의 `error` 형식을 정하는 제네릭 타입이다.
-  3. TData: useQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
-  4. TQueryKey: useQuery의 첫 번째 인자로 주는 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
+현재 useQuery가 갖고 있는 제네릭은 `4개`이며, 다음과 같다.
+
+1. TQueryFnData: useQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
+2. TError: query function의 `error` 형식을 정하는 제네릭 타입이다.
+3. TData: useQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
+4. TQueryKey: useQuery의 첫 번째 인자로 주는 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
 
 ```ts
 // useQuery의 타입
@@ -1374,14 +1357,14 @@ const { data } = useQuery<
 
 ### useMutation
 
-- useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
-  1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
-     - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
-  2. TError: useMutaion에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
-  3. TVariables: `mutate 함수`에 전달 할 인자를 지정하는 제네릭 타입이다.
-     - onSuccess(2번째 인자), onError(2번째 인자), onMutate(1번째 인자), onSettled(3번째 인자) 인자의 타입으로 활용된다.
-  4. TContext: mutation function을 실행하기 전에 수행하는 `onMutate 함수의 return값`을 지정하는 제네릭 타입이다.
-     - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
+useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
+1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
+    - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
+2. TError: useMutaion에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
+3. TVariables: `mutate 함수`에 전달 할 인자를 지정하는 제네릭 타입이다.
+    - onSuccess(2번째 인자), onError(2번째 인자), onMutate(1번째 인자), onSettled(3번째 인자) 인자의 타입으로 활용된다.
+4. TContext: mutation function을 실행하기 전에 수행하는 `onMutate 함수의 return값`을 지정하는 제네릭 타입이다.
+    - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
 
 ```ts
 export function useMutaion<
