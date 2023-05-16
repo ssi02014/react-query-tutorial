@@ -35,6 +35,7 @@
   - [useQuery 주요 리턴 데이터](#usequery-주요-리턴-데이터)
   - [v4부터는 status의 idle 상태값이 제거되고 fetchStatus가 추가](#v4부터는-status의-idle-상태값이-제거되고-fetchstatus가-추가)
   - [v4부터는 왜 status, fetchStatus 나눠서 다루는 걸까?](#v4부터는-왜-status-fetchstatus-나눠서-다루는-걸까)
+  - [cacheTime과 staleTime중 어떤 값을 더 크게 해야할까?](#cachetime과-staletime-중-어떤-값을-더-크게-해야할까)
 - [useQuery 주요 옵션](#usequery-주요-옵션)
   - [staleTime과 cacheTime](#staletime과-cachetime)
   - [refetchOnMount](#refetchonmount)
@@ -42,7 +43,6 @@
   - [Polling](#polling)
   - [enabled refetch](#enabled-refetch)
   - [retry](#retry)
-  - [onSuccess onError onSettled](#onsuccess-onerror-onsettled)
   - [select](#select)
   - [keepPreviousData](#keeppreviousdata)
   - [placeholderData](#placeholderdata)
@@ -175,6 +175,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 ### options
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - initialIsOpen (Boolean)
   - `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
 - position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
@@ -185,6 +187,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 <br />
 
 ### v4
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - v4부터는 devtools를 위한 별도의 패키지 설치가 필요하다.
 
@@ -370,6 +374,8 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 ### v4부터는 status의 idle 상태값이 제거되고 fetchStatus가 추가
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - TanStack Query(v4) 부터는 status의 `idle이 제거`되고, 새로운 상태값인 `fetchStatus`가 추가됐다.
 - fetchStatus
   - fetching: 쿼리가 현재 실행중이다.
@@ -379,6 +385,8 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 <br />
 
 ### v4부터는 왜 status, fetchStatus 나눠서 다루는 걸까?
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - fetchStatus는 HTTP 네트워크 연결 상태와 좀 더 관련된 상태 데이터이다.
   - 예를 들어, status가 `success` 상태라면 주로 fetchStatus는 `idle` 상태지만, 백그라운드에서 re-fetch가 발생할 때 `fetching` 상태일 수 있다.
@@ -392,7 +400,10 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 <br />
 
-### `cacheTime`과 `staleTime`중 어떤 값을 더 크게 해야할까?
+### cacheTime과 staleTime 중 어떤 값을 더 크게 해야할까?
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - `cacheTime`의 기본값은 `300000ms`, 즉 5분이다. 
 - `staleTime`의 기본값은 `0ms`, 즉 0초이며, 이는 한번 fetch 된 데이터는 기본적으로 곧바로 `stale` 상태가 되는 것이다.
 - 만약 `staleTime`이 `cacheTime`보다 큰 값을 가지게 되면 어떻게 될까? 만약 `staleTime`이 `10분`, `cacheTime`이 `5분`이라고 가정해보자.
@@ -410,6 +421,8 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 - 추가적인 옵션들은 [useQuery v4 공식 문서](https://tanstack.com/query/v4/docs/react/reference/useQuery) 참고
 
 ### staleTime과 cacheTime
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다.
 - fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미이다.
@@ -977,6 +990,8 @@ try {
 
 ### mutate와 mutateAsync는 무엇을 사용하는게 좋을까?
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - 대부분의 경우 우리는 mutate를 사용하는 것이 유리하다. 왜냐하면 mutate는 콜백(onSuccess, onError)를 통해 data와 error에 접근할 수 있기 때문에 우리가 특별히 핸들링 해 줄 필요가 없다.
 - 하지만 mutateAsync는 Promise를 직접 다루기 때문에 이런 에러 핸들링 같은 부분을 직접 다뤄야한다.
   - 만약 이를 다루지 않으면 `unhandled promise rejection` 에러가 발생 할 수 있다.
@@ -1317,6 +1332,8 @@ const useSuperHeroData = (heroId: string) => {
 
 ### useQuery
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 현재 useQuery가 갖고 있는 제네릭은 `4개`이며, 다음과 같다.
 
 1. TQueryFnData: useQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
@@ -1356,6 +1373,8 @@ const { data } = useQuery<
 <br />
 
 ### useMutation
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
 1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
