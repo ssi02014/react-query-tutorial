@@ -53,17 +53,17 @@ const queryClient = new QueryClient({
 
 ### 📃 목차
 
-1. [queryClient.useQueryClient](#useQueryClient)
-2. [queryClient.getQueryData](#getQueryData)
-3. [queryClient.getQueriesData](#getQueriesData)
-4. [queryClient.setQueryData](#setQueryData)
-5. [queryClient.setQueriesData](#setQueriesData)
-6. [queryClient.invalidateQueries](#invalidateQueries)
-7. [queryClient.refetchQueries](#refetchQueries)
-8. [queryClient.cancelQueries](#cancelQueries)
-9. [queryClient.removeQueries](#removeQueries)
-10. [queryClient.resetQueries](#resetQueries)
-11. [queryClient.clear](#clear)
+- [queryClient.useQueryClient](#useQueryClient)
+- [queryClient.getQueryData](#getQueryData)
+- [queryClient.getQueriesData](#getQueriesData)
+- [queryClient.setQueryData](#setQueryData)
+- [queryClient.setQueriesData](#setQueriesData)
+- [queryClient.invalidateQueries](#invalidateQueries)
+- [queryClient.refetchQueries](#refetchQueries)
+- [queryClient.cancelQueries](#cancelQueries)
+- [queryClient.removeQueries](#removeQueries)
+- [queryClient.resetQueries](#resetQueries)
+- [queryClient.clear](#clear)
 
 <br />
 
