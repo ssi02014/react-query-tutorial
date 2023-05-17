@@ -28,13 +28,13 @@
 4. [React Query 캐싱 라이프 사이클](#캐싱-라이프-사이클)
 5. [useQuery](#usequery)
 6. [useQuery 주요 리턴 데이터](#usequery-주요-리턴-데이터)
-7. [staleTime과 cacheTime](#staletime-cachetime)
+7. [staleTime과 cacheTime](#staletime과-cachetime)
 8. [마운트 될 때마다 재요청하는 refetchOnMount](#refetchonmount)
 9. [윈도우가 포커싱 될 때마다 재요청하는 refetchOnWindowFocus](#refetchonwindowfocus)
 10. [Polling 방식을 구현하기 위한 refetchInterval와 refetchIntervalInBackground)](#polling)
 11. [자동 실행의 enabled와 수동으로 쿼리를 다시 요청하는 refetch](#enabled-refetch)
 12. [실패한 쿼리에 대해 재요청하는 retry](#retry)
-13. [onSuccess, onError, onSettled Callback](#onsuccess-onerror-onsettled)
+13. [onSuccess, onError, onSettled](#onsuccess-onerror-onsettled)
 14. [select를 이용한 데이터 변환](#select)
 15. [Paginated 구현에 유용한 keepPreviousData](#keeppreviousdata)
 16. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
@@ -176,10 +176,12 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 - v4부터는 devtools를 위한 별도의 패키지 설치가 필요하다.
 
-```
-npm i @tanstack/react-query-devtools
-or
-yarn add @tanstack/react-query-devtools
+```bash
+$ npm i @tanstack/react-query-devtools
+# or
+$ pnpm add @tanstack/react-query-devtools
+# or
+$ yarn add @tanstack/react-query-devtools
 ```
 
 ```js
@@ -210,7 +212,7 @@ function App() {
 * Garbage Collection(가비지 컬렉션)
 ```
 
-- cacheTime의 기본값 5분, staleTime 기본값 0분을 가정
+- `cacheTime`의 기본값 5분, `staleTime` 기본값 0초를 가정
 
 1. `A`라는 queryKey를 가진 A 쿼리 인스턴스가 `mount`됨
 2. 네트워크에서 데이터 fetch하고, 불러온 데이터는 A라는 queryKey로 `캐싱`함
@@ -224,8 +226,6 @@ function App() {
 ## useQuery
 
 ### useQuery 기본 문법
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - [useQuery v4](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 
@@ -316,8 +316,8 @@ const useSuperHeroData = (heroId: string) => {
 // 예
 const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId], () => getSuperHero(heroId), {
-    staleTime: 3000,
-    cacheTime: 5000,
+    cacheTime: 5 * 60 * 1000, // 5분
+    staleTime: 1 * 60 * 1000, // 1분
     retry: 1,
     // ...options
   });
@@ -327,8 +327,6 @@ const useSuperHeroData = (heroId: string) => {
 <br />
 
 ### useQuery 주요 리턴 데이터
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```js
 const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
@@ -382,10 +380,9 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [useQuery v4](https://tanstack.com/query/v4/docs/react/reference/useQuery)
-- 아래 예제들 제외하고 추가적인 옵션들은 위 사이트 참고
+- 추가적인 옵션들은 [useQuery v4 공식 문서](https://tanstack.com/query/v4/docs/react/reference/useQuery) 참고
 
-### staleTime cacheTime
+### staleTime과 cacheTime
 
 - stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다.
 - fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미이다.
@@ -395,8 +392,8 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
   getSuperHero,
   {
-    cacheTime: 3000,
-    staleTime: 50000,
+    cacheTime: 5 * 60 * 1000, // 5분
+    staleTime: 1 * 60 * 1000, // 1분
   }
 );
 ```
@@ -423,8 +420,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### refetchOnMount
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
@@ -444,8 +439,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### refetchOnWindowFocus
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
@@ -463,8 +456,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 <br />
 
 ### Polling
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -485,8 +476,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 <br />
 
 ### enabled refetch
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
@@ -520,8 +509,6 @@ return (
 
 ### retry
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const result = useQuery(["todos", 1], fetchTodoListPage, {
   retry: 10, // 오류를 표시하기 전에 실패한 요청을 10번 재시도합니다.
@@ -536,9 +523,9 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 
 <br />
 
-### onSuccess onError onSettled
+### onSuccess, onError, onSettled
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
+_NOTE_: 위 Callback은 `useQuery` 옵션에서 [`@Deprecated`되어 삭제될 예정](https://github.com/TanStack/query/pull/5353)(v5에 반영)이다. 단, `useMutation`에서는 사용 가능하다.
 
 ```jsx
 const onSuccess = useCallback((data) => {
@@ -572,8 +559,6 @@ const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
 
 ### select
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
   ["super-hero"],
@@ -604,8 +589,6 @@ return (
 
 ### keepPreviousData
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const fetchColors = async (pageNum: number) => {
   return await axios.get(
@@ -626,8 +609,6 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 <br />
 
 ### placeholderData
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```js
 function Todos() {
@@ -932,6 +913,8 @@ refetch({ refetchPage: (page, index) => index === 0 });
 
 ## useMutation
 
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
 - [useMutation v4](https://tanstack.com/query/v4/docs/react/reference/useMutation)
 - react-query에서 기본적으로 서버에서 데이터를 Get 할 때는 useQuery를 사용한다.
 - 만약 서버의 data를 post, patch, put, delete와 같이 수정하고자 한다면 이때는 useMutation을 이용한다.
@@ -1151,10 +1134,12 @@ const useAddSuperHeroData = () => {
 
 - `useQueryErrorResetBoundary`는 `ErrorBoundary`와 함께 사용되는데 이는, 기본적으로 리액트 공식문서에서 기본 코드 베이스가 제공되긴 하지만 좀 더 쉽게 활용할 수 있는 `react-error-boundary` 라이브러리가 존재하고, react-query 공식문서에서도 해당 라이브러리 사용을 예시로 제공해주기 때문에 `react-error-boundary`를 설치해서 사용해보자.
 
-```
-npm i react-error-boundary
-또는
-yarn add react-error-boundary
+```bash
+$ npm i react-error-boundary
+# or
+$ pnpm add react-error-boundary
+# or
+$ yarn add react-error-boundary
 ```
 
 - 설치 후에 아래와 같은 QueryErrorBoundary라는 컴포넌트를 생성하고, 그 내부에 `useQueryErrorResetBoundary` 훅을 호출해 `reset` 함수를 가져온다.
@@ -1323,11 +1308,12 @@ const useSuperHeroData = (heroId: string) => {
 
 ### useQuery
 
-- 현재 useQuery가 갖고 있는 제네릭은 `4개`이며, 다음과 같다.
-  1. TQueryFnData: useQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
-  2. TError: query function의 `error` 형식을 정하는 제네릭 타입이다.
-  3. TData: useQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
-  4. TQueryKey: useQuery의 첫 번째 인자로 주는 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
+현재 useQuery가 갖고 있는 제네릭은 `4개`이며, 다음과 같다.
+
+1. TQueryFnData: useQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
+2. TError: query function의 `error` 형식을 정하는 제네릭 타입이다.
+3. TData: useQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
+4. TQueryKey: useQuery의 첫 번째 인자로 주는 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
 
 ```ts
 // useQuery의 타입
@@ -1362,14 +1348,15 @@ const { data } = useQuery<
 
 ### useMutation
 
-- useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
-  1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
-     - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
-  2. TError: useMutaion에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
-  3. TVariables: `mutate 함수`에 전달 할 인자를 지정하는 제네릭 타입이다.
-     - onSuccess(2번째 인자), onError(2번째 인자), onMutate(1번째 인자), onSettled(3번째 인자) 인자의 타입으로 활용된다.
-  4. TContext: mutation function을 실행하기 전에 수행하는 `onMutate 함수의 return값`을 지정하는 제네릭 타입이다.
-     - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
+useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
+
+1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
+    - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
+2. TError: useMutaion에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
+3. TVariables: `mutate 함수`에 전달 할 인자를 지정하는 제네릭 타입이다.
+    - onSuccess(2번째 인자), onError(2번째 인자), onMutate(1번째 인자), onSettled(3번째 인자) 인자의 타입으로 활용된다.
+4. TContext: mutation function을 실행하기 전에 수행하는 `onMutate 함수의 return값`을 지정하는 제네릭 타입이다.
+    - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
 
 ```ts
 export function useMutaion<
