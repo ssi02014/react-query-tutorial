@@ -22,48 +22,36 @@
 
 ## 주요 컨셉 및 가이드 목차
 
-- [📃 React Query 개요 및 기능](#📃-react-query-개요-및-기능)
-  - [개요](#개요)
-  - [기능](#기능)
-- [React Query 기본 설정](#react-query-기본-설정)
-- [Devtools](#devtools)
-  - [options](#options)
-  - [v4](#v4)
-- [캐싱 라이프 사이클](#캐싱-라이프-사이클)
-- [useQuery](#usequery)
-  - [useQuery 기본 문법](#usequery-기본-문법)
-  - [useQuery 주요 리턴 데이터](#usequery-주요-리턴-데이터)
-  - [v4부터는 status의 idle 상태값이 제거되고 fetchStatus가 추가](#v4부터는-status의-idle-상태값이-제거되고-fetchstatus가-추가)
-  - [v4부터는 왜 status, fetchStatus 나눠서 다루는 걸까?](#v4부터는-왜-status-fetchstatus-나눠서-다루는-걸까)
-  - [cacheTime과 staleTime중 어떤 값을 더 크게 해야할까?](#cachetime과-staletime-중-어떤-값을-더-크게-해야할까)
-- [useQuery 주요 옵션](#usequery-주요-옵션)
-  - [staleTime과 cacheTime](#staletime과-cachetime)
-  - [refetchOnMount](#refetchonmount)
-  - [refetchOnWindowFocus](#refetchonwindowfocus)
-  - [Polling](#polling)
-  - [enabled refetch](#enabled-refetch)
-  - [retry](#retry)
-  - [select](#select)
-  - [keepPreviousData](#keeppreviousdata)
-  - [placeholderData](#placeholderdata)
-- [Parallel](#parallel)
-- [Dependent Queries](#dependent-queries)
-- [useQueryClient](#usequeryclient)
-- [Initial Query Data](#initial-query-data)
-- [Prefetching](#prefetching)
-- [Infinite Queries](#infinite-queries)
-- [useMutation](#usemutation)
-  - [mutate와 mutateAsync는 무엇을 사용하는게 좋을까?](#mutate와-mutateasync는-무엇을-사용하는게-좋을까)
-- [cancelQueries](#cancelqueries)
-- [쿼리 무효화](#쿼리-무효화)
-- [캐시 데이터 즉시 업데이트](#캐시-데이터-즉시-업데이트)
-- [Optimistic Update](#optimistic-update)
-- [useQueryErrorResetBoundary](#usequeryerrorresetboundary)
-- [Suspense](#suspense)
-- [Default Query Function](#default-query-function)
-- [React Query Typescript](#react-query-typescript)
-  - [useQuery](#usequery-1)
-  - [useMutation](#usemutation-1)
+1. [React Query 개요 및 기능](#개요)
+2. [기본 설정(QueryClientProvider, QueryClient)](#react-query-기본-설정)
+3. [React Query Devtools](#devtools)
+4. [React Query 캐싱 라이프 사이클](#캐싱-라이프-사이클)
+5. [useQuery](#usequery)
+6. [useQuery 주요 리턴 데이터](#usequery-주요-리턴-데이터)
+7. [staleTime과 cacheTime](#staletime과-cachetime)
+8. [마운트 될 때마다 재요청하는 refetchOnMount](#refetchonmount)
+9. [윈도우가 포커싱 될 때마다 재요청하는 refetchOnWindowFocus](#refetchonwindowfocus)
+10. [Polling 방식을 구현하기 위한 refetchInterval와 refetchIntervalInBackground)](#polling)
+11. [자동 실행의 enabled와 수동으로 쿼리를 다시 요청하는 refetch](#enabled-refetch)
+12. [실패한 쿼리에 대해 재요청하는 retry](#retry)
+13. [onSuccess, onError, onSettled](#onsuccess-onerror-onsettled)
+14. [select를 이용한 데이터 변환](#select)
+15. [Paginated 구현에 유용한 keepPreviousData](#keeppreviousdata)
+16. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
+17. [종속 쿼리(Dependent Queries)](#dependent-queries)
+18. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
+19. [초기 데이터를 설정할 수 있는 initialData](#initial-query-data)
+20. [데이터를 미리 불러오는 PreFetching](#prefetching)
+21. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
+22. [서버와 HTTP CUD관련 작업을 위한 useMutation](#usemutation)
+23. [쿼리 수동 무효화 cancelQueries](#cancelqueries)
+24. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
+25. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
+26. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
+27. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
+28. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
+29. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
+30. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
 
 <br />
 
@@ -175,8 +163,6 @@ import { ReactQueryDevtools } from "react-query/devtools";
 
 ### options
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 - initialIsOpen (Boolean)
   - `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
 - position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
@@ -187,8 +173,6 @@ import { ReactQueryDevtools } from "react-query/devtools";
 <br />
 
 ### v4
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - v4부터는 devtools를 위한 별도의 패키지 설치가 필요하다.
 
@@ -242,8 +226,6 @@ function App() {
 ## useQuery
 
 ### useQuery 기본 문법
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - [useQuery v4](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 
@@ -346,8 +328,6 @@ const useSuperHeroData = (heroId: string) => {
 
 ### useQuery 주요 리턴 데이터
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```js
 const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
   ["colors", pageNum],
@@ -374,8 +354,6 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 ### v4부터는 status의 idle 상태값이 제거되고 fetchStatus가 추가
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 - TanStack Query(v4) 부터는 status의 `idle이 제거`되고, 새로운 상태값인 `fetchStatus`가 추가됐다.
 - fetchStatus
   - fetching: 쿼리가 현재 실행중이다.
@@ -385,8 +363,6 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 <br />
 
 ### v4부터는 왜 status, fetchStatus 나눠서 다루는 걸까?
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - fetchStatus는 HTTP 네트워크 연결 상태와 좀 더 관련된 상태 데이터이다.
   - 예를 들어, status가 `success` 상태라면 주로 fetchStatus는 `idle` 상태지만, 백그라운드에서 re-fetch가 발생할 때 `fetching` 상태일 수 있다.
@@ -400,20 +376,6 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 <br />
 
-### cacheTime과 staleTime 중 어떤 값을 더 크게 해야할까?
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
-- `cacheTime`의 기본값은 `300000ms`, 즉 5분이다. 
-- `staleTime`의 기본값은 `0ms`, 즉 0초이며, 이는 한번 fetch 된 데이터는 기본적으로 곧바로 `stale` 상태가 되는 것을 의미한다.
-- 만약 `staleTime`이 `cacheTime`보다 큰 값을 가지게 되면 어떻게 될까? 예를 들어, `staleTime`이 `10분`, `cacheTime`이 `5분`이라고 가정해보자.
-  - `staleTime`에 의해 데이터는 `10분`동안 `fresh`한 상태로 간주된다. 그러다 `10분`이 지나게 되면 `stale`한 상태가 되며, 그 즉시 query는 백그라운드에서 refetching을 시도한다.
-  - 그런데, `cacheTime`은 `5분`으로 설정이 돼 있다. 즉, 이미 `5분`이 지난 시점에 query의 `key`에 해당하는 데이터는 삭제되었고, Garbage Collector에 의해 메모리의 할당이 해제된 상태이다. 따라서 query는 다시 네트워크를 통해 데이터를 fetch해야 한다.
-- 만약 `cacheTime`이 `staleTime`보다 더 큰 값을 가지게 되면 어떻게 될까? `staleTime`이 지나 데이터가 `stale` 상태가 되면, 아직 유효한 cache로부터 데이터를 가져오면 되기 때문에, 네트워크 요청이 필요하지 않게 되며, cache의 기능을 제대로 활용한 동작이 된다.
-- 즉, `cacheTime`의 값을 `staleTime`의 값보다 크게 설정하는 것이 바람직하다고 할 수 있다. 
-
-<br/>   
-
 ## useQuery 주요 옵션
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
@@ -421,8 +383,6 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 - 추가적인 옵션들은 [useQuery v4 공식 문서](https://tanstack.com/query/v4/docs/react/reference/useQuery) 참고
 
 ### staleTime과 cacheTime
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다.
 - fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미이다.
@@ -460,8 +420,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### refetchOnMount
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
@@ -481,8 +439,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### refetchOnWindowFocus
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
@@ -500,8 +456,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 <br />
 
 ### Polling
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
@@ -522,8 +476,6 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 <br />
 
 ### enabled refetch
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
@@ -557,8 +509,6 @@ return (
 
 ### retry
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const result = useQuery(["todos", 1], fetchTodoListPage, {
   retry: 10, // 오류를 표시하기 전에 실패한 요청을 10번 재시도합니다.
@@ -573,9 +523,41 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 
 <br />
 
-### select
+### onSuccess, onError, onSettled
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
+_NOTE_: 위 Callback은 `useQuery` 옵션에서 [`@Deprecated`되어 삭제될 예정](https://github.com/TanStack/query/pull/5353)(v5에 반영)이다. 단, `useMutation`에서는 사용 가능하다.
+
+```jsx
+const onSuccess = useCallback((data) => {
+  console.log("Success", data);
+}, []);
+
+const onError = useCallback((err) => {
+  console.log("Error", err);
+}, []);
+
+const onSettled = useCallback(() => {
+  console.log("Settled");
+}, []);
+
+const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
+  ["super-hero"],
+  getSuperHero,
+  {
+    onSuccess,
+    onError,
+    onSettled,
+  }
+);
+```
+
+- `onSuccess` 함수는 쿼리 요청이 성공적으로 진행돼서 새 데이터를 가져오거나 캐시가 업데이트될 때마다 실행된다.
+- `onError` 함수는 쿼리에 오류가 발생하고 오류가 전달되면 실행된다.
+- `onSettled` 함수는 쿼리 요청이 성공, 실패 모두 실행된다.
+
+<br />
+
+### select
 
 ```jsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
@@ -607,8 +589,6 @@ return (
 
 ### keepPreviousData
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 ```jsx
 const fetchColors = async (pageNum: number) => {
   return await axios.get(
@@ -629,8 +609,6 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 <br />
 
 ### placeholderData
-
-[목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```js
 function Todos() {
@@ -990,8 +968,6 @@ try {
 
 ### mutate와 mutateAsync는 무엇을 사용하는게 좋을까?
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 - 대부분의 경우 우리는 mutate를 사용하는 것이 유리하다. 왜냐하면 mutate는 콜백(onSuccess, onError)를 통해 data와 error에 접근할 수 있기 때문에 우리가 특별히 핸들링 해 줄 필요가 없다.
 - 하지만 mutateAsync는 Promise를 직접 다루기 때문에 이런 에러 핸들링 같은 부분을 직접 다뤄야한다.
   - 만약 이를 다루지 않으면 `unhandled promise rejection` 에러가 발생 할 수 있다.
@@ -1055,9 +1031,9 @@ const useAddSuperHeroData = () => {
 
 - 만약 무효화 하려는 키가 여러 개라면 아래 예제와 같이 다음과 같이 배열로 보내주면 된다.
 
-    ```tsx
-    queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
-    ```
+```tsx
+queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
+```
 
 - 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
   - [Disabling/Pausing Queries](https://tanstack.com/query/v4/docs/guides/disabling-queries?from=reactQueryV3&original=https://react-query-v3.tanstack.com/guides/disabling-queries) 참고
@@ -1158,13 +1134,13 @@ const useAddSuperHeroData = () => {
 
 - `useQueryErrorResetBoundary`는 `ErrorBoundary`와 함께 사용되는데 이는, 기본적으로 리액트 공식문서에서 기본 코드 베이스가 제공되긴 하지만 좀 더 쉽게 활용할 수 있는 `react-error-boundary` 라이브러리가 존재하고, react-query 공식문서에서도 해당 라이브러리 사용을 예시로 제공해주기 때문에 `react-error-boundary`를 설치해서 사용해보자.
 
-    ```bash
-    $ npm i react-error-boundary
-    # or
-    $ pnpm add react-error-boundary
-    # or
-    $ yarn add react-error-boundary
-    ```
+```bash
+$ npm i react-error-boundary
+# or
+$ pnpm add react-error-boundary
+# or
+$ yarn add react-error-boundary
+```
 
 - 설치 후에 아래와 같은 QueryErrorBoundary라는 컴포넌트를 생성하고, 그 내부에 `useQueryErrorResetBoundary` 훅을 호출해 `reset` 함수를 가져온다.
 - 아래 코드 내용은 단순하다.
@@ -1332,8 +1308,6 @@ const useSuperHeroData = (heroId: string) => {
 
 ### useQuery
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 현재 useQuery가 갖고 있는 제네릭은 `4개`이며, 다음과 같다.
 
 1. TQueryFnData: useQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
@@ -1374,9 +1348,8 @@ const { data } = useQuery<
 
 ### useMutation
 
-[목차 이동](#주요-컨셉-및-가이드-목차)
-
 useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
+
 1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
     - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
 2. TError: useMutaion에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
