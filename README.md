@@ -382,6 +382,8 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 - 추가적인 옵션들은 [useQuery v4 공식 문서](https://tanstack.com/query/v4/docs/react/reference/useQuery) 참고
 
+<br />
+
 ### staleTime과 cacheTime
 
 - stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다.
@@ -525,7 +527,10 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 
 ### onSuccess, onError, onSettled
 
-_NOTE_: 위 Callback은 `useQuery` 옵션에서 [`@Deprecated`되어 삭제될 예정](https://github.com/TanStack/query/pull/5353)(v5에 반영)이다. 단, `useMutation`에서는 사용 가능하다.
+- _NOTE_: 위 onSuccess, onError, onSettled Callback은 `useQuery` 옵션에서 [`@Deprecated`되어 삭제될 예정](https://github.com/TanStack/query/pull/5353)(v5에 반영)이다. 단, `useMutation`에서는 사용 가능하다.
+  - [Breaking React Query's API on purpose](https://velog.io/@cnsrn1874/breaking-react-querys-api-on-purpose) TkDodo 문서 번역 문서 참고
+
+<br />
 
 ```jsx
 const onSuccess = useCallback((data) => {
@@ -1351,12 +1356,12 @@ const { data } = useQuery<
 useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
 
 1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
-    - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
+   - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
 2. TError: useMutaion에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
 3. TVariables: `mutate 함수`에 전달 할 인자를 지정하는 제네릭 타입이다.
-    - onSuccess(2번째 인자), onError(2번째 인자), onMutate(1번째 인자), onSettled(3번째 인자) 인자의 타입으로 활용된다.
+   - onSuccess(2번째 인자), onError(2번째 인자), onMutate(1번째 인자), onSettled(3번째 인자) 인자의 타입으로 활용된다.
 4. TContext: mutation function을 실행하기 전에 수행하는 `onMutate 함수의 return값`을 지정하는 제네릭 타입이다.
-    - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
+   - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
 
 ```ts
 export function useMutaion<
