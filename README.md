@@ -60,6 +60,11 @@
 1. [QueryClient 주요 내용 정리 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
 
 <br />
+
+## 👨🏻‍💻 주요 참고 블로그
+
+- [TkDoDo 블로그(TanStack Query 관리자)](https://tkdodo.eu/blog/)
+
 <br />
 
 ## 📃 React Query 개요 및 기능
