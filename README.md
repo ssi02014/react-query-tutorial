@@ -1317,7 +1317,7 @@ const useSuperHeroData = (heroId: string) => {
 1. TQueryFnData: useQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
 2. TError: query function의 `error` 형식을 정하는 제네릭 타입이다.
 3. TData: useQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
-4. TQueryKey: useQuery의 첫 번째 인자로 주는 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
+4. TQueryKey: useQuery의 첫 번째 인자 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
 
 ```ts
 // useQuery의 타입
@@ -1342,11 +1342,14 @@ const { data } = useQuery<
     return superHeroNames;
   },
 });
-```
 
-- data: `SuperHeroName[]`
-- error: `AxiosError<any, any>`
-- select: `(data: SuperHeros): SuperHeroName[]`
+/**
+ 주요 타입
+ * data: `SuperHeroName[]`
+ * error: `AxiosError<any, any>`
+ * select: `(data: SuperHeros): SuperHeroName[]`
+ */
+```
 
 <br />
 
@@ -1383,13 +1386,63 @@ const { mutate } = useMutation<Todo, AxiosError, number, number>(postTodo, {
 const onClick = () => {
   mutate(5);
 };
+
+/** 
+ 주요 타입
+ * data: `Todo`
+ * error: `AxiosError<any, any>`
+ * onSuccess: `(res: Todo, id: number, nextId: number)`
+ * onError: `(err: AxiosError, id: number, nextId: number)`
+ * onMutate: `(id: number)`
+ * onSettled: `(res: Todo, err: AxiosError, id: number, nextId: number)`,
+*/
 ```
 
-- data: `Todo`
-- error: `AxiosError<any, any>`
-- onSuccess: `(res: Todo, id: number, nextId: number)`
-- onError: `(err: AxiosError, id: number, nextId: number)`
-- onMutate: `(id: number)`
-- onSettled: `(res: Todo, err: AxiosError, id: number, nextId: number)`,
-
 <br />
+
+### useInfiniteQuery
+
+현재 useInfiniteQuery 갖고 있는 제네릭은 `4개`이며, useQuery와 유사하다.
+
+1. TQueryFnData: useInfiniteQuery로 실행하는 query function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
+2. TError: query function의 `error` 형식을 정하는 제네릭 타입이다.
+3. TData: useInfiniteQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
+4. TQueryKey: useInfiniteQuery의 첫 번째 인자 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
+
+```ts
+export function useInfiniteQuery<
+  TQueryFnData = unknown,
+  TError = unknown,
+  TData = TQueryFnData,
+  TQueryKey extends QueryKey = QueryKey
+>
+```
+
+```tsx
+const fetchColors = async ({ pageParam }) => {
+  const { page = 1, etc } = pageParam;
+
+  return await axios.get(`http://localhost:4000/colors?_limit=2&_page=${page}`);
+};
+
+const { mutate } = useInfiniteQuery<Colors, AxiosError, Colors, ["colors"]>(
+  ["colors"],
+  ({ pageParam = 0 }) => {
+    fetchColors({ page: pageParam });
+  },
+  {
+    getNextPageParam: (lastPage) => {
+      return allPages.length < 4 && allPages.length + 1;
+    },
+    ...options,
+  }
+);
+
+/**
+ 주요 타입
+ * data:  InfiniteData<ModelListResponse>
+ * error: `AxiosError<any, any>`
+ * select: InfiniteData<ModelListResponse>
+ * getNextPageParam: GetNextPageParamFunction<Colors>
+*/
+```
