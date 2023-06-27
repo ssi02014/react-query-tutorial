@@ -100,10 +100,6 @@
 - [QueryClientProvider 공식 사이트 참고](https://tanstack.com/query/v4/docs/react/reference/QueryClientProvider)
 
 ```jsx
-// QueryClient 예제
-// v3
-import { QueryClient } from "react-query";
-
 // v4
 import { QueryClient } from "@tanstack/react-query";
 
@@ -121,11 +117,6 @@ const queryClient = new QueryClient({
 - QueryClient에서 모든 `query` 또는 `mutation`에 기본 옵션을 추가할 수 있으며, 종류가 상당하기 때문에 공식 사이트를 참고해보자.
 
 ```jsx
-// QueryClientProvider + QueryClient
-// v3
-import { QueryClient, QueryClientProvider } from "react-query";
-
-// v4
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient({ /* options */});
@@ -735,7 +726,7 @@ const DependantQueriesPage = ({ email }: Props) => {
   - [QueryClient](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
 
 ```jsx
-import { useQueryClient } from "react-query";
+import { QueryClient } from "@tanstack/react-query";
 
 const queryClient = useQueryClient();
 ```
@@ -814,8 +805,7 @@ useEffect(() => {
 - react-query는 이러한 무한 쿼리를 지원하기 위해 useQuery의 유용한 버전인 `useInfiniteQuery`을 지원한다.
 
 ```jsx
-import { useInfiniteQuery } from "react-query";
-// import { useInfiniteQuery } from '@tanstack/react-query' v4
+import { useInfiniteQuery } from '@tanstack/react-query' v4
 
 const fetchColors = async ({ pageParam = 1 }) => {
   return await axios.get(
@@ -1027,7 +1017,7 @@ return <button onClick={onCancelQuery}>Cancel</button>;
 - 즉, query가 오래되었다는 것을 판단하고 다시 `refetch`를 할 때 사용한다!
 
 ```tsx
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
@@ -1050,7 +1040,7 @@ queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
 ```
 
 - 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
-  - [Disabling/Pausing Queries](https://tanstack.com/query/v4/docs/guides/disabling-queries?from=reactQueryV3&original=https://react-query-v3.tanstack.com/guides/disabling-queries) 참고
+  - [Disabling/Pausing Queries](https://tanstack.com/query/v4/docs/react/guides/disabling-queries) 참고
 - 자세한 내용은 [queryClient.invalidateQueries 정리](https://github.com/ssi02014/react-query-tutorial/blob/master/document/queryClient.md#invalidateQueries)를 참고하자.
 
 <br />
@@ -1162,7 +1152,7 @@ $ yarn add react-error-boundary
   - 또한, fallbackRender에 넣어주는 콜백 함수 매개 변수로 `resetErrorBoundary`를 구조 분해 할당을 통해 가져올 수 있는데, 이를 통해 모든 쿼리 에러를 `초기화` 할 수 있다. 아래 코드 같은 경우에는 button을 클릭하면 에러를 초기화하게끔 작성했다.
 
 ```jsx
-import { useQueryErrorResetBoundary } from "react-query"; // (*)
+import { useQueryErrorResetBoundary } from "@tanstack/react-query"; // (*)
 import { ErrorBoundary } from "react-error-boundary"; // (*)
 
 interface Props {
@@ -1193,7 +1183,7 @@ export default QueryErrorBoundary;
 - 그리고 App.js에다 QueryErrorBoundary 컴포넌트를 추가하면 된다. 여기서 주의 할 점은 queryClient 옵션에다 `{ useErrorBoundary: true }`를 추가해야 한다는 점이다. 그래야 오류가 발생했을 때 `ErrorBoundary` 컴포넌트가 감지할 수 있다.
 
 ```jsx
-import { QueryClientProvider, QueryClient } from "react-query";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import QueryErrorBoundary from "./components/ErrorBoundary"; // (*)
 
 const queryClient = new QueryClient({
