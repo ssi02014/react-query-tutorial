@@ -131,7 +131,7 @@ function App() {
 ```
 
 - react-query를 사용하기 위해서는 `QueryClientProvider`를 최상단에서 감싸주고 `QueryClient` 인스턴스를 client props로 넣어 애플리케이션에 연결시켜야 한다.
-- 위 예시에서 App.js에 QueryClientProvider로 컴포넌트를 감싸고, client prosp에다 queryClient를 연결함으로써, 이 context는 앱에서 비동기 요청을 알아서 처리하는 `background` 계층이 된다.
+- 위 예시에서 App.js에 QueryClientProvider로 컴포넌트를 감싸고, client props에다 queryClient를 연결함으로써, 이 context는 앱에서 비동기 요청을 알아서 처리하는 `background` 계층이 된다.
 
 <br />
 
