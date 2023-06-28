@@ -117,7 +117,7 @@ const queryClient = new QueryClient({
 - QueryClient에서 모든 `query` 또는 `mutation`에 기본 옵션을 추가할 수 있으며, 종류가 상당하기 때문에 공식 사이트를 참고해보자.
 
 ```jsx
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient({ /* options */});
 
@@ -726,7 +726,7 @@ const DependantQueriesPage = ({ email }: Props) => {
   - [QueryClient](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
 
 ```jsx
-import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const queryClient = useQueryClient();
 ```
@@ -805,7 +805,7 @@ useEffect(() => {
 - react-query는 이러한 무한 쿼리를 지원하기 위해 useQuery의 유용한 버전인 `useInfiniteQuery`을 지원한다.
 
 ```jsx
-import { useInfiniteQuery } from '@tanstack/react-query' v4
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const fetchColors = async ({ pageParam = 1 }) => {
   return await axios.get(
