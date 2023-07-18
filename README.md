@@ -415,10 +415,10 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
    - cacheTime은 staleTime과 관계없이, 무조건 inactive 된 시점을 기준으로 캐시 데이터 삭제를 결정한다.
    - cacheTime의 기본값은 `5분`이다.
 
-- 여기서 주의할 점은 staleTime이 '0분'(기본값)일지라도 캐싱은 일어난다는 것이다. 이후 해당 쿼리를 사용하는 마지막 컴포넌트(Observer)가 unmount되었다가 다시 mount됐을 때, 리액트 쿼리는 새로운 데이터를 불러오는 동안 stale한 상태의 기존 데이터를 보여준다.
-- 또한, [TkDodo의 reply](https://github.com/TanStack/query/discussions/1685#discussioncomment-1876723)에 따르면 TkDodo는 'staleTime을 cacheTime보다 작게 설정하는 것이 좋다.'는 의견에 동의하지 않는다고 한다. 이는 즉, 본인의 서비스와 데이터의 성격에 맞게 staleTime과 cacheTime을 설정하면 된다는 것을 뜻한다.
-- 예컨대, staleTime이 60분일지라도 유저가 자주 사용하지 않는 데이터라면 굳이 cacheTime을 60분 이상으로 설정하여 메모리를 낭비할 필요가 없다.
-
+- 여기서 주의할 점은 staleTime과 cacheTime의 기본값은 각각 `0분`과 `5분`이다. 따라서 staleTime에 어떠한 설정도 하지 않으면 해당 쿼리를 사용하는 컴포넌트(Observer)가 mount됐을 때 매번 다시 API를 요청할 것이다.
+- staleTime을 cacheTime보다 길게 설정했다고 가정하면, staleTime만큼의 캐싱을 기대했을 때 원하는 결과를 얻지 못할 것이다. 즉, 두 개의 옵션을 적절하게 설정해줘야 한다.
+  - 참고로, [TkDodo의 reply](https://github.com/TanStack/query/discussions/1685#discussioncomment-1876723)에 따르면 TkDodo는 'staleTime을 cacheTime보다 작게 설정하는 것이 좋다.'는 의견에 동의하지 않는다고 한다. 
+  - 예컨대, staleTime이 60분일지라도 유저가 자주 사용하지 않는 데이터라면 굳이 cacheTime을 60분 이상으로 설정하여 메모리를 낭비할 필요가 없다.
 <br />
 
 ### refetchOnMount
