@@ -352,7 +352,7 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 <br />
 
-### v4부터는 status의 idle 상태값이 제거되고 fetchStatus가 추가
+### 💡 v4부터는 status의 idle 상태값이 제거되고 fetchStatus가 추가
 
 - TanStack Query(v4) 부터는 status의 `idle이 제거`되고, 새로운 상태값인 `fetchStatus`가 추가됐다.
 - fetchStatus
@@ -362,7 +362,7 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 
 <br />
 
-### v4부터는 왜 status, fetchStatus 나눠서 다루는 걸까?
+### 💡 v4부터는 왜 status, fetchStatus 나눠서 다루는 걸까?
 
 - fetchStatus는 HTTP 네트워크 연결 상태와 좀 더 관련된 상태 데이터이다.
   - 예를 들어, status가 `success` 상태라면 주로 fetchStatus는 `idle` 상태지만, 백그라운드에서 re-fetch가 발생할 때 `fetching` 상태일 수 있다.
@@ -417,9 +417,9 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 - 여기서 주의할 점은 staleTime과 cacheTime의 기본값은 각각 `0분`과 `5분`이다. 따라서 staleTime에 어떠한 설정도 하지 않으면 해당 쿼리를 사용하는 컴포넌트(Observer)가 mount됐을 때 매번 다시 API를 요청할 것이다.
 - staleTime을 cacheTime보다 길게 설정했다고 가정하면, staleTime만큼의 캐싱을 기대했을 때 원하는 결과를 얻지 못할 것이다. 즉, 두 개의 옵션을 적절하게 설정해줘야 한다.
-  - 참고로, [TkDodo의 reply](https://github.com/TanStack/query/discussions/1685#discussioncomment-1876723)에 따르면 TkDodo는 'staleTime을 cacheTime보다 작게 설정하는 것이 좋다.'는 의견에 동의하지 않는다고 한다. 
+  - 참고로, [TkDodo의 reply](https://github.com/TanStack/query/discussions/1685#discussioncomment-1876723)에 따르면 TkDodo는 'staleTime을 cacheTime보다 작게 설정하는 것이 좋다.'는 의견에 동의하지 않는다고 한다.
   - 예컨대, staleTime이 60분일지라도 유저가 자주 사용하지 않는 데이터라면 굳이 cacheTime을 60분 이상으로 설정하여 메모리를 낭비할 필요가 없다.
-<br />
+    <br />
 
 ### refetchOnMount
 
@@ -971,12 +971,29 @@ try {
 
 - 만약, useMutation을 사용할 때 promise 형태의 response가 필요한 경우라면 `mutateAsync`를 사용해서 얻어올 수 있다.
 
-### mutate와 mutateAsync는 무엇을 사용하는게 좋을까?
+<br />
+
+### 💡 mutate와 mutateAsync는 무엇을 사용하는게 좋을까?
 
 - 대부분의 경우 우리는 mutate를 사용하는 것이 유리하다. 왜냐하면 mutate는 콜백(onSuccess, onError)를 통해 data와 error에 접근할 수 있기 때문에 우리가 특별히 핸들링 해 줄 필요가 없다.
 - 하지만 mutateAsync는 Promise를 직접 다루기 때문에 이런 에러 핸들링 같은 부분을 직접 다뤄야한다.
   - 만약 이를 다루지 않으면 `unhandled promise rejection` 에러가 발생 할 수 있다.
-- [tkdodo mutate, mutateAsync 블로그 참고](https://tkdodo.eu/blog/mastering-mutations-in-react-query#mutate-or-mutateasync)
+- [tkdodo: Mutate or MutateAsync](https://tkdodo.eu/blog/mastering-mutations-in-react-query#mutate-or-mutateasync)
+
+<br />
+
+### 💡 useMutation callback과 mutate callback의 차이
+
+- useMutation은 onSuccess, onError, onSettled와 같은 Callback 함수들을 가질 수 있다.
+- 뿐만아니라, mutate 역시 위와 같은 Callback 함수들을 가질 수 있다.
+- 둘의 동작은 같다고 생각할 수 있지만 약간의 차이가 있다. 다음과 같다.
+  - useMutation의 Callback 함수와 mutate의 Callback 함수는 독립적으로 실행된다.
+  - 순서는 `useMutation의 Callback -> mutate의 Callback` 순으로 실행된다.
+  - mutation이 완료되기 전에 컴포넌트가 unmount된다면 mutate의 Callback은 실행되지 않을 수 있다.
+- `tkdodo`는 위와 같은 이유로 둘을 분리해서 사용하는 것이 적절하다고 한다.
+  - 꼭 필요한 로직(ex. `쿼리 초기화`)은 useMutation의 Callback으로 실행시킨다.
+  - 리다이렉션 및 UI 관련 작업은 mutate Callback에서 실행시킨다.
+- [tkdodo Blog: Some callbacks might not fire](https://tkdodo.eu/blog/mastering-mutations-in-react-query#some-callbacks-might-not-fire)
 
 <br />
 
