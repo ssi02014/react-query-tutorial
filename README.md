@@ -419,7 +419,8 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 - staleTime을 cacheTime보다 길게 설정했다고 가정하면, staleTime만큼의 캐싱을 기대했을 때 원하는 결과를 얻지 못할 것이다. 즉, 두 개의 옵션을 적절하게 설정해줘야 한다.
   - 참고로, [TkDodo의 reply](https://github.com/TanStack/query/discussions/1685#discussioncomment-1876723)에 따르면 TkDodo는 'staleTime을 cacheTime보다 작게 설정하는 것이 좋다.'는 의견에 동의하지 않는다고 한다.
   - 예컨대, staleTime이 60분일지라도 유저가 자주 사용하지 않는 데이터라면 굳이 cacheTime을 60분 이상으로 설정하여 메모리를 낭비할 필요가 없다.
-    <br />
+
+<br />
 
 ### refetchOnMount
 
@@ -838,7 +839,7 @@ const InfiniteQueries = () => {
 };
 ```
 
-<b>주요 반환</b>
+### 주요 반환
 
 - `useInfiniteQuery`는 기본적으로 useQuery와 사용법은 비슷하지만, 차이점이 있다.
 - useInfiniteQuery는 반환값으로`isFetchingNextPage`, `isFetchingPreviousPage`, `fetchNextPage`, `fetchPreviousPage`, `hasNextPage` 등이 추가적으로 있다.
@@ -851,7 +852,7 @@ const InfiniteQueries = () => {
 
 <br />
 
-<b>옵션</b>
+### 주요 옵션
 
 - `pageParam`이라는 프로퍼티가 존재하며, `queryFn`에 할당해줘야 한다. 이때 기본값으로 초기 페이지 값을 설정 해줘야한다.
 - `getNextPageParam`을 이용해서 페이지를 증가시킬 수 있다.
@@ -861,7 +862,7 @@ const InfiniteQueries = () => {
 
 <br />
 
-<b>pageParam</b>
+### 💡 pageParam
 
 - `queryFn`에 넘겨주는 pageParam가 단순히 다음 page의 값만을 관리할 수 있는 것은 아니다.
 - pageParam 값은 `getNextPageParam`에서 원하는 형태로 변경시켜줄 수 있다.
@@ -898,7 +899,7 @@ const fetchColors = async ({ pageParam }) => {
 
 <br />
 
-<b>refetchPage</b>
+### 💡 refetchPage
 
 - 전체 페이지 중 일부만 직접 refetch하고 싶을 때에는, `useInfiniteQuery`가 반환하는 refetch 함수에 `refetchPage`를 넘겨주면 된다.
 - `refetchPage`는 각 페이지에 대해 실행되며, 이 함수가 true를 반환하는 페이지만 refetch가 된다.
