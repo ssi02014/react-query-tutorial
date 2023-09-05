@@ -1170,26 +1170,21 @@ $ yarn add react-error-boundary
   - Error가 발생하면 ErrorBoundary의 `fallbackRender` prop으로 넘긴 내용이 렌더링 되고, 그렇지 않으면 children 내용이 렌더링 된다.
   - 또한, fallbackRender에 넣어주는 콜백 함수 매개 변수로 `resetErrorBoundary`를 구조 분해 할당을 통해 가져올 수 있는데, 이를 통해 모든 쿼리 에러를 `초기화` 할 수 있다. 아래 코드 같은 경우에는 button을 클릭하면 에러를 초기화하게끔 작성했다.
 
-```jsx
+```tsx
 import { useQueryErrorResetBoundary } from "@tanstack/react-query"; // (*)
 import { ErrorBoundary } from "react-error-boundary"; // (*)
 
-interface Props {
+interface Props extends Pick<React.ComponentProps<typeof ErrorBoundary>, 'fallbackRender'> {
   children: React.ReactNode;
 }
 
-const QueryErrorBoundary = ({ children, fallback }: Props) => {
+const QueryErrorBoundary = ({ children, fallbackRender }: Props) => {
   const { reset } = useQueryErrorResetBoundary(); // (*)
 
   return (
     <ErrorBoundary
       onReset={reset}
-      fallbackRender={({ resetErrorBoundary }) => (
-        <div>
-          Error!!
-          <button onClick={() => resetErrorBoundary()}>Try again</button>
-        </div>
-      )}
+      fallbackRender={fallbackRender}
     >
       {children}
     </ErrorBoundary>
