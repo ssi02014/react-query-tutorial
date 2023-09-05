@@ -99,7 +99,7 @@
 - [QueryClient 공식 사이트 참고](https://tanstack.com/query/v4/docs/react/reference/QueryClient#queryclientsetquerydata)
 - [QueryClientProvider 공식 사이트 참고](https://tanstack.com/query/v4/docs/react/reference/QueryClientProvider)
 
-```jsx
+```tsx
 // v4
 import { QueryClient } from "@tanstack/react-query";
 
@@ -116,7 +116,7 @@ const queryClient = new QueryClient({
 - QueryClient를 사용하여 `캐시`와 상호 작용할 수 있다.
 - QueryClient에서 모든 `query` 또는 `mutation`에 기본 옵션을 추가할 수 있으며, 종류가 상당하기 때문에 공식 사이트를 참고해보자.
 
-```jsx
+```tsx
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient({ /* options */});
@@ -145,7 +145,7 @@ function App() {
 - devtools를 사용하면 React Query의 모든 내부 동작을 `시각화`하는 데 도움이 되며 문제가 발생하면 `디버깅 시간을 절약`할 수 있다.
 - devtools는 기본값으로 `process.env.NODE_ENV === 'development'` 인 경우에만 실행된다, 즉 일반적으로 개발환경에서만 작동하므로 설정되어있으므로, 프로젝트 배포 시에 Devtools 삽입코드를 제거해줄 필요가 없다.
 
-```jsx
+```tsx
 // v3
 import { ReactQueryDevtools } from "react-query/devtools";
 
@@ -182,7 +182,7 @@ $ pnpm add @tanstack/react-query-devtools
 $ yarn add @tanstack/react-query-devtools
 ```
 
-```js
+```tsx
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 function App() {
@@ -229,7 +229,7 @@ function App() {
 
 - [useQuery v4](https://tanstack.com/query/v4/docs/react/reference/useQuery)
 
-```jsx
+```tsx
 // 사용법(1)
 const { data, isLoading, ... } =  useQuery(queryKey, queryFn, {
   // ...options ex) enabled, staleTime, ...
@@ -247,7 +247,7 @@ result.isLoading
 // ...
 ```
 
-```jsx
+```tsx
 // 실제 예제
 const getAllSuperHero = async () => {
   return await axios.get("http://localhost:4000/superheroes");
@@ -262,7 +262,7 @@ const { data, isLoading } = useQuery(["super-heroes"], getAllSuperHero);
 
 **1. queryKey**
 
-```jsx
+```tsx
 // (1)
 const getSuperHero = async ({ queryKey }: any) => {
   const heroId = queryKey[1]; // queryKey: ['super-hero', '3']
@@ -287,7 +287,7 @@ const useSuperHeroData = (heroId: string) => {
 
 **2. queryFn**
 
-```jsx
+```tsx
 // (2)
 const getSuperHero = async (heroId: string) => {
   return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
@@ -312,7 +312,7 @@ const useSuperHeroData = (heroId: string) => {
 
 <br />
 
-```js
+```tsx
 // 예
 const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId], () => getSuperHero(heroId), {
@@ -328,7 +328,7 @@ const useSuperHeroData = (heroId: string) => {
 
 ### useQuery 주요 리턴 데이터
 
-```js
+```tsx
 const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
   ["colors", pageNum],
   () => fetchColors(pageNum)
@@ -389,7 +389,7 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 - stale은 용어 뜻대로 `썩은` 이라는 의미이다. 즉, 최신 상태가 아니라는 의미이다.
 - fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미이다.
 
-```jsx
+```tsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
   getSuperHero,
@@ -424,7 +424,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### refetchOnMount
 
-```jsx
+```tsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
   getSuperHero,
@@ -443,7 +443,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### refetchOnWindowFocus
 
-```jsx
+```tsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
   getSuperHero,
@@ -461,7 +461,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### Polling
 
-```jsx
+```tsx
 const { isLoading, isFetching, data, isError, error } = useQuery(
   ["super-hero"],
   getSuperHero,
@@ -481,7 +481,7 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 
 ### enabled refetch
 
-```jsx
+```tsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
   ["super-hero"],
   getSuperHero,
@@ -513,7 +513,7 @@ return (
 
 ### retry
 
-```jsx
+```tsx
 const result = useQuery(["todos", 1], fetchTodoListPage, {
   retry: 10, // 오류를 표시하기 전에 실패한 요청을 10번 재시도합니다.
 });
@@ -534,7 +534,7 @@ const result = useQuery(["todos", 1], fetchTodoListPage, {
 
 <br />
 
-```jsx
+```tsx
 const onSuccess = useCallback((data) => {
   console.log("Success", data);
 }, []);
@@ -566,7 +566,7 @@ const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
 
 ### select
 
-```jsx
+```tsx
 const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
   ["super-hero"],
   getSuperHero,
@@ -596,7 +596,7 @@ return (
 
 ### keepPreviousData
 
-```jsx
+```tsx
 const fetchColors = async (pageNum: number) => {
   return await axios.get(
     `http://localhost:4000/colors?_limit=2&_page=${pageNum}`
@@ -617,7 +617,7 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 
 ### placeholderData
 
-```js
+```tsx
 function Todos() {
   const placeholderData = useMemo(() => generateFakeTodos(), []);
   const result = useQuery(["todos"], () => fetch("/todos"), {
@@ -634,7 +634,7 @@ function Todos() {
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-```jsx
+```tsx
 const { data: superHeroes } = useQuery(["super-hero"], getSuperHero);
 const { data: friends } = useQuery(["friends"], fetchFriends);
 ```
@@ -642,7 +642,7 @@ const { data: friends } = useQuery(["friends"], fetchFriends);
 - 몇 가지 상황을 제외하면 쿼리 여러 개가 선언된 일반적인 상황일 때, 쿼리 함수들은 `그냥 병렬로 요청돼서 처리`된다.
 - 이러한 특징은 쿼리 처리의 `동시성`을 극대화 시킨다.
 
-```jsx
+```tsx
 // v3
 const queryResults = useQueries(
   heroIds.map((id) => ({
@@ -671,7 +671,7 @@ const queryResults = useQueries(
 
 - useQueries가 v4부터 쿼리를 넘기는 방식이 변경됐다. 차이점으로는 queries프로퍼티를 가진 객체를 넘겨줘야 한다.
 
-```jsx
+```tsx
 // v4
 const queryResults = useQueries({
   queries: [
@@ -699,7 +699,7 @@ const queryResults = useQueries({
 - `종속 쿼리`는 어떤 A라는 쿼리가 있는데 이 A쿼리를 실행하기 전에 사전에 완료되어야 하는 B 쿼리가 있는데, 이러한 B쿼리에 의존하는 A쿼리를 종속 쿼리라고 한다.
 - react-query에서는 쿼리를 실행할 준비가 되었다는 것을 알려주는 `enabled` 옵션을 통해 종속 쿼리를 쉽게 구현할 수 있다.
 
-```jsx
+```tsx
 const DependantQueriesPage = ({ email }: Props) => {
   // 사전에 완료되어야할 쿼리
   const { data: user } = useQuery(['user', email], () =>
@@ -727,7 +727,7 @@ const DependantQueriesPage = ({ email }: Props) => {
 - QueryClient는 다음 문서에서 자세하게 다룬다
   - [QueryClient](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
 
-```jsx
+```tsx
 import { useQueryClient } from "@tanstack/react-query";
 
 const queryClient = useQueryClient();
@@ -742,7 +742,7 @@ const queryClient = useQueryClient();
 - 쿼리에 대한 `초기 데이터`가 필요하기 전에 캐시에 제공하는 방법이 있다.
 - initialData 옵션을 통해서 쿼리를 미리 채우는 데 사용할 수 있으며, 초기 로드 상태도 건너뛸 수도 있다.
 
-```jsx
+```tsx
   const useSuperHeroData = (heroId: string) => {
     const queryClient = useQueryClient();
     return useQuery(['super-hero', heroId], fetchSuperHero, {
@@ -806,7 +806,7 @@ useEffect(() => {
 - Infinite Queries(무한 쿼리)는 `무한 스크롤`이나 `load more(더 보기)`과 같이 특정 조건에서 데이터를 추가적으로 받아오는 기능을 구현할 때 사용하면 유용하다.
 - react-query는 이러한 무한 쿼리를 지원하기 위해 useQuery의 유용한 버전인 `useInfiniteQuery`을 지원한다.
 
-```jsx
+```tsx
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 const fetchColors = async ({ pageParam = 1 }) => {
@@ -868,7 +868,7 @@ const InfiniteQueries = () => {
 - pageParam 값은 `getNextPageParam`에서 원하는 형태로 변경시켜줄 수 있다.
 - 무슨 말인지 예시를 보면 이해가 쉽다. 👍 아래와 같이 getNextPageParam에서 반환 데이터가 단순히 다음 페이지 값이 아닌 객체로 반환한다고 해보자.
 
-```js
+```tsx
 const { data } = useInfiniteQuery(["colors"], fetchColors, {
   getNextPageParam: (lastPage, allPages) => {
     return (
@@ -883,7 +883,7 @@ const { data } = useInfiniteQuery(["colors"], fetchColors, {
 
 - 그러면 `queryFn`에 넣은 pageParams에서 getNextPageParam에서 반환한 객체를 받아올 수 있다.
 
-```js
+```tsx
 /**
  * pageParam
  * { page, etc }
@@ -904,7 +904,7 @@ const fetchColors = async ({ pageParam }) => {
 - 전체 페이지 중 일부만 직접 refetch하고 싶을 때에는, `useInfiniteQuery`가 반환하는 refetch 함수에 `refetchPage`를 넘겨주면 된다.
 - `refetchPage`는 각 페이지에 대해 실행되며, 이 함수가 true를 반환하는 페이지만 refetch가 된다.
 
-```js
+```tsx
 const { refetch } = useInfiniteQuery(["colors"], fetchColors, {
   getNextPageParam: (lastPage, allPages) => {
     return allPages.length < 4 && allPages.length + 1;
@@ -926,7 +926,7 @@ refetch({ refetchPage: (page, index) => index === 0 });
 - 만약 서버의 data를 post, patch, put, delete와 같이 수정하고자 한다면 이때는 useMutation을 이용한다.
 - 요약하자면 `R(read)는 useQuery`, `CUD(Create, Update, Delete)는 useMutation`을 사용한다.
 
-```jsx
+```tsx
 const CreateTodo = () => {
   const mutation = useMutation(createTodo, {
     onMutate() {
@@ -957,7 +957,7 @@ const CreateTodo = () => {
 - `onMutate`는 mutation 함수가 실행되기 전에 실행되고, mutation 함수가 받을 동일한 변수가 전달된다.
 - `onSettled`는 try...catch...finally 구문의 `finally`처럼 요청이 성공하든 에러가 발생되든 상관없이 마지막에 실행된다.
 
-```jsx
+```tsx
 const mutation = useMutation(addTodo);
 
 try {
@@ -1008,7 +1008,7 @@ try {
 - 이렇게 하려면 쿼리를 취소하고 이전 상태로 되돌리기 위해 `queryClient.cancelQueries(queryKey)`를 사용할 수 있다. 또한 react-query는 쿼리 취소뿐만아니라 queryFn의 Promise도 취소한다.
 - [query-cancellation](https://tanstack.com/query/v4/docs/react/guides/query-cancellation)
 
-```jsx
+```tsx
 const query = useQuery(["super-heroes"], {
   /* ...options */
 });
@@ -1101,7 +1101,7 @@ const useAddSuperHeroData = () => {
 - 예를 들어 facebook에 좋아요 버튼이 있는데 이것을 유저가 누른다면, 일단 client 쪽 state를 먼저 업데이트한다. 그리고 만약에 실패한다면, 예전 state로 돌아가고 성공하면 필요한 데이터를 다시 fetch해서 서버 데이터와 확실히 연동을 진행한다.
 - Optimistic Update가 정말 유용할 때는 인터넷 속도가 느리거나 서버가 느릴 때이다. 유저가 행한 액션을 기다릴 필요 없이 바로 업데이트되는 것처럼 보이기 때문에 사용자 경험(UX) 측면에서 좋다.
 
-```js
+```tsx
 const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
@@ -1170,7 +1170,7 @@ $ yarn add react-error-boundary
   - Error가 발생하면 ErrorBoundary의 `fallbackRender` prop으로 넘긴 내용이 렌더링 되고, 그렇지 않으면 children 내용이 렌더링 된다.
   - 또한, fallbackRender에 넣어주는 콜백 함수 매개 변수로 `resetErrorBoundary`를 구조 분해 할당을 통해 가져올 수 있는데, 이를 통해 모든 쿼리 에러를 `초기화` 할 수 있다. 아래 코드 같은 경우에는 button을 클릭하면 에러를 초기화하게끔 작성했다.
 
-```jsx
+```tsx
 import { useQueryErrorResetBoundary } from "@tanstack/react-query"; // (*)
 import { ErrorBoundary } from "react-error-boundary"; // (*)
 
@@ -1201,7 +1201,7 @@ export default QueryErrorBoundary;
 
 - 그리고 App.js에다 QueryErrorBoundary 컴포넌트를 추가하면 된다. 여기서 주의 할 점은 queryClient 옵션에다 `{ useErrorBoundary: true }`를 추가해야 한다는 점이다. 그래야 오류가 발생했을 때 `ErrorBoundary` 컴포넌트가 감지할 수 있다.
 
-```jsx
+```tsx
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import QueryErrorBoundary from "./components/ErrorBoundary"; // (*)
 
@@ -1231,7 +1231,7 @@ function App() {
 - ErrorBoundary는 에러가 발생했을 때 보여주는 Fallback UI를 `선언적`으로 작성할 수 있고, 리액트 쿼리는 Suspense와도 결합해서 `서버 통신 상태가 로딩중`일 때 Fallback UI를 보여줄 수 있게 선언적으로 작성할 수 있다.
 - 참고로, Suspense 컴포넌트는 리액트 v16부터 제공되는 `Component Lazy Loading`이나 `Data Fetching` 등의 비동기 처리를 할 때, 응답을 기다리는 동안 Fallback UI(ex: Loader)를 보여주는 기능을 하는 컴포넌트다.
 
-```jsx
+```tsx
 import { Suspense } from "react";
 
 const queryClient = new QueryClient({
@@ -1315,7 +1315,7 @@ const Example = () => {
 - 앱 전체에서 동일한 쿼리 함수를 공유하고, `queryKey`를 사용해 가져와야 할 데이터를 식별하고 싶다면 `QueryClient`에 `queryFn` 옵션을 통해 Default Query Function을 지정해 줄 수 있다.
 - [Default Query Function v4](https://tanstack.com/query/v4/docs/react/guides/default-query-function)
 
-```jsx
+```tsx
 // 기본 쿼리 함수
 const getSuperHero = async ({ queryKey }: any) => {
   const heroId = queryKey[1];
@@ -1341,14 +1341,14 @@ function App() {
 
 - `QueryClient`에 앱 전체에서 사용할 쿼리 함수를 지정해 준다.
 
-```jsx
+```tsx
 // 사용 예시
 const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId]);
 };
 ```
 
-```jsx
+```tsx
 // 다음 형태 불가능
 const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId], () => getSuperHero(heroId));
@@ -1378,7 +1378,7 @@ const useSuperHeroData = (heroId: string) => {
 3. TData: useQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
 4. TQueryKey: useQuery의 첫 번째 인자 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
 
-```ts
+```tsx
 // useQuery의 타입
 export function useQuery<
   TQueryFnData = unknown,
@@ -1388,7 +1388,7 @@ export function useQuery<
 >
 ```
 
-```ts
+```tsx
 // useQuery 타입 적용 예시
 const { data } = useQuery<
   SuperHeros,
@@ -1424,7 +1424,7 @@ useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
 4. TContext: mutation function을 실행하기 전에 수행하는 `onMutate 함수의 return값`을 지정하는 제네릭 타입이다.
    - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
 
-```ts
+```tsx
 export function useMutaion<
   TData = unknown,
   TError = unknown,
@@ -1433,7 +1433,7 @@ export function useMutaion<
 >
 ```
 
-```ts
+```tsx
 // useMutation 타입 적용 예시
 const { mutate } = useMutation<Todo, AxiosError, number, number>(postTodo, {
   onSuccess: (res, id, nextId) => {},
@@ -1468,7 +1468,7 @@ const onClick = () => {
 3. TData: useInfiniteQuery의 `data에 담기는 실질적인 데이터`의 타입을 말한다. 첫 번째 제네릭과의 차이점은 `select`와 같이 query function의 반환 데이터를 추가 핸들링을 통해 반환하는 경우에 대응할 수 있는 타입이라고 생각하면 좋다.
 4. TQueryKey: useInfiniteQuery의 첫 번째 인자 `queryKey`의 타입을 명시적으로 지정해주는 제네릭 타입이다.
 
-```ts
+```tsx
 export function useInfiniteQuery<
   TQueryFnData = unknown,
   TError = unknown,
