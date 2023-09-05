@@ -743,20 +743,20 @@ const queryClient = useQueryClient();
 - initialData 옵션을 통해서 쿼리를 미리 채우는 데 사용할 수 있으며, 초기 로드 상태도 건너뛸 수도 있다.
 
 ```tsx
-  const useSuperHeroData = (heroId: string) => {
-    const queryClient = useQueryClient();
-    return useQuery(['super-hero', heroId], fetchSuperHero, {
-      initialData: () => {
-        const queryData = queryClient.getQueryData(['super-heroes']) as any;
-        const hero = queryData?.data?.find(
-          (hero: Hero) => hero.id === parseInt(heroId)
-        );
+const useSuperHeroData = (heroId: string) => {
+  const queryClient = useQueryClient();
+  return useQuery(["super-hero", heroId], fetchSuperHero, {
+    initialData: () => {
+      const queryData = queryClient.getQueryData(["super-heroes"]) as any;
+      const hero = queryData?.data?.find(
+        (hero: Hero) => hero.id === parseInt(heroId)
+      );
 
-        if (hero) return { data: hero };
-        return undefined;
-      },
-    });
-  };
+      if (hero) return { data: hero };
+      return undefined;
+    },
+  });
+};
 ```
 
 <br />
@@ -1178,7 +1178,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const QueryErrorBoundary = ({ children, fallback }: Props) => {
+const QueryErrorBoundary = ({ children }: Props) => {
   const { reset } = useQueryErrorResetBoundary(); // (*)
 
   return (
@@ -1228,7 +1228,7 @@ function App() {
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- ErrorBoundary는 에러가 발생했을 때 보여주는 Fallback UI를 `선언적`으로 작성할 수 있고, 리액트 쿼리는 Suspense와도 결합해서 `서버 통신 상태가 로딩중`일 때 Fallback UI를 보여줄 수 있게 선언적으로 작성할 수 있다.
+- ErrorBoundary는 에러가 발생했을 때 보여주는 Fallback UI를 `선언적`으로 작성할 수 있고, 리액트 쿼리는 `Suspense`와도 결합해서 `서버 통신 상태가 로딩중`일 때 Fallback UI를 보여줄 수 있게 선언적으로 작성할 수 있다.
 - 참고로, Suspense 컴포넌트는 리액트 v16부터 제공되는 `Component Lazy Loading`이나 `Data Fetching` 등의 비동기 처리를 할 때, 응답을 기다리는 동안 Fallback UI(ex: Loader)를 보여주는 기능을 하는 컴포넌트다.
 
 ```tsx
@@ -1252,7 +1252,7 @@ function App() {
 }
 ```
 
-- 코드를 보면 우리는 서버 상태가 로딩일떄 Loader 컴포넌트를 보여주겠다!라고 이해할 수 있다.
+- 코드를 보면 우리는 서버 상태가 로딩일 때 Loader 컴포넌트를 보여주겠다!라고 이해할 수 있다.
 - Suspense컴포넌트 내부에서 어떤 로직이 동작하는지 우리는 신경쓰지 않아도된다. 이처럼 `내부 복잡성을 추상화`하는게 바로 `선언형 컴포넌트`이다.
 - 또한, 위와 같이 react-query와 결합한 Suspense는 아래와 같은 과정으로 동작을한다. 참고해보자.
 
@@ -1266,45 +1266,49 @@ function App() {
 7. MainComponent mount
 ```
 
-- Tanstack React Query 공식문서의 Community Resources에서는 Suspense를 더 타입세이프하게 잘 사용하기 위해 [useSuspenseQuery](https://suspensive.org/ko/docs/react-query/src/useSuspenseQuery.i18n), [useSuspenseQueries](https://suspensive.org/ko/docs/react-query/src/useSuspenseQueries.i18n), [useSuspenseInfiniteQuery](https://suspensive.org/ko/docs/react-query/src/useSuspenseInfiniteQuery.i18n)를 제공하는 [@suspensive/react-query를 소개](https://tanstack.com/query/v4/docs/react/community/suspensive-react-query)하고 있다.
+<br />
+
+### 💡 @suspensive/react-query
+
+- Tanstack React Query 공식문서의 `Community Resources`에서는 Suspense를 더 `타입 세이프`하게 잘 사용하기 위해 [useSuspenseQuery](https://suspensive.org/ko/docs/react-query/src/useSuspenseQuery.i18n), [useSuspenseQueries](https://suspensive.org/ko/docs/react-query/src/useSuspenseQueries.i18n), [useSuspenseInfiniteQuery](https://suspensive.org/ko/docs/react-query/src/useSuspenseInfiniteQuery.i18n)를 제공하는 [@suspensive/react-query](https://tanstack.com/query/v4/docs/react/community/suspensive-react-query)를 소개하고 있다.
 
 ### AS IS (@tanstack/react-query)
 
 ```tsx
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from "@tanstack/react-query";
 
 const Example = () => {
   const query = useQuery({
     queryKey,
     queryFn,
     suspense: true,
-  })
+  });
 
-  query.data // TData | undefined
+  query.data; // TData | undefined
 
   if (query.isSuccess) {
-    query.data // TData
+    query.data; // TData
   }
-}
+};
 ```
 
 ### TO BE (@suspensive/react-query)
 
 ```tsx
-import { useSuspenseQuery } from '@suspensive/react-query'
+import { useSuspenseQuery } from "@suspensive/react-query";
 
 const Example = () => {
   const query = useSuspenseQuery({
     queryKey,
     queryFn,
-  }) // suspense: true가 기본입니다.
+  }); // suspense: true가 기본입니다.
 
   // isSuccess으로 type narrowing이 필요하지 않습니다.
-  query.data // TData
-}
+  query.data; // TData
+};
 ```
 
-> suspensive/react-query의 훅(useSuspenseQuery, useSuspenseQueries, useSuspenseInfiniteQuery)은 @tanstack/react-query v5 alpha버전에 추가([관련 Pull Request](https://github.com/TanStack/query/pull/5739))되고 공식 API로 [이 페이지](https://tanstack.com/query/v5/docs/react/guides/suspense)에서 확인할 수 있습니다. 
+> suspensive/react-query의 훅(useSuspenseQuery, useSuspenseQueries, useSuspenseInfiniteQuery)은 @tanstack/react-query v5 alpha버전에 추가([관련 Pull Request](https://github.com/TanStack/query/pull/5739))되고 공식 API로 [이 페이지](https://tanstack.com/query/v5/docs/react/guides/suspense)에서 확인할 수 있습니다.
 
 <br />
 
