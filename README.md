@@ -1266,6 +1266,46 @@ function App() {
 7. MainComponent mount
 ```
 
+- Tanstack React Query 공식문서의 Community Resources에서는 Suspense를 더 타입세이프하게 잘 사용하기 위해 [useSuspenseQuery](https://suspensive.org/ko/docs/react-query/src/useSuspenseQuery.i18n), [useSuspenseQueries](https://suspensive.org/ko/docs/react-query/src/useSuspenseQueries.i18n), [useSuspenseInfiniteQuery](https://suspensive.org/ko/docs/react-query/src/useSuspenseInfiniteQuery.i18n)를 제공하는 [@suspensive/react-query를 소개](https://tanstack.com/query/v4/docs/react/community/suspensive-react-query)하고 있다.
+
+### AS IS (@tanstack/react-query)
+
+```tsx
+import { useQuery } from '@tanstack/react-query'
+
+const Example = () => {
+  const query = useQuery({
+    queryKey,
+    queryFn,
+    suspense: true,
+  })
+
+  query.data // TData | undefined
+
+  if (query.isSuccess) {
+    query.data // TData
+  }
+}
+```
+
+### TO BE (@suspensive/react-query)
+
+```tsx
+import { useSuspenseQuery } from '@suspensive/react-query'
+
+const Example = () => {
+  const query = useSuspenseQuery({
+    queryKey,
+    queryFn,
+  }) // suspense: true가 기본입니다.
+
+  // isSuccess으로 type narrowing이 필요하지 않습니다.
+  query.data // TData
+}
+```
+
+> suspensive/react-query의 훅(useSuspenseQuery, useSuspenseQueries, useSuspenseInfiniteQuery)은 @tanstack/react-query v5 alpha버전에 추가([관련 Pull Request](https://github.com/TanStack/query/pull/5739))되고 공식 API로 [이 페이지](https://tanstack.com/query/v5/docs/react/guides/suspense)에서 확인할 수 있습니다. 
+
 <br />
 
 ## Default Query Function
