@@ -1,6 +1,6 @@
-# 💻 TanStack Query(React Query v4)
+# 💻 TanStack Query(React)
 
-- 해당 저장소는 TanStack Query(React Query v4)에서 자주 사용하는 개념들을 정리한 저장소입니다. TanStack Query(React Query v4)의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
+- 해당 저장소는 TanStack Query(React)에서 자주 사용하는 개념들을 정리한 저장소입니다. TanStack Query(React)의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
 - 오탈자, 가독성 안좋은 부분 또는 추가 내용은 `Pull Request`, `Issue` 등 자유롭게 남겨주시면 검토 후에 반영하겠습니다.
 
 <br />
@@ -11,11 +11,12 @@
 
 <br />
 
-## TanStack Query(React Query v4) 정식 릴리즈
+## TanStack Query(React)
 
-![스크린샷 2022-08-17 오후 2 20 01](https://user-images.githubusercontent.com/64779472/185040681-2352e8c8-b2d7-40f7-893d-3ee2270904c9.png)
+#### ⭐️ TanStack Query(React)가 23.10.17 v5를 릴리즈됐습니다. 해당 저장소도 단계적으로 v5에 맞출 예정입니다.
 
-- TanStack Query(React Query v4)는 `React Query v3의 대부분의 기능을 호환`합니다. 주요 차이점은 아래 문서에 간략하게 정리했습니다. 참고해주시면 감사드립니다 🙇‍♂️
+![스크린샷 2023-10-18 오전 2 09 09](https://github.com/ssi02014/react-query-tutorial/assets/64779472/84de2a61-7e39-4d52-aed8-b0ab67af95bc)
+
 - [TanStack Query v3 vs v4 비교 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
 
 <br />
