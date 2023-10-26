@@ -1271,7 +1271,7 @@ function App() {
 
 ### 💡 @suspensive/react-query
 
-- Tanstack React Query 공식문서의 `Community Resources`에서는 Suspense를 더 `타입 세이프`하게 잘 사용하기 위해 [useSuspenseQuery](https://suspensive.org/ko/docs/react-query/src/useSuspenseQuery.i18n), [useSuspenseQueries](https://suspensive.org/ko/docs/react-query/src/useSuspenseQueries.i18n), [useSuspenseInfiniteQuery](https://suspensive.org/ko/docs/react-query/src/useSuspenseInfiniteQuery.i18n)를 제공하는 [@suspensive/react-query](https://tanstack.com/query/v4/docs/react/community/suspensive-react-query)를 소개하고 있다.
+- Tanstack React Query 공식문서의 `Community Resources`에서는 Suspense를 더 `타입 세이프`하게 잘 사용하기 위해 [useSuspenseQuery](https://suspensive.org/ko/docs/react-query/useSuspenseQuery), [useSuspenseQueries](https://suspensive.org/ko/docs/react-query/useSuspenseQueries), [useSuspenseInfiniteQuery](https://suspensive.org/ko/docs/react-query/useSuspenseInfiniteQuery)를 제공하는 [@suspensive/react-query](https://tanstack.com/query/v4/docs/react/community/suspensive-react-query)를 소개하고 있다.
 
 ### AS IS (@tanstack/react-query)
 
