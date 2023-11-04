@@ -11,14 +11,12 @@
 
 <br />
 
-## TanStack Query(React) v5
+## TanStack Query(React v4)
 
-- ⭐️ TanStack Query(React)가 `23.10.17` v5를 릴리즈됐습니다. 해당 저장소도 단계적으로 `v5`에 맞출 예정입니다.
-- ⭐️ 기존 `v4`문서는 [해당 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/README.v4.md)를 확인해주세요.
+![스크린샷 2022-08-17 오후 2 20 01](https://user-images.githubusercontent.com/64779472/185040681-2352e8c8-b2d7-40f7-893d-3ee2270904c9.png)
 
-![스크린샷 2023-10-18 오전 2 09 09](https://github.com/ssi02014/react-query-tutorial/assets/64779472/84de2a61-7e39-4d52-aed8-b0ab67af95bc)
+- TanStack Query(React) v4는 `React Query v3의 대부분의 기능을 호환`합니다. 주요 차이점은 아래 문서에 간략하게 정리했습니다. 참고해주시면 감사드립니다 🙇‍♂️
 
-- `v3 -> v4`, `v4 -> v5` Migrating 정리 문서는 아래 문서들 확인 해주시기 바랍니다.
 - [Migrating to TanStack Query(React) v5](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v5.md)
 
 - [Migrating to TanStack Query(React) v4](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
