@@ -1113,7 +1113,7 @@ const useAddSuperHeroData = () => {
       await queryClient.cancelQueries(['super-heroes']);
 
       // 이전 값
-      const previousHeroData = queryClient.getQueryData('super-heroes');
+      const previousHeroData = queryClient.getQueryData(['super-heroes']);
 
       // 새로운 값으로 낙관적 업데이트 진행
       queryClient.setQueryData(['super-heroes'], (oldData: any) => {
