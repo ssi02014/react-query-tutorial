@@ -1061,14 +1061,8 @@ const useAddSuperHeroData = () => {
 queryClient.invalidateQueries(["super-heroes"]);
 
 // 아래 query들 모두 무효화 된다.
-const query = useQuery({
-  queryKey: ["super-heroes", "superman"],
-  queryFn: fetchSuperHero,
-});
-const query = useQuery({
-  queryKey: ["super-heroes", { id: 1 }],
-  queryFn: fetchSuperHero,
-});
+const query = useQuery(["super-heroes", "superman"], fetchSuperHero);
+const query = useQuery(["super-heroes", { id: 1 }], fetchSuperHero);
 ```
 
 - 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
