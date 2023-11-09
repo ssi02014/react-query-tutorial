@@ -1057,7 +1057,7 @@ const useAddSuperHeroData = () => {
 };
 ```
 
-- 만약 `["super-heroes"]`를 포함하는 무효화 하려는 키가 여러 개라면 `["super-heroes"]`만 배열에 담아 보내주면 된다.
+- 참고로, queryKey에 `["super-heroes"]`을 넘겨주면 queryKey에 "super-heroes"를 포함하는 모든 쿼리가 무효화된다.
 
 ```tsx
 queryClient.invalidateQueries({ queryKey: ["super-heroes"] });
