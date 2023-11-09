@@ -1047,7 +1047,7 @@ const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
     onSuccess(data) {
-      queryClient.invalidateQueries(['super-heroes']); // 이 key에 해당하는 쿼리가 무효화!
+      queryClient.invalidateQueries({ queryKey: ['super-heroes', 'superman'] }); // 이 key에 해당하는 쿼리가 무효화!
       console.log(data);
     },
     onError(err) {
@@ -1057,10 +1057,20 @@ const useAddSuperHeroData = () => {
 };
 ```
 
-- 만약 무효화 하려는 키가 여러 개라면 아래 예제와 같이 다음과 같이 배열로 보내주면 된다.
+- 만약 `["super-heroes"]`를 포함하는 무효화 하려는 키가 여러 개라면 `["super-heroes"]`만 배열에 담아 보내주면 된다.
 
 ```tsx
-queryClient.invalidateQueries(['super-heroes', 'posts', 'comment']);
+queryClient.invalidateQueries({ queryKey: ['super-heroes'] });
+
+// 아래 query들 모두 무효화 된다.
+const query = useQuery({
+  queryKey: ['super-heroes', 'superman'],
+  queryFn: fetchSuperHero,
+});
+const query = useQuery({
+  queryKey: ['super-heroes', { id: 1 }],
+  queryFn: fetchSuperHero,
+});
 ```
 
 - 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
