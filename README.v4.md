@@ -1055,10 +1055,14 @@ const useAddSuperHeroData = () => {
 };
 ```
 
-- 만약 무효화 하려는 키가 여러 개라면 아래 예제와 같이 다음과 같이 배열로 보내주면 된다.
+- 참고로, queryKey에 `["super-heroes"]`을 넘겨주면 queryKey에 "super-heroes"를 포함하는 모든 쿼리가 무효화된다.
 
 ```tsx
-queryClient.invalidateQueries(["super-heroes", "posts", "comment"]);
+queryClient.invalidateQueries(["super-heroes"]);
+
+// 아래 query들 모두 무효화 된다.
+const query = useQuery(["super-heroes", "superman"], fetchSuperHero);
+const query = useQuery(["super-heroes", { id: 1 }], fetchSuperHero);
 ```
 
 - 위에 `enabled/refetch`에서도 언급했지만 `enabled: false` 옵션을 주면`queryClient`가 쿼리를 다시 가져오는 방법 중 `invalidateQueries`와 `refetchQueries`를 무시한다.
@@ -1113,7 +1117,7 @@ const useAddSuperHeroData = () => {
       await queryClient.cancelQueries(["super-heroes"]);
 
       // 이전 값
-      const previousHeroData = queryClient.getQueryData("super-heroes");
+      const previousHeroData = queryClient.getQueryData(["super-heroes"]);
 
       // 새로운 값으로 낙관적 업데이트 진행
       queryClient.setQueryData(["super-heroes"], (oldData: any) => {
@@ -1423,16 +1427,16 @@ const { data } = useQuery<
 
 useMutation도 useQuery와 동일하게 현재 4개이며, 다음과 같다.
 
-1. TData: useMutaion에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
+1. TData: useMutation에 넘겨준 mutation function의 `실행 결과`의 타입을 지정하는 제네릭 타입이다.
    - data의 타입과 onSuccess(1번째 인자)의 인자의 타입으로 활용된다.
-2. TError: useMutaion에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
+2. TError: useMutation에 넘겨준 mutation function의 `error` 형식을 정하는 제네릭 타입이다.
 3. TVariables: `mutate 함수`에 전달 할 인자를 지정하는 제네릭 타입이다.
    - onSuccess(2번째 인자), onError(2번째 인자), onMutate(1번째 인자), onSettled(3번째 인자) 인자의 타입으로 활용된다.
 4. TContext: mutation function을 실행하기 전에 수행하는 `onMutate 함수의 return값`을 지정하는 제네릭 타입이다.
    - onMutate의 결과 값의 타입을 onSuccess(3번째 인자), onError(3번째 인자), onSettled(4번째 인자)에서 활용하려면 해당 타입을 지정해야 한다.
 
 ```tsx
-export function useMutaion<
+export function useMutation<
   TData = unknown,
   TError = unknown,
   TVariables = void,
