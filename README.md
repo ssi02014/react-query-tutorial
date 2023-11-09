@@ -1047,7 +1047,7 @@ const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation(addSuperHero, {
     onSuccess(data) {
-      queryClient.invalidateQueries({ queryKey: ["super-heroes", "superman"] }); // 이 key에 해당하는 쿼리가 무효화!
+      queryClient.invalidateQueries({ queryKey: ["super-heroes"] }); // 이 key에 해당하는 쿼리가 무효화!
       console.log(data);
     },
     onError(err) {
