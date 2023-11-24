@@ -622,13 +622,13 @@ const {
 
 ### keepPreviousData
 
-- 기존의 keepPreviousData은 `페이지네이션`과 같은 기능을 구현할 때 많이 사용하던 옵션이었다. 캐싱 되지 않은 페이지를 가져올 때 목록이 `깜빡거리는 현상을 방지`할 수 있다.
-- 하지만, v5부터 `keepPreviousData`, `isPreviousData`은 옵션은 제거됐다.
+- v4까지 있던 keepPreviousData은 `페이지네이션`과 같은 기능을 구현할 때 많이 사용하던 옵션이었다. 캐싱 되지 않은 페이지를 가져올 때 목록이 `깜빡거리는 현상을 방지`할 수 있다.
+- **하지만, v5부터 `keepPreviousData`, `isPreviousData`은 옵션은 제거됐다.**
 
   - [Removed keepPreviousData in favor of placeholderData identity function](https://github.com/ssi02014/react-query-tutorial/blob/main/document/v5.md#9-%EF%B8%8F-removed-keeppreviousdata-in-favor-of-placeholderdata-identity-function)
 
-- 왜냐하면 이들은 각각 `placeholderData`와 `isPlaceholderData` 플래그와 거의 유사하게 동작하기 때문이다.
-- **하지만! 아래 예제처럼 placeholderData를 활용하면서 이전 버전에서 keepPreviousData의 값은 true로 줬을 때와 동일한 기능을 수행할 수 있다.**
+- 이들은 각각 `placeholderData`와 `isPlaceholderData` 플래그와 거의 유사하게 동작하기 때문이다.
+- 하지만! 아래 예제처럼 placeholderData를 활용하면서 이전 버전에서 `keepPreviousData의 값을 true`로 줬을 때와 동일한 기능을 수행할 수 있다.
 
 ```tsx
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
