@@ -604,7 +604,10 @@ const placeholderData = useMemo(() => generateFakeHeros(), []);
 
 const {
   data,
+<<<<<<< HEAD
   refetch,
+=======
+>>>>>>> ccdcf43 (fix: 오탈자 수정)
   // ...
 } = useQuery({
   queryKey: ["super-heroes"],
@@ -628,14 +631,13 @@ const {
   - [Removed keepPreviousData in favor of placeholderData identity function](https://github.com/ssi02014/react-query-tutorial/blob/main/document/v5.md#9-%EF%B8%8F-removed-keeppreviousdata-in-favor-of-placeholderdata-identity-function)
 
 - 이들은 각각 `placeholderData`와 `isPlaceholderData` 플래그와 거의 유사하게 동작하기 때문이다.
-- 하지만! 아래 예제처럼 placeholderData를 활용하면서 이전 버전에서 `keepPreviousData의 값을 true`로 줬을 때와 동일한 기능을 수행할 수 있다.
+- 아래 예제처럼 `placeholderData`를 활용하면서 이전 버전에서 `keepPreviousData의 값을 true`로 줬을 때와 동일한 기능을 수행할 수 있다.
 
 ```tsx
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 const {
   data,
-  refetch,
   // ...
 } = useQuery({
   queryKey: ["super-heroes"],
@@ -730,12 +732,29 @@ const { data: user } = useQuery({
 
 const channelId = user?.data.channelId;
 
+<<<<<<< HEAD
 // user 쿼리에 종속 쿼리
 const { data: user } = useQuery({
+=======
+<<<<<<< HEAD
+  // user 쿼리에 종속 쿼리
+  const { data } = useQuery(
+    ['courses', channelId],
+    () => fetchCoursesByChannelId(channelId),
+    { enabled: !!channelId }
+  );
+=======
+// user 쿼리에 종속 쿼리
+const { data: courses } = useQuery({
+>>>>>>> ccdcf43 (fix: 오탈자 수정)
   queryKey: ["courses", channelId],
   queryFn: () => getCoursesByChannelId(channelId),
   enabled: !!channelId,
 });
+<<<<<<< HEAD
+=======
+>>>>>>> aea6c59 (fix: 오탈자 수정)
+>>>>>>> ccdcf43 (fix: 오탈자 수정)
 ```
 
 <br />
