@@ -604,10 +604,6 @@ const placeholderData = useMemo(() => generateFakeHeros(), []);
 
 const {
   data,
-<<<<<<< HEAD
-  refetch,
-=======
->>>>>>> ccdcf43 (fix: 오탈자 수정)
   // ...
 } = useQuery({
   queryKey: ["super-heroes"],
@@ -732,29 +728,12 @@ const { data: user } = useQuery({
 
 const channelId = user?.data.channelId;
 
-<<<<<<< HEAD
-// user 쿼리에 종속 쿼리
-const { data: user } = useQuery({
-=======
-<<<<<<< HEAD
-  // user 쿼리에 종속 쿼리
-  const { data } = useQuery(
-    ['courses', channelId],
-    () => fetchCoursesByChannelId(channelId),
-    { enabled: !!channelId }
-  );
-=======
 // user 쿼리에 종속 쿼리
 const { data: courses } = useQuery({
->>>>>>> ccdcf43 (fix: 오탈자 수정)
   queryKey: ["courses", channelId],
   queryFn: () => getCoursesByChannelId(channelId),
   enabled: !!channelId,
 });
-<<<<<<< HEAD
-=======
->>>>>>> aea6c59 (fix: 오탈자 수정)
->>>>>>> ccdcf43 (fix: 오탈자 수정)
 ```
 
 <br />
