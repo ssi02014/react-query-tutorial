@@ -1304,6 +1304,8 @@ import { Suspense } from "react";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      // suspense: true, - 💡 v5부터 Deprecated
+      // useQuery/useInfiniteQuery 와 같은 일반 훅 대신 useSuspenseQuery/useSuspenseInfiniteQuery와 같은 suspense 훅 사용
       throwOnError: true,
     },
   },
@@ -1320,16 +1322,15 @@ function App() {
 
 - 코드를 보면 우리는 서버 상태가 로딩일 때 Loader 컴포넌트를 보여주겠다!라고 이해할 수 있다.
 - Suspense컴포넌트 내부에서 어떤 로직이 동작하는지 우리는 신경쓰지 않아도된다. 이처럼 `내부 복잡성을 추상화`하는게 바로 `선언형 컴포넌트`이다.
-- 또한, 위와 같이 react-query와 결합한 Suspense는 아래와 같은 과정으로 동작을한다. 참고해보자.
+- 위와 같이 `react-query(useSuspenseQuery)`와 결합한 `Suspense`는 아래와 같은 과정으로 동작을한다.
 
 ```
 1. Suspense mount
 2. MainComponent mount
-3. MainComponent에서 useQuery에 있는 api Call
+3. MainComponent에서 useSuspenseQuery 훅을 사용하여 비동기 데이터 요청
 4. MainComponent unmount, fallback UI인 Loader mount
-5. api Call Success일 경우, useQuery에 있는 onSuccess 동작
-6. onSuccess 완료 이후 Loader unmount
-7. MainComponent mount
+5. 비동기 데이터 요청이 완료되면 fallback UI인 Loader unmount
+6. MainComponent mount
 ```
 
 <br />
@@ -1339,12 +1340,32 @@ function App() {
 - [new hooks for suspense](https://github.com/ssi02014/react-query-tutorial/blob/main/document/v5.md#21-%EF%B8%8F-new-hooks-for-suspense)
 - v5에서는 `data fetching`에 대한 `suspense`가 마침내 안정화되었습니다.
 - `useSuspenseQuery`, `useSuspenseInfiniteQuery`, `useSuspenseQueries` 3가지 훅이 추가되었습니다.
+- 기존의 `suspense 옵션`은 제거되었습니다. 따라서 Suspense를 적용하려면 위 훅들을 활용해야 합니다.
 - 위 3가지 훅을 사용하게 되면 타입 레벨에서 `data`가 `undefined` 상태가 되지 않습니다.
 
 ```tsx
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
-const { data } = useSuspenseQuery({ queryKey, queryFn });
+const fetchGroups = async (): Promise<{ data: Group[] }> => {
+  const res = await axios.get("/groups");
+  return res;
+};
+
+// as-is
+// data: Group[] | undefined
+const { data } = useQuery({
+  queryKey: ["groups"],
+  queryFn: fetchGroups,
+  select: (data) => data.data,
+});
+
+// to-be
+// data: Group[]
+const { data } = useSuspenseQuery({
+  queryKey: ["groups"],
+  queryFn: fetchGroups,
+  select: (data) => data.data,
+});
 ```
 
 <br />
@@ -1353,7 +1374,7 @@ const { data } = useSuspenseQuery({ queryKey, queryFn });
 
 - TanStack Query(React) 공식문서의 `Community Resources`에서는 Suspense를 더 `타입 세이프`하게 잘 사용하기 위해 [useSuspenseQuery](https://suspensive.org/ko/docs/react-query/useSuspenseQuery), [useSuspenseQueries](https://suspensive.org/ko/docs/react-query/useSuspenseQueries), [useSuspenseInfiniteQuery](https://suspensive.org/ko/docs/react-query/useSuspenseInfiniteQuery)를 제공하는 [@suspensive/react-query](https://tanstack.com/query/v4/docs/react/community/suspensive-react-query)를 소개하고 있다.
 
-- suspensive/react-query의 훅(useSuspenseQuery, useSuspenseQueries, useSuspenseInfiniteQuery)은 @tanstack/react-query v5 alpha버전에 추가([관련 Pull Request](https://github.com/TanStack/query/pull/5739))되고 공식 API로 [이 페이지](https://tanstack.com/query/v5/docs/react/guides/suspense)에서 확인할 수 있습니다.
+- suspensive/react-query의 훅(useSuspenseQuery, useSuspenseQueries, useSuspenseInfiniteQuery)은 @tanstack/react-query v5 버전에 추가([관련 Pull Request](https://github.com/TanStack/query/pull/5739))되고 공식 API로 [이 페이지](https://tanstack.com/query/v5/docs/react/guides/suspense)에서 확인할 수 있습니다.
 
 <br />
 
