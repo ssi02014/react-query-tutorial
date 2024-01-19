@@ -628,7 +628,7 @@ const {
   - [Removed keepPreviousData in favor of placeholderData identity function](https://github.com/ssi02014/react-query-tutorial/blob/main/document/v5.md#9-%EF%B8%8F-removed-keeppreviousdata-in-favor-of-placeholderdata-identity-function)
 
 - 이들은 각각 `placeholderData`와 `isPlaceholderData` 플래그와 거의 유사하게 동작하기 때문이다.
-- 아래 예제처럼 `placeholderData`를 활용하면서 이전 버전에서 `keepPreviousData의 값을 true`로 줬을 때와 동일한 기능을 수행할 수 있다.
+- 아래 예제처럼 `placeholderData`를 활용하면서 이전 버전에서 `keepPreviousData의 값을 "true"`로 줬을 때와 동일한 기능을 수행할 수 있다.
 
 ```tsx
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
@@ -640,6 +640,21 @@ const {
   queryKey: ["super-heroes"],
   queryFn: getAllSuperHero,
   placeholderData: keepPreviousData,
+});
+```
+
+- 아래 예시처럼 작성해서 위 keepPreviousData 예시와 동일한 동작을 할 수 있다.
+
+```tsx
+import { useQuery } from "@tanstack/react-query";
+
+const {
+  data,
+  // ...
+} = useQuery({
+  queryKey: ["super-heroes"],
+  queryFn: getAllSuperHero,
+  placeholderData: (previousData, previousQuery) => previousData,
 });
 ```
 
