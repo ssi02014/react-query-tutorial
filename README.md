@@ -60,6 +60,7 @@
 29. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
 30. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
 31. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+32. [리액트 쿼리 지원 버전](#지원-버전)
 
 <br />
 
@@ -1611,6 +1612,26 @@ const { data } = useQuery({
  * error: Error | null
  * select: (data: { data: Group[] }): Group[]
  */
+```
+
+<br />
+
+## 지원 버전
+
+- Tanstack Query v5에 필요한 TypeScript 최소 버전은 `v4.7` 입니다.
+- Tanstack Query v5에 필요한 React 최소 버전은 `v18`입니다.
+
+  - React v18 이상에서 지원하는 `useSyncExternalStore` 훅을 사용하고 있기 때문입니다.
+
+- Tanstack Query v5의 브라우저 별 지원 버전은 아래와 같습니다.
+
+```
+Chrome >= 91
+Firefox >= 90
+Edge >= 91
+Safari >= 15
+iOS >= 15
+opera >= 77
 ```
 
 <br />
