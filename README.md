@@ -52,7 +52,7 @@
 21. [데이터를 미리 불러오는 PreFetching](#prefetching)
 22. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
 23. [서버와 HTTP CUD관련 작업을 위한 useMutation](#usemutation)
-24. [쿼리 수동 무효화 cancelQueries](#cancelqueries)
+24. [쿼리 수동 취소 cancelQueries](#cancelqueries)
 25. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
 26. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
 27. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
@@ -1632,6 +1632,8 @@ const { data } = useQuery({
 <br />
 
 ## 지원 버전
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
 
 - Tanstack Query v5에 필요한 TypeScript 최소 버전은 `v4.7` 입니다.
 - Tanstack Query v5에 필요한 React 최소 버전은 `v18`입니다.
