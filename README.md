@@ -660,6 +660,31 @@ const {
 
 <br />
 
+### notifyOnChangeProps
+
+- notifyOnChangeProps: `string[] | "all" | (() => string[] | "all")`
+- 따로 설정하지 않으면, **컴포넌트에서 접근한 값이 변경되었을 때만** 리랜더링이 발생한다. (기본값)
+- 특정 프로퍼티가 변경되었을 때만 리랜더링이 발생하도록 설정할 수 있다. 예를 들어 `['data', 'error']`로 설정하면 `data` 또는 `error`가 변경되었을 때 컴포넌트가 리랜더링된다.
+- `'all'`로 설정할 경우 쿼리의 어떤 프로퍼티가 변경되든 컴포넌트는 리랜더링된다.
+- 참고: 기본 동작은 `Object.defineProperty()`를 활용한다.
+  - [PR](https://github.com/TanStack/query/pull/1578/files#diff-93f379800fc8abf895eba249b2e2371eda98740aa40fc9f284a8088d190f46c3R506-R514)
+  - [Object.defineProperty()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)
+
+<br />
+
+### structuralSharing
+
+- structuralSharing: `boolean | (<T>(oldData: T | undefined, newData: T) => T)`
+- 기본값은 `true`
+- 쿼리 결과값은 `structural sharing`을 사용하여 **실제로 데이터가 변경된 부분**만 레퍼런스가 변경되는데, `false`로 설정할 경우 이 기본 동작이 disable된다.
+  - [Important defaults](https://tanstack.com/query/v4/docs/react/guides/important-defaults)
+  - [structural sharing 개념](https://blog.klipse.tech/javascript/2021/02/26/structural-sharing-in-javascript.html)
+- 이전 데이터와 새 데이터를 비교하는 함수를 직접 작성하여 설정할 수 있다.
+- 참고: 기본 동작은 다음 함수를 활용하여 `structural sharing`을 적용한다.
+  - [replaceEqualDeep](https://github.com/TanStack/query/blob/main/packages/query-core/src/utils.ts#L218)
+
+<br />
+
 ## Parallel
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
