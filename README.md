@@ -43,7 +43,7 @@
 12. [실패한 쿼리에 대해 재요청하는 retry](#retry)
 13. [onSuccess, onError, onSettled](#onsuccess-onerror-onsettled) - 💡 **v5 @Deprecated**
 14. [select를 이용한 데이터 변환](#select)
-15. [쿼리가 pending 상태인 동안 보여 줄 수 있 placeholderData](#placeholderdata)
+15. [쿼리가 pending 상태인 동안 보여 줄 수 있는 placeholderData](#placeholderdata)
 16. [Paginated 구현에 유용한 keepPreviousData](#keepPreviousData) - 💡 **v5 @Deprecated**
 17. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
 18. [종속 쿼리(Dependent Queries)](#dependent-queries)
@@ -657,6 +657,26 @@ const {
   placeholderData: (previousData, previousQuery) => previousData,
 });
 ```
+
+<br />
+
+### notifyOnChangeProps
+
+```tsx
+import { useQuery } from "@tanstack/react-query";
+
+const { data, dataUpdatedAt } = useQuery({
+  queryKey: ["super-heroes"],
+  queryFn: getAllSuperHero,
+  notifyOnChangeProps: ["data"], // data 값 변경시에만 리랜더링이 발생한다
+});
+```
+
+- notifyOnChangeProps: `string[] | "all" | (() => string[] | "all")`
+- 쿼리의 특정 프로퍼티들이 변경되었을 때만 리랜더링이 발생하도록 설정할 수 있다.
+- 별도로 설정하지 않으면, **컴포넌트에서 접근한 값이 변경되었을 때** 리랜더링이 발생한다 (기본 동작). 즉 위 예시에서 `notifyOnChangeProps`에 설정값을 주지 않았다면, `data`, `dataUpdatedAt` 중 어느 하나가 변경되면 리랜더링이 발생한다.
+- `"all"`로 설정할 경우 쿼리의 어떤 프로퍼티가 변경되든 컴포넌트가 리랜더링된다.
+- 참고: 기본 동작은 [Object.defineProperty()](https://github.com/TanStack/query/pull/1578/files#diff-93f379800fc8abf895eba249b2e2371eda98740aa40fc9f284a8088d190f46c3R506-R514)를 활용한다.
 
 <br />
 
