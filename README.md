@@ -43,7 +43,7 @@
 12. [실패한 쿼리에 대해 재요청하는 retry](#retry)
 13. [onSuccess, onError, onSettled](#onsuccess-onerror-onsettled) - 💡 **v5 @Deprecated**
 14. [select를 이용한 데이터 변환](#select)
-15. [쿼리가 pending 상태인 동안 보여 줄 수 있 placeholderData](#placeholderdata)
+15. [쿼리가 pending 상태인 동안 보여 줄 수 있는 placeholderData](#placeholderdata)
 16. [Paginated 구현에 유용한 keepPreviousData](#keepPreviousData) - 💡 **v5 @Deprecated**
 17. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
 18. [종속 쿼리(Dependent Queries)](#dependent-queries)
