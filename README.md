@@ -680,19 +680,6 @@ const { data, dataUpdatedAt } = useQuery({
 
 <br />
 
-### structuralSharing
-
-- structuralSharing: `boolean | (<T>(oldData: T | undefined, newData: T) => T)`
-- 기본값은 `true`
-- 쿼리 결과값은 `structural sharing`을 사용하여 **실제로 데이터가 변경된 부분**만 레퍼런스가 변경되는데, `false`로 설정할 경우 이 기본 동작이 disable된다.
-  - [Important defaults](https://tanstack.com/query/v4/docs/react/guides/important-defaults)
-  - [structural sharing 개념](https://blog.klipse.tech/javascript/2021/02/26/structural-sharing-in-javascript.html)
-- 이전 데이터와 새 데이터를 비교하는 함수를 직접 작성하여 설정할 수 있다.
-- 참고: 기본 동작은 다음 함수를 활용하여 `structural sharing`을 적용한다.
-  - [replaceEqualDeep](https://github.com/TanStack/query/blob/main/packages/query-core/src/utils.ts#L218)
-
-<br />
-
 ## Parallel
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
