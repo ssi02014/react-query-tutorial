@@ -45,22 +45,23 @@
 14. [select를 이용한 데이터 변환](#select)
 15. [쿼리가 pending 상태인 동안 보여 줄 수 있는 placeholderData](#placeholderdata)
 16. [Paginated 구현에 유용한 keepPreviousData](#keepPreviousData) - 💡 **v5 @Deprecated**
-17. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
-18. [종속 쿼리(Dependent Queries)](#dependent-queries)
-19. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
-20. [초기 데이터를 설정할 수 있는 initialData](#initial-query-data)
-21. [데이터를 미리 불러오는 PreFetching](#prefetching)
-22. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
-23. [서버와 HTTP CUD관련 작업을 위한 useMutation](#usemutation)
-24. [쿼리 수동 취소 cancelQueries](#cancelqueries)
-25. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
-26. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
-27. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
-28. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
-29. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
-30. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
-31. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
-32. [리액트 쿼리 지원 버전](#지원-버전)
+17. [특정 쿼리 프로퍼티 변경 시에만 리렌더링을 트리거 할 수 있는 notifyOnChangeProps](#notifyOnChangeProps)
+18. [쿼리를 병렬(Parallel) 요청할 수 있는 useQueries](#parallel)
+19. [종속 쿼리(Dependent Queries)](#dependent-queries)
+20. [QueryClient 인스턴스를 반환하는 useQueryClient](#usequeryclient)
+21. [초기 데이터를 설정할 수 있는 initialData](#initial-query-data)
+22. [데이터를 미리 불러오는 PreFetching](#prefetching)
+23. [Infinite Queries(무한 쿼리) + useInfiniteQuery](#infinite-queries)
+24. [서버와 HTTP CUD관련 작업을 위한 useMutation](#usemutation)
+25. [쿼리 수동 취소 cancelQueries](#cancelqueries)
+26. [쿼리를 무효화할 수 있는 queryClient.invalidateQueries](#쿼리-무효화)
+27. [캐시 데이터 즉시 업데이트를 위한 queryClient.setQueryData](#캐시-데이터-즉시-업데이트)
+28. [사용자 경험(UX)을 올려주는 Optimistic Updates(낙관적 업데이트)](#optimistic-update)
+29. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
+30. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
+31. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
+32. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+33. [리액트 쿼리 지원 버전](#지원-버전)
 
 <br />
 
@@ -643,7 +644,7 @@ const {
 });
 ```
 
-- 아래 예시처럼 작성해서 위 keepPreviousData 예시와 동일한 동작을 할 수 있다.
+- 아래 예시처럼 작성해서 위 `keepPreviousData`예시와 동일한 동작을 할 수 있다.
 
 ```tsx
 import { useQuery } from "@tanstack/react-query";
