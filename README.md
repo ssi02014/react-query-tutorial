@@ -71,9 +71,10 @@
 
 <br />
 
-## 👨🏻‍💻 주요 참고 블로그
+## 👨🏻‍💻 주요 참고 페이지
 
-- [TkDodo 블로그(TanStack Query 관리자)](https://tkdodo.eu/blog/)
+- [TanStack/query 공식 깃허브](https://github.com/TanStack/query)
+- [TkDodo 블로그(TanStack Query maintainer)](https://tkdodo.eu/blog/)
 
 <br />
 
