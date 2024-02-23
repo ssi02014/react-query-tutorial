@@ -55,6 +55,7 @@
 28. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
 29. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
 30. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+31. [리액트 쿼리 지원 버전](#지원-버전)
 
 <br />
 
@@ -1516,3 +1517,49 @@ const { mutate } = useInfiniteQuery<Colors, AxiosError, Colors, ["colors"]>(
  * getNextPageParam: GetNextPageParamFunction<Colors>
 */
 ```
+
+<br />
+
+### 💡 Typescript Best Practice
+
+- [TypeScript 공식 문서](https://tanstack.com/query/v5/docs/react/typescript)
+- 위의 제네릭을 모두 사용하는건 코드의 복잡도가 늘어난다. 하지만 react query는 타입을 잘 전달하므로 굳이 제네릭을 모두 직접 제공 할 필요가 없다.
+- 가장 좋은 방법은 `queryFn`의 타입을 잘 정의해서 `타입 추론`이 원활하게 되게 하는 것이다.
+
+```tsx
+const fetchGroups = async (): Promise<{ data: Group[] }> => {
+  const res = await axios.get("/groups");
+  return res;
+};
+
+const { data } = useQuery(["groups"], fetchGroups, {
+  select: (data) => data.data,
+});
+
+/**
+ 주요 타입
+ * data: Group[] | undefined
+ * error: Error | null
+ * select: (data: { data: Group[] }): Group[]
+ */
+```
+
+<br />
+
+## 지원 버전
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- Tanstack Query v4에 필요한 TypeScript 최소 버전은 `v4.1` 입니다.
+- Tanstack Query v4의 브라우저 별 지원 버전은 아래와 같습니다.
+
+```
+Chrome >= 73
+Firefox >= 78
+Edge >= 79
+Safari >= 12.1
+iOS >= 12.2
+Opera >= 53
+```
+
+<br />
