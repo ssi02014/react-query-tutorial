@@ -65,9 +65,10 @@
 
 <br />
 
-## 📃 API Reference
+## 📃 기타 참고 문서
 
 1. [QueryClient 주요 내용 정리 문서](https://github.com/ssi02014/react-query-tutorial/tree/master/document/queryClient.md)
+2. [기본적인 React Query 아키텍처 살펴보기: inside React Query](https://github.com/ssi02014/react-query-tutorial/tree/master/document/insideReactQuery.md)
 
 <br />
 
