@@ -153,10 +153,10 @@ function App() {
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
 - [React Query Devtools 공식 문서](https://tanstack.com/query/v5/docs/react/devtools)
-- react-query는 `전용 devtools`를 제공한다.
+- react-query는 `전용 devtools`를 제공하며 별도의 패키지 설치가 필요하다.
 - devtools를 사용하면 React Query의 모든 내부 동작을 `시각화`하는 데 도움이 되며 문제가 발생하면 `디버깅 시간을 절약`할 수 있다.
 - devtools는 기본값으로 `process.env.NODE_ENV === 'development'` 인 경우에만 실행된다, 즉 일반적으로 개발 환경에서만 작동하도록 설정되어 있으므로, 프로젝트 배포 시에 Devtools 삽입 코드를 제거해 줄 필요가 없다.
-- **devtools를 사용하기 위해서는 별도의 패키지 설치가 필요하다.**
+- Next 13+의 App Dir에선 dev dependency로 설치해야 동작한다.
 
 ```bash
 $ npm i @tanstack/react-query-devtools
@@ -164,6 +164,8 @@ $ npm i @tanstack/react-query-devtools
 $ pnpm add @tanstack/react-query-devtools
 # or
 $ yarn add @tanstack/react-query-devtools
+# or
+$ bun add @tanstack/react-query-devtools
 ```
 
 ```tsx
@@ -183,10 +185,11 @@ function App() {
 
 - initialIsOpen (Boolean)
   - `true`이면 개발 도구가 기본적으로 열려 있도록 설정할 수 있다.
-- position?: ("top-left" | "top-right" | "bottom-left" | "bottom-right")
-  - 기본값: `bottom-left`
+- buttonPosition?: ("top-left" | "top-right" | "bottom-left" | "bottom-right" | "relative")
+  - 기본값: `bottom-right`
   - devtools 패널을 열고 닫기 위한 로고 위치
-- 일반적으로 initialIsOpen, position을 자주 사용하지만, panelProps, closeButtonProps, toggleButtonProps와 같은 옵션들도 존재한다.
+  - `relative`일 때 버튼은 devtools를 렌더링하는 위치에 배치된다.
+- 일반적으로 initialIsOpen, buttonPosition을 자주 사용하며 그 외에 position, client와 같은 옵션들도 존재한다.
 
 <br />
 
@@ -1269,6 +1272,8 @@ $ npm i react-error-boundary
 $ pnpm add react-error-boundary
 # or
 $ yarn add react-error-boundary
+# or
+$ bun add react-error-boundary
 ```
 
 - 설치 후에 아래와 같은 QueryErrorBoundary라는 컴포넌트를 생성하고, 그 내부에 `useQueryErrorResetBoundary` 훅을 호출해 `reset` 함수를 가져온다.
