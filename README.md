@@ -1659,6 +1659,153 @@ const { data } = useQuery({
 
 <br />
 
+## Server Rendering & Hydration
+
+- Next.js에서 간단한게 `SSR(Server-Side-Rendering) & Hydration` 할 수 있는 방법을 안내하고자합니다.
+
+<br />
+
+### hydrate? dehydrate?
+
+- dehydrate는 서버에서 React Query의 상태를 클라이언트로 전송할 수 있는 형태로 만들기 위해 사용됩니다. 서버에서 데이터를 가져온 후, 이 데이터를 `직렬화(serialization)` 하여 클라이언트로 전송합니다. 직렬화된 데이터는 `DehydratedState` 형태로 표현됩니다.
+- hydrate는 클라이언트 측에서 직렬화된 상태를 받아 이를 React Query Cache에 복원하는데 사용됩니다. 이 과정은 서버에서 미리 가져온 데이터를 클라이언트의 `queryCache`에 적용하여, 클라이언트에서 새로운 요청을 피할 수 있도록 합니다.
+
+<br />
+
+### 1. 초기 셋업
+
+- 첫 번째 단계는 항상 `queryClient`를 생성하고 애플리케이션을 `<QueryClientProvider>`로 감싸는 것입니다.
+- 서버 사이드 렌더링을 할 때는 앱 내부의 React 상태에서 queryClient 인스턴스를 생성하는 것이 중요합니다.
+  - 이렇게 하면 다른 사용자와 요청 간에 데이터가 공유되지 않고 컴포넌트 수명 주기당 한 번만 queryClient를 생성할 수 있습니다.
+- 아래 `<QueryProvider />` 는 위 작업을 수행하는 컴포넌트입니다.
+
+```tsx
+import React, { PropsWithChildren, useState } from "react";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+
+const QueryProvider = ({ children }: PropsWithChildren) => {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            /* ssr 적용 시, prefetch 이후 클라이언트에서 다시 재요청 하지 않게 0 이상으로 셋팅 */
+            staleTime: 1000 * 60,
+          },
+        },
+      })
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+};
+```
+
+<br />
+
+- NextJs App Router를 기준으로 `layout` 파일에서 children을 위에서 만들어놓은 `<QueryProvider />` 로 감싸줍니다.
+
+```tsx
+// app/layout.tsx
+// ...
+import QueryProvider from "@/provider/QueryProvider";
+import { PropsWithChildren } from "react";
+
+const RootLayout = ({ children }: Readonly<PropsWithChildren>) => {
+  return (
+    <html lang="ko">
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
+    </html>
+  );
+};
+
+export default RootLayout;
+```
+
+<br />
+
+### 2. Prefetch와 Hydration API 사용
+
+- queryClient를 이용해서 preload 단계에서 query를 미리 가져올 수 있습니다.(`prefetch`)
+- prefetch한 데이터를 dehydrate하고, `<HydrationBoundary />`를 활용하여 queryClient에 `hydrate`한 상태를 전달합니다.
+  - [React Query - HydrationBoundary](https://tanstack.com/query/v5/docs/framework/react/reference/hydration#hydrationboundary)
+- `<QueryHydratedBoundary />` 는 위 작업을 수행하는 컴포넌트입니다.
+
+```tsx
+import {
+  dehydrate,
+  FetchQueryOptions,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { cache, PropsWithChildren } from "react";
+
+interface QueryHydratedBoundaryProps {
+  options: FetchQueryOptions;
+}
+
+const QueryHydratedBoundary = async ({
+  children,
+  options,
+}: PropsWithChildren<QueryHydratedBoundaryProps>) => {
+  const getQueryClient = cache(() => new QueryClient());
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery(options);
+
+  const dehydratedState = dehydrate(queryClient);
+
+  return (
+    <HydrationBoundary state={dehydratedState}>{children}</HydrationBoundary>
+  );
+};
+
+export default QueryHydratedBoundary;
+```
+
+<br />
+
+### 3. `<QueryHydratedBoundary />` 활용
+
+- 아래와 같이 활용할 수 있습니다.
+
+```tsx
+const HeroDetailBoard = ({ id }: HeroDetailBoardProps) => {
+  const { data } = useQuery({
+    queryKey: ["super-heros", id],
+    queryFn: () => getSuperHero(id),
+    // ...
+  });
+
+  return <div>{/* ... */}</div>;
+};
+
+// app/heros/[id]/page.tsx
+const HeroDetailPage = ({ params }: HeroDetailPageParams) => {
+  const id = Number(params?.id);
+
+  const queryHydrateOptions = useMemo(() => {
+    return {
+      queryKey: ["super-heros", id],
+      queryFn: () => requestGetCommunityDetailArticleAPI(id),
+    };
+  }, [id]);
+
+  return (
+    <QueryHydratedBoundary options={queryHydrateOptions}>
+      <HeroDetailBoard id={id} />
+    </QueryHydratedBoundary>
+  );
+};
+
+export default HeroDetailPage;
+```
+
+<br >
+
 ## 지원 버전
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
