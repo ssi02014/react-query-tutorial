@@ -20,7 +20,7 @@
 
 ![스크린샷 2023-10-18 오전 2 09 09](https://github.com/ssi02014/react-query-tutorial/assets/64779472/84de2a61-7e39-4d52-aed8-b0ab67af95bc)
 
-- `v3 -> v4`, `v4 -> v5` Migrating 정리 문서는 아래 문서들을 확인해 주시기를 바랍니다.
+- `v3 -> v4`, `v4 -> v5` Migrating 정리 문서는 아래 문서들을 확인해 주시기 바랍니다.
 - [Migrating to TanStack Query(React) v5](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v5.md)
 
 - [Migrating to TanStack Query(React) v4](https://github.com/ssi02014/react-query-tutorial/tree/master/document/v4.md)
@@ -814,7 +814,9 @@ const useSuperHeroData = (heroId: string) => {
     queryFn: () => getSuperHero(heroId),
     initialData: () => {
       const queryData = queryClient.getQueryData(['super-heroes']) as any;
-      const hero = queryData?.data?.find((hero: Hero) => hero.id === parseInt(heroId));
+      const hero = queryData?.data?.find(
+        (hero: Hero) => hero.id === parseInt(heroId)
+      );
 
       if (hero) return { data: hero };
     },
@@ -899,19 +901,22 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 
 // useInfiniteQuery의 queryFn의 매개변수는 `pageParam`라는 프로퍼티를 가질 수 있다.
 const fetchColors = async ({ pageParam }) => {
-  return await axios.get(`http://localhost:4000/colors?_limit=2&_page=${pageParam}`);
+  return await axios.get(
+    `http://localhost:4000/colors?_limit=2&_page=${pageParam}`
+  );
 };
 
 const InfiniteQueries = () => {
-  const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['colors'],
-    queryFn: fetchColors,
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      return allPages.length < 4 && allPages.length + 1;
-    },
-    // ...
-  });
+  const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } = 
+    useInfiniteQuery({
+      queryKey: ['colors'],
+      queryFn: fetchColors,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        return allPages.length < 4 && allPages.length + 1;
+      },
+      // ...
+    });
 
   return (
     <div>
@@ -1497,7 +1502,12 @@ export function useQuery<
 import { AxiosError } from 'axios';
 
 // useQuery 타입 적용 예시
-const { data } = useQuery<SuperHeros, AxiosError, SuperHeroName[], [string, number]>({
+const { data } = useQuery<
+  SuperHeros, 
+  AxiosError, 
+  SuperHeroName[], 
+  [string, number]
+>({
   queryKey: ['super-heros', id],
   queryFn: getSuperHero,
   select: (data) => {
