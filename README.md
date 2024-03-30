@@ -569,7 +569,7 @@ const {
 ### onSuccess, onError, onSettled
 
 - _NOTE_: `v4`까지 있던 onSuccess, onError, onSettled Callback은 `useQuery` 옵션에서 [@Deprecated](https://github.com/TanStack/query/pull/5353)됐다. 단, `useMutation`에서는 사용 가능하다.
-- [Breaking React Query"s API on purpose](https://velog.io/@cnsrn1874/breaking-react-querys-api-on-purpose) 참고
+- [Breaking React Query's API on purpose](https://velog.io/@cnsrn1874/breaking-react-querys-api-on-purpose) 참고
 
 <br />
 
@@ -887,6 +887,7 @@ const prefetchTodos = async () => {
 
 <br />
 
+
 ## Infinite Queries
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
@@ -899,7 +900,7 @@ const prefetchTodos = async () => {
 ```tsx
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-// useInfiniteQuery의 queryFn의 매개변수는 `pageParam`라는 프로퍼티를 가질 수 있다.
+// useInfiniteQuery의 queryFn의 매개변수는 `pageParam`이라는 프로퍼티를 가질 수 있다.
 const fetchColors = async ({ pageParam }) => {
   return await axios.get(
     `http://localhost:4000/colors?_limit=2&_page=${pageParam}`
@@ -907,7 +908,7 @@ const fetchColors = async ({ pageParam }) => {
 };
 
 const InfiniteQueries = () => {
-  const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } = 
+  const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery({
       queryKey: ["colors"],
       queryFn: fetchColors,
@@ -1227,7 +1228,10 @@ const useAddSuperHeroData = () => {
       queryClient.setQueryData(["super-heroes"], (oldData: any) => {
         return {
           ...oldData,
-          data: [...oldData.data, { ...newHero, id: oldData?.data?.length + 1 }],
+          data: [
+            ...oldData.data,
+            { ...newHero, id: oldData?.data?.length + 1 },
+          ],
         };
       });
 
@@ -1297,7 +1301,8 @@ const QueryErrorBoundary = ({ children }: Props) => {
           Error!!
           <button onClick={() => resetErrorBoundary()}>Try again</button>
         </div>
-      )}>
+      )}
+    >
       {children}
     </ErrorBoundary>
   );
@@ -1503,9 +1508,9 @@ import { AxiosError } from "axios";
 
 // useQuery 타입 적용 예시
 const { data } = useQuery<
-  SuperHeros, 
-  AxiosError, 
-  SuperHeroName[], 
+  SuperHeros,
+  AxiosError,
+  SuperHeroName[],
   [string, number]
 >({
   queryKey: ["super-heros", id],
