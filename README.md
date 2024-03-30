@@ -568,7 +568,7 @@ const {
 
 ### onSuccess, onError, onSettled
 
-- _NOTE_: `v4`까지 있던 onSuccess, onError, onSettled Callback은 `useQuery` 옵션에서 [@Deprecated](https://github.com/TanStack/query/pull/5353)됐다. 단, `useMutation`에서는 사용 가능하다.
+- _NOTE_: `v4`까지 있던 onSuccess, onError, onSettled Callback은 `useQuery` 옵션에서 [@Deprecated](https://github.com/TanStack/query/pull/5353) 됐다. 단, `useMutation`에서는 사용 가능하다.
 - [Breaking React Query's API on purpose](https://velog.io/@cnsrn1874/breaking-react-querys-api-on-purpose) 참고
 
 <br />
