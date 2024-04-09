@@ -1682,7 +1682,7 @@ $ bun add -D @tanstack/eslint-plugin-query
 
 ### 사용 방법(1)
 
-- 플러그인에 대한 `권장하는 모든 rule`을 적용하려면 아래와 같이 `.eslintrc.js` 파일 `extends`배열 안에 `plugin:@tanstack/eslint-plugin-query/recommended`을 추가합니다.
+- 플러그인에 대한 `권장하는 모든 rule`을 적용하려면 아래와 같이 `.eslintrc.js` 파일의 `extends`배열 안에 `plugin:@tanstack/eslint-plugin-query/recommended`을 추가합니다.
 
 ```js
 module.exports = {
@@ -1700,7 +1700,7 @@ module.exports = {
 
 ### 사용 방법(2)
 
-- 원하는 `rule`을 개별적으로 셋팅해서 적용하려면 아래와 같이 `.eslintrc.js` 파일 `plugins`배열 안에 `@tanstack/query`를 추가하고, 적용하고자 하는 rules에 규칙을 추가합니다.
+- 원하는 `rule`을 개별적으로 설정해서 적용하려면 아래와 같이 `.eslintrc.js` 파일의 `plugins`배열 안에 `@tanstack/query`를 추가하고, 적용하고자 하는 `rules`에 규칙을 추가합니다.
 
 ```js
 module.exports = {
