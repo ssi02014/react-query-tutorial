@@ -55,7 +55,8 @@
 28. [서버 로딩중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
 29. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
 30. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
-31. [리액트 쿼리 지원 버전](#지원-버전)
+31. [리액트 쿼리 ESLint 적용](#react-query-eslint-plugin)
+32. [리액트 쿼리 지원 버전](#지원-버전)
 
 <br />
 
@@ -1543,6 +1544,63 @@ const { data } = useQuery(["groups"], fetchGroups, {
  * error: Error | null
  * select: (data: { data: Group[] }): Group[]
  */
+```
+
+<br />
+
+## React Query ESLint Plugin
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- Tanstack Query는 `자체 ESLint Plugin`을 제공합니다. 해당 플러그인을 통해 모범 사례를 적용하고, 일반적인 실수를 방지할 수 있습니다.
+
+### 설치
+
+```bash
+$ npm i -D @tanstack/eslint-plugin-query
+# or
+$ pnpm add -D @tanstack/eslint-plugin-query
+# or
+$ yarn add -D @tanstack/eslint-plugin-query
+# or
+$ bun add -D @tanstack/eslint-plugin-query
+```
+
+<br />
+
+### 사용 방법(1)
+
+- 플러그인에 대한 `권장하는 모든 rule`을 적용하려면 아래와 같이 `.eslintrc.js` 파일 `extends`배열 안에 `plugin:@tanstack/eslint-plugin-query/recommended`을 추가합니다.
+
+```js
+module.exports = {
+  // ...
+  extends: ["plugin:@tanstack/eslint-plugin-query/recommended"],
+  rules: {
+    /* 수정하고자 하는 rule 추가 가능... */
+  },
+};
+```
+
+- 물론, rule을 변경하고 싶다면 rules에 아래 `사용방법(2)`와 같이 rule을 추가하면 됩니다.
+
+<br />
+
+### 사용 방법(2)
+
+- 원하는 `rule`을 개별적으로 셋팅해서 적용하려면 아래와 같이 `.eslintrc.js` 파일 `plugins`배열 안에 `@tanstack/query`를 추가하고, 적용하고자 하는 rules에 규칙을 추가합니다.
+
+```js
+module.exports = {
+  // ...
+  plugins: ["@tanstack/query"],
+  rules: {
+    "@tanstack/query/exhaustive-deps": "error",
+    "@tanstack/query/no-deprecated-options": "error",
+    "@tanstack/query/prefer-query-object-syntax": "error",
+    "@tanstack/query/stable-query-client": "error",
+  },
+};
 ```
 
 <br />
