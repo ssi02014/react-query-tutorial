@@ -242,11 +242,11 @@ result.refetch;
 
 ```tsx
 // 실제 예제
+// 💡 queryFn의 반환 타입을 지정해주면 useQuery의 타입 추론이 원활합니다.
 const getAllSuperHero = async (): Promise<AxiosResponse<Hero[]>> => {
   return await axios.get("http://localhost:4000/superheroes");
 };
 
-// data: AxiosResponse<Hero[]>
 const { data, isLoading } = useQuery({
   queryKey: ["super-heroes"],
   queryFn: getAllSuperHero,
@@ -407,7 +407,6 @@ const {
 - fresh는 뜻 그대로 `신선한`이라는 의미이다. 즉, 최신 상태라는 의미이다.
 
 ```tsx
-// data: AxiosResponse<Hero[]>
 const {
   data,
   // ...
@@ -443,7 +442,6 @@ const {
 ### refetchOnMount
 
 ```tsx
-// data: AxiosResponse<Hero[]>
 const {
   data,
   // ...
@@ -486,7 +484,6 @@ const {
 ### Polling
 
 ```tsx
-// data: AxiosResponse<Hero[]>
 const {
   data,
   // ...
@@ -518,7 +515,6 @@ react-query에서는 "refetchInterval", "refetchIntervalInBackground"을 이용�
 ### enabled refetch
 
 ```tsx
-// data: AxiosResponse<Hero[]>
 const {
   data,
   refetch,
@@ -557,7 +553,6 @@ return (
 ### retry
 
 ```tsx
-// data: AxiosResponse<Hero[]>
 const {
   data,
   refetch,
@@ -587,15 +582,12 @@ const {
 ### select
 
 ```tsx
-// data: string[]
 const {
   data,
-  refetch,
   // ...
 } = useQuery({
   queryKey: ["super-heroes"],
   queryFn: getAllSuperHero,
-  // data: AxiosResponse<Hero[]>
   select: (data) => {
     const superHeroNames = data.data.map((hero) => hero.name);
     return superHeroNames;
@@ -604,7 +596,7 @@ const {
 
 return (
   <div>
-    {data.map((heroName: string, idx: number) => (
+    {data.map((heroName, idx) => (
       <div key={`${heroName}-${idx}`}>{heroName}</div>
     ))}
   </div>
@@ -620,9 +612,8 @@ return (
 ### placeholderData
 
 ```tsx
-const placeholderData = useMemo(() => generateFakeHeros(), []);
+const placeholderData = useMemo(() => generateFakeHeroes(), []);
 
-// data: AxiosResponse<Hero[]>
 const {
   data,
   // ...
@@ -653,7 +644,6 @@ const {
 ```tsx
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
-// data: AxiosResponse<Hero[]>
 const {
   data,
   // ...
@@ -669,7 +659,6 @@ const {
 ```tsx
 import { useQuery } from "@tanstack/react-query";
 
-// data: AxiosResponse<Hero[]>
 const {
   data,
   // ...
@@ -687,7 +676,6 @@ const {
 ```tsx
 import { useQuery } from "@tanstack/react-query";
 
-// data: AxiosResponse<Hero[]>
 const { data, dataUpdatedAt } = useQuery({
   queryKey: ["super-heroes"],
   queryFn: getAllSuperHero,
@@ -710,13 +698,11 @@ const { data, dataUpdatedAt } = useQuery({
 - [useQueries 공식 문서](https://tanstack.com/query/v5/docs/react/reference/useQueries)
 
 ```tsx
-// data: AxiosResponse<Hero[]>
 const { data: superHeroes } = useQuery({
   queryKey: ["super-heroes"],
   queryFn: getAllSuperHero,
 });
 
-// data: AxiosResponse<Friend[]>
 const { data: friends } = useQuery({
   queryKey: ["friends"],
   queryFn: getFriends,
@@ -783,7 +769,6 @@ const combinedQueries = useQueries({
 
 ```tsx
 // 사전에 완료되어야 할 쿼리
-// data: AxiosResponse<User>
 const { data: user } = useQuery({
   queryKey: ["user", email],
   queryFn: () => getUserByEmail(email),
@@ -792,7 +777,6 @@ const { data: user } = useQuery({
 const channelId = user?.data.channelId;
 
 // user 쿼리에 종속 쿼리
-// data: AxiosResponse<Course[]>
 const { data: courses } = useQuery({
   queryKey: ["courses", channelId],
   queryFn: () => getCoursesByChannelId(channelId),
@@ -930,7 +914,6 @@ const fetchColors = async ({
   return await axios.get(`http://localhost:4000/colors?page=${pageParam}`);
 };
 
-// data: InfiniteData<AxiosResponse<PaginationColors>, number>
 const InfiniteQueries = () => {
   const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery({
@@ -1426,7 +1409,6 @@ const fetchGroups = async (): Promise<{ data: Group[] }> => {
 };
 
 // as-is
-// data: Group[] | undefined
 const { data } = useQuery({
   queryKey: ["groups"],
   queryFn: fetchGroups,
@@ -1434,7 +1416,6 @@ const { data } = useQuery({
 });
 
 // to-be
-// data: Group[]
 const { data } = useSuspenseQuery({
   queryKey: ["groups"],
   queryFn: fetchGroups,
@@ -1542,9 +1523,9 @@ const { data } = useQuery<
   AxiosResponse<Hero[]>,
   AxiosError,
   string[],
-  ["super-heros", number]
+  ["super-heroes", number]
 >({
-  queryKey: ["super-heros", id],
+  queryKey: ["super-heroes", id],
   queryFn: getSuperHero,
   select: (data) => {
     const superHeroNames = data.data.map((hero) => hero.name);
@@ -1599,12 +1580,12 @@ const onClick = () => {
 
 /** 
  주요 타입
- * data: `Todo`
- * error: `AxiosError<any, any>`
- * onSuccess: `(res: Todo, id: number, nextId: number)`
- * onError: `(err: AxiosError, id: number, nextId: number)`
- * onMutate: `(id: number)`
- * onSettled: `(res: Todo, err: AxiosError, id: number, nextId: number)`,
+ * data: Todo
+ * error: AxiosError<any, any>
+ * onSuccess: (res: Todo, id: number, nextId: number)
+ * onError: (err: AxiosError, id: number, nextId: number)
+ * onMutate: (id: number)
+ * onSettled: (res: Todo, err: AxiosError, id: number, nextId: number),
 */
 ```
 
@@ -1629,7 +1610,12 @@ export function useInfiniteQuery<
 ```
 
 ```tsx
-const { data, hasNextPage, fetchNextPage } = useInfiniteQuery<
+const {
+  data,
+  hasNextPage,
+  fetchNextPage,
+  //...
+} = useInfiniteQuery<
   AxiosResponse<PaginationColors>,
   AxiosError,
   InfiniteData<AxiosResponse<PaginationColors>, number>,
@@ -1646,9 +1632,9 @@ const { data, hasNextPage, fetchNextPage } = useInfiniteQuery<
 
 /**
  주요 타입
- * data: InfiniteData<AxiosResponse<PaginationColors>, number>
+ * data: InfiniteData<AxiosResponse<PaginationColors>, number> | undefined
  * error: AxiosError<any, any>
- * select: (data: InfiniteData<CommunityArticlesResponse, number>): InfiniteData<CommunityArticlesResponse, number>
+ * select: (data: InfiniteData<AxiosResponse<PaginationColors>, number>): InfiniteData<AxiosResponse<PaginationColors>, number>
  * getNextPageParam: GetNextPageParamFunction<number, AxiosResponse<PaginationColors>>
 */
 ```

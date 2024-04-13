@@ -255,7 +255,8 @@ result.isLoading
 
 ```tsx
 // 실제 예제
-const getAllSuperHero = async () => {
+// 💡 queryFn의 반환 타입을 지정해주면 useQuery의 타입 추론이 원활합니다.
+const getAllSuperHero = async (): Promise<AxiosResponse<Hero[]>> => {
   return await axios.get("http://localhost:4000/superheroes");
 };
 
@@ -270,8 +271,12 @@ const { data, isLoading } = useQuery(["super-heroes"], getAllSuperHero);
 
 ```tsx
 // (1)
-const getSuperHero = async ({ queryKey }: any) => {
-  const heroId = queryKey[1]; // queryKey: ['super-hero', '3']
+const getSuperHero = async ({
+  queryKey,
+}: {
+  queryKey: ["super-hero", number];
+}): Promise<AxiosResponse<Hero>> => {
+  const heroId = queryKey[1]; // ex) queryKey: ['super-hero', '3']
 
   return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
@@ -295,7 +300,7 @@ const useSuperHeroData = (heroId: string) => {
 
 ```tsx
 // (2)
-const getSuperHero = async (heroId: string) => {
+const getSuperHero = async (heroId: string): Promise<AxiosResponse<Hero>> => {
   return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
 
@@ -335,10 +340,17 @@ const useSuperHeroData = (heroId: string) => {
 ### useQuery 주요 리턴 데이터
 
 ```tsx
-const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
-  ["colors", pageNum],
-  () => fetchColors(pageNum)
-);
+const {
+  data,
+  error,
+  status,
+  fetchStatus,
+  isLoading,
+  isFetching,
+  isError,
+  refetch,
+  // ...
+} = useQuery(["super-heroes"], getAllSuperHero);
 ```
 
 - status: 쿼리 요청 함수의 상태를 표현하는 status는 4가지의 값이 존재한다.(문자열 형태)
@@ -396,14 +408,13 @@ const { status, isLoading, isError, error, data, isFetching, ... } = useQuery(
 - fresh는 뜻 그대로 `신선한` 이라는 의미이다. 즉, 최신 상태라는 의미이다.
 
 ```tsx
-const { isLoading, isFetching, data, isError, error } = useQuery(
-  ["super-hero"],
-  getSuperHero,
-  {
-    cacheTime: 5 * 60 * 1000, // 5분
-    staleTime: 1 * 60 * 1000, // 1분
-  }
-);
+const {
+  data,
+  //...
+} = useQuery(["super-hero"], getSuperHero, {
+  cacheTime: 5 * 60 * 1000, // 5분
+  staleTime: 1 * 60 * 1000, // 1분
+});
 ```
 
 <br />
@@ -431,13 +442,12 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 ### refetchOnMount
 
 ```tsx
-const { isLoading, isFetching, data, isError, error } = useQuery(
-  ["super-hero"],
-  getSuperHero,
-  {
-    refetchOnMount: true,
-  }
-);
+const {
+  data,
+  // ...
+} = useQuery(["super-heroes"], getAllSuperHero, {
+  refetchOnMount: true,
+});
 ```
 
 - refetchOnMount (boolean | "always")
@@ -450,13 +460,12 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 ### refetchOnWindowFocus
 
 ```tsx
-const { isLoading, isFetching, data, isError, error } = useQuery(
-  ["super-hero"],
-  getSuperHero,
-  {
-    refetchOnWindowFocus: true,
-  }
-);
+const {
+  data,
+  // ...
+} = useQuery(["super-hero"], getSuperHero, {
+  refetchOnWindowFocus: true,
+});
 ```
 
 - refetchOnWindowFocus는 데이터가 `stale` 상태일 경우 `윈도우 포커싱` 될 때마다 refetch를 실행하는 옵션이다. 기본값은 `true`이다.
@@ -468,14 +477,13 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 ### Polling
 
 ```tsx
-const { isLoading, isFetching, data, isError, error } = useQuery(
-  ["super-hero"],
-  getSuperHero,
-  {
-    refetchInterval: 2000,
-    refetchIntervalInBackground: true,
-  }
-);
+const {
+  data,
+  // ...
+} = useQuery(["super-heroes"], getAllSuperHero, {
+  refetchInterval: 2000,
+  refetchIntervalInBackground: true,
+});
 ```
 
 - Polling(폴링)이란? 리얼타임 웹을 위한 기법으로 `일정한 주기(특정한 시간)`를 가지고 서버와 응답을 주고받는 방식이 폴링 방식이다.
@@ -488,13 +496,13 @@ const { isLoading, isFetching, data, isError, error } = useQuery(
 ### enabled refetch
 
 ```tsx
-const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  ["super-hero"],
-  getSuperHero,
-  {
-    enabled: false,
-  }
-);
+const {
+  data,
+  refetch,
+  // ...
+} = useQuery(["super-heroes"], getAllSuperHero, {
+  enabled: false,
+});
 
 const handleClickRefetch = useCallback(() => {
   refetch();
@@ -573,24 +581,20 @@ const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
 ### select
 
 ```tsx
-const { isLoading, isFetching, data, isError, error, refetch } = useQuery(
-  ["super-hero"],
-  getSuperHero,
-  {
-    onSuccess,
-    onError,
-    select(data) {
-      const superHeroNames = data.data.map((hero: Data) => hero.name);
-      return superHeroNames;
-    },
-  }
-);
+const {
+  data,
+  // ...
+} = useQuery(["super-heroes"], getAllSuperHero, {
+  select(data) {
+    const superHeroNames = data.data.map((hero: Data) => hero.name);
+    return superHeroNames;
+  },
+});
 
 return (
   <div>
-    <button onClick={handleClickRefetch}>Fetch Heroes</button>
-    {data.map((heroName: string, idx: number) => (
-      <div key={idx}>{heroName}</div>
+    {data.map((heroName, idx) => (
+      <div key={`${heroName}-${idx}`}>{heroName}</div>
     ))}
   </div>
 );
@@ -603,16 +607,12 @@ return (
 ### keepPreviousData
 
 ```tsx
-const fetchColors = async (pageNum: number) => {
-  return await axios.get(
-    `http://localhost:4000/colors?_limit=2&_page=${pageNum}`
-  );
-};
-
-const { isLoading, isError, error, data, isFetching, isPreviousData } =
-  useQuery(["colors", pageNum], () => fetchColors(pageNum), {
-    keepPreviousData: true,
-  });
+const {
+  data,
+  // ...
+} = useQuery(["super-heroes"], getAllSuperHero, {
+  keepPreviousData: true,
+});
 ```
 
 - keepPreviousData를 `true`로 설정하면 쿼리 키가 변경되어서 새로운 데이터를 요청하는 동안에도 `마지막 data 값을 유지한다.`
@@ -626,7 +626,7 @@ const { isLoading, isError, error, data, isFetching, isPreviousData } =
 ```tsx
 function Todos() {
   const placeholderData = useMemo(() => generateFakeTodos(), []);
-  const result = useQuery(["todos"], () => fetch("/todos"), {
+  const result = useQuery(["todos"], fetchTodos, {
     placeholderData,
   });
 }
@@ -641,7 +641,8 @@ function Todos() {
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
 ```tsx
-const { data: superHeroes } = useQuery(["super-hero"], getSuperHero);
+const { data: superHeroes } = useQuery(["super-heroes"], getAllSuperHero);
+
 const { data: friends } = useQuery(["friends"], fetchFriends);
 ```
 
@@ -706,20 +707,17 @@ const queryResults = useQueries({
 - react-query에서는 쿼리를 실행할 준비가 되었다는 것을 알려주는 `enabled` 옵션을 통해 종속 쿼리를 쉽게 구현할 수 있다.
 
 ```tsx
-const DependantQueriesPage = ({ email }: Props) => {
-  // 사전에 완료되어야할 쿼리
-  const { data: user } = useQuery(['user', email], () =>
-    fetchUserByEmail(email)
-  );
+// 사전에 완료되어야할 쿼리
+const { data: user } = useQuery(["user", email], () => fetchUserByEmail(email));
 
-  const channelId = user?.data.channelId;
+const channelId = user?.data.channelId;
 
-  // user 쿼리에 종속 쿼리
-  const { data } = useQuery(
-    ['courses', channelId],
-    () => fetchCoursesByChannelId(channelId),
-    { enabled: !!channelId }
-  );
+// user 쿼리에 종속 쿼리
+const { data } = useQuery(
+  ["courses", channelId],
+  () => fetchCoursesByChannelId(channelId),
+  { enabled: !!channelId }
+);
 ```
 
 <br />
@@ -815,10 +813,12 @@ useEffect(() => {
 ```tsx
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-const fetchColors = async ({ pageParam = 1 }) => {
-  return await axios.get(
-    `http://localhost:4000/colors?_limit=2&_page=${pageParam}`
-  );
+const fetchColors = async ({
+  pageParam = 1,
+}: {
+  pageParam: number;
+}): Promise<AxiosResponse<PaginationColors>> => {
+  return await axios.get(`http://localhost:4000/colors?page=${pageParam}`);
 };
 
 const InfiniteQueries = () => {
@@ -890,14 +890,16 @@ const { data } = useInfiniteQuery(["colors"], fetchColors, {
 - 그러면 `queryFn`에 넣은 pageParams에서 getNextPageParam에서 반환한 객체를 받아올 수 있다.
 
 ```tsx
-/**
- * pageParam
- * { page, etc }
- */
-const fetchColors = async ({ pageParam }) => {
-  const { page = 1, etc } = pageParam;
-
-  return await axios.get(`http://localhost:4000/colors?_limit=2&_page=${page}`);
+const fetchColors = async ({
+  page,
+  etc,
+}: {
+  page: number;
+  etc: string;
+}): Promise<AxiosResponse<PaginationColors>> => {
+  return await axios.get(
+    `http://localhost:4000/colors?page=${page}?etc=${etc}`
+  );
 };
 ```
 
@@ -1046,6 +1048,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
+
   return useMutation(addSuperHero, {
     onSuccess(data) {
       queryClient.invalidateQueries(["super-heroes"]); // 이 key에 해당하는 쿼리가 무효화!
@@ -1065,6 +1068,7 @@ queryClient.invalidateQueries(["super-heroes"]);
 
 // 아래 query들 모두 무효화 된다.
 const query = useQuery(["super-heroes", "superman"], fetchSuperHero);
+
 const query = useQuery(["super-heroes", { id: 1 }], fetchSuperHero);
 ```
 
@@ -1282,7 +1286,7 @@ function App() {
 
 - Tanstack React Query 공식문서의 `Community Resources`에서는 Suspense를 더 `타입 세이프`하게 잘 사용하기 위해 [useSuspenseQuery](https://suspensive.org/ko/docs/react-query/useSuspenseQuery), [useSuspenseQueries](https://suspensive.org/ko/docs/react-query/useSuspenseQueries), [useSuspenseInfiniteQuery](https://suspensive.org/ko/docs/react-query/useSuspenseInfiniteQuery)를 제공하는 [@suspensive/react-query](https://tanstack.com/query/v4/docs/react/community/suspensive-react-query)를 소개하고 있다.
 
-### AS IS (@tanstack/react-query)
+### AS-IS (@tanstack/react-query)
 
 ```tsx
 import { useQuery } from "@tanstack/react-query";
@@ -1302,7 +1306,7 @@ const Example = () => {
 };
 ```
 
-### TO BE (@suspensive/react-query)
+### TO-BE (@suspensive/react-query)
 
 ```tsx
 import { useSuspenseQuery } from "@suspensive/react-query";
@@ -1331,8 +1335,12 @@ const Example = () => {
 
 ```tsx
 // 기본 쿼리 함수
-const getSuperHero = async ({ queryKey }: any) => {
-  const heroId = queryKey[1];
+const getSuperHero = async ({
+  queryKey,
+}: {
+  queryKey: ["super-hero", number];
+}): Promise<AxiosResponse<Hero> => {
+  const heroId = queryKey[1]; // ex) queryKey: ['super-hero', '3']
 
   return await axios.get(`http://localhost:4000/superheroes/${heroId}`);
 };
@@ -1363,7 +1371,7 @@ const useSuperHeroData = (heroId: string) => {
 ```
 
 ```tsx
-// 다음 형태 불가능
+// 다음 형태 불가능!!
 const useSuperHeroData = (heroId: string) => {
   return useQuery(["super-hero", heroId], () => getSuperHero(heroId));
 };
@@ -1418,9 +1426,9 @@ const { data } = useQuery<
 
 /**
  주요 타입
- * data: `SuperHeroName[]`
- * error: `AxiosError<any, any>`
- * select: `(data: SuperHeros): SuperHeroName[]`
+ * data: string[] | undefined
+ * error: AxiosError<any, any>
+ * select: (data: AxiosResponse<Hero[]>): string[]
  */
 ```
 
@@ -1462,12 +1470,12 @@ const onClick = () => {
 
 /** 
  주요 타입
- * data: `Todo`
- * error: `AxiosError<any, any>`
- * onSuccess: `(res: Todo, id: number, nextId: number)`
- * onError: `(err: AxiosError, id: number, nextId: number)`
- * onMutate: `(id: number)`
- * onSettled: `(res: Todo, err: AxiosError, id: number, nextId: number)`,
+ * data: Todo
+ * error: AxiosError<any, any>
+ * onSuccess: (res: Todo, id: number, nextId: number)
+ * onError: (err: AxiosError, id: number, nextId: number)
+ * onMutate: (id: number)
+ * onSettled: (res: Todo, err: AxiosError, id: number, nextId: number),
 */
 ```
 
@@ -1492,31 +1500,29 @@ export function useInfiniteQuery<
 ```
 
 ```tsx
-const fetchColors = async ({ pageParam }) => {
-  const { page = 1, etc } = pageParam;
-
-  return await axios.get(`http://localhost:4000/colors?_limit=2&_page=${page}`);
-};
-
-const { mutate } = useInfiniteQuery<Colors, AxiosError, Colors, ["colors"]>(
-  ["colors"],
-  ({ pageParam = 0 }) => {
-    fetchColors({ page: pageParam });
+const {
+  data,
+  hasNextPage,
+  fetchNextPage,
+  // ...
+} = useInfiniteQuery<
+  AxiosResponse<PaginationColors>,
+  AxiosError,
+  InfiniteData<AxiosResponse<PaginationColors>, number>,
+  ["colors"]
+>(["colors"], fetchColors, {
+  getNextPageParam: (lastPage) => {
+    return allPages.length < 4 && allPages.length + 1;
   },
-  {
-    getNextPageParam: (lastPage) => {
-      return allPages.length < 4 && allPages.length + 1;
-    },
-    ...options,
-  }
-);
+  ...options,
+});
 
 /**
  주요 타입
- * data:  InfiniteData<ModelListResponse>
- * error: `AxiosError<any, any>`
- * select: InfiniteData<ModelListResponse>
- * getNextPageParam: GetNextPageParamFunction<Colors>
+ * data: InfiniteData<AxiosResponse<PaginationColors, any>> | undefined
+ * error: AxiosError<any, any>
+ * select: (data: InfiniteData<AxiosResponse<PaginationColors, any>>): InfiniteData<AxiosResponse<PaginationColors, any>>
+ * getNextPageParam: GetNextPageParamFunction<AxiosResponse<LoanLimitProgress, any>
 */
 ```
 
@@ -1529,9 +1535,8 @@ const { mutate } = useInfiniteQuery<Colors, AxiosError, Colors, ["colors"]>(
 - 가장 좋은 방법은 `queryFn`의 타입을 잘 정의해서 `타입 추론`이 원활하게 되게 하는 것이다.
 
 ```tsx
-const fetchGroups = async (): Promise<{ data: Group[] }> => {
-  const res = await axios.get("/groups");
-  return res;
+const fetchGroups = async (): Promise<AxiosResponse<Group[]> => {
+  return await axios.get("/groups");
 };
 
 const { data } = useQuery(["groups"], fetchGroups, {
@@ -1540,9 +1545,9 @@ const { data } = useQuery(["groups"], fetchGroups, {
 
 /**
  주요 타입
- * data: Group[] | undefined
+ * data: AxiosResponse<Group[]> | undefined
  * error: Error | null
- * select: (data: { data: Group[] }): Group[]
+ * select: (data: AxiosResponse<Group[]>): Group[]
  */
 ```
 
