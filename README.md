@@ -109,7 +109,7 @@
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [QueryClient 공식 문서](https://tanstack.com/query/v5/docs/react/reference/QueryClient#queryclientsetquerydata)
+- [QueryClient 공식 문서](https://tanstack.com/query/v5/docs/reference/QueryClient)
 - [QueryClientProvider 공식 문서](https://tanstack.com/query/v5/docs/react/reference/QueryClientProvider)
 
 ```tsx
@@ -1189,7 +1189,7 @@ const query = useQuery({
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
 
-- [queryClient.setQueryData 공식 문서](https://tanstack.com/query/v5/docs/react/reference/QueryClient#queryclientsetquerydata)
+- [queryClient.setQueryData 공식 문서](https://tanstack.com/query/v5/docs/reference/QueryClient#queryclientsetquerydata)
 - 바로 위에서 `queryClient.invalidateQueries`를 이용해 캐시 데이터를 최신화하는 방법을 알아봤는데 `queryClient.setQueryData`를 이용해서도 데이터를 즉시 업데이트할 수 있다.
 - `queryClient.setQueryData`는 쿼리의 캐시 된 데이터를 즉시 업데이트하는 데 사용할 수 있는 `동기 함수`이다.
 - setQueryData의 두 번째 인자는 `updater` 함수이다. 해당 함수의 첫 번째 매개변수는 `oldData`로 기존 데이터를 가져온다.
