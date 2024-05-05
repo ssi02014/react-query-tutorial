@@ -118,7 +118,7 @@ getQueryData<TQueryFnData = unknown>(queryKey: QueryKey, filters?: QueryFilters)
 ### getQueriesData
 
 - queryClient.getQueriesData는 `여러 쿼리의 데이터를 가져오는데 사용할 수 있는 동기 함수` 입니다. 전달된 `queryKey` 또는 `filters`와 일치하는 쿼리만 반환합니다. 일치하는 쿼리가 없으면 `빈 배열`이 반환됩니다.
-- [Query filters](https://tanstack.com/query/v4/docs/guides/filters#query-filters)
+- [Query filters](https://tanstack.com/query/v4/docs/framework/react/guides/filters#query-filters)
 
 ```js
 // v3/v4

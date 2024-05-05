@@ -71,7 +71,7 @@ function App() {
 - https://github.com/TanStack/query/issues/1677#issuecomment-766137011
 - 좀 더 cache에 대해 자세히 이해하기 위해 위 이슈에서 React Query의 창시자 `tannerlinsley`가 언급한 내용을 확인해봅시다.
 - `tannerlinsley`는 React Query의 cache는 in-memory 객체이며, 브라우저 탭에 대한 `JavaScript Context(자바스크립트 실행 환경) 생명 주기 내에서만 존재`한다고 언급합니다.
-- 즉, React Query 캐시는 브라우저 탭 간에 공유되지도 않고, 브라우저를 새로고침하면 캐시가 사라집니다. 로컬 스토리지와 같은 외부 저장소에 캐시를 쓰고 싶다면 [persisters](https://tanstack.com/query/v5/docs/framework/react/overview)를 살펴보는게 좋습니다.
+- 즉, React Query 캐시는 브라우저 탭 간에 공유되지도 않고, 브라우저를 새로고침하면 캐시가 사라집니다. 로컬 스토리지와 같은 외부 저장소에 캐시를 쓰고 싶다면 [persisters](https://tanstack.com/query/latest/docs/framework/react/plugins/persistQueryClient)를 살펴보는게 좋습니다.
 
 <br />
 
