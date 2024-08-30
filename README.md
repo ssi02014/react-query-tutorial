@@ -1230,7 +1230,7 @@ const useAddSuperHeroData = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutateFn: addSuperHero,
-    onMutate: async () => {
+    onMutate: async (newHero: any) => {
       await queryClient.cancelQueries(["super-heroes"]);
 
       // 이전 값
