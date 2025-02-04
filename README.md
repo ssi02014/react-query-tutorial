@@ -1231,7 +1231,7 @@ const useAddSuperHeroData = () => {
   return useMutation({
     mutateFn: addSuperHero,
     onMutate: async (newHero: any) => {
-      await queryClient.cancelQueries(["super-heroes"]);
+      await queryClient.cancelQueries({ queryKey: ["super-heroes"] });
 
       // 이전 값
       const previousHeroData = queryClient.getQueryData(["super-heroes"]);
@@ -1256,7 +1256,7 @@ const useAddSuperHeroData = () => {
     },
     // 오류 또는 성공 후에는 항상 refetch
     onSettled() {
-      queryClient.invalidateQueries(["super-heroes"]);
+      queryClient.invalidateQueries({ queryKey: ["super-heroes"] });
     },
   });
 };
