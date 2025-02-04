@@ -1,4 +1,4 @@
-# 💻 TanStack Query(React)
+  # 💻 TanStack Query(React)
 
 - 해당 저장소는 TanStack Query(React)에서 자주 사용하는 개념들을 정리한 저장소입니다. TanStack Query(React)의 모든 활용 방법이 작성된 상태는 아니며, 필요한 내용은 추가, 보완할 예정입니다.
 
@@ -1231,7 +1231,7 @@ const useAddSuperHeroData = () => {
   return useMutation({
     mutateFn: addSuperHero,
     onMutate: async (newHero: any) => {
-      await queryClient.cancelQueries(["super-heroes"]);
+      await queryClient.cancelQueries({ queryKey: ["super-heroes"] });
 
       // 이전 값
       const previousHeroData = queryClient.getQueryData(["super-heroes"]);
@@ -1256,7 +1256,7 @@ const useAddSuperHeroData = () => {
     },
     // 오류 또는 성공 후에는 항상 refetch
     onSettled() {
-      queryClient.invalidateQueries(["super-heroes"]);
+      queryClient.invalidateQueries({ queryKey: ["super-heroes"] });
     },
   });
 };
