@@ -393,6 +393,15 @@ const {
 
 <br />
 
+### 💡 isPending / isFetching / isLoading 차이점
+
+- isPending : 처음으로 쿼리가 실행되고 있고, 캐시에 데이터가 아직 없을 때 true
+- isFetching : 서버에 요청을 보내고 있을 때 (처음 요청할 때, 풀링 방식이 동작 중일 때, 수동 refetch() 를 호출할 때, 백그라운드에서 refetch 될 때, enable이 true일 때)
+- isLoading : 캐시에 데이터가 없고 fetch 중일 때 (v5부터 isLoading 대신 isPending 사용을 권장하고 있습니다!!)
+  - [isPending을 권장하는 TanStack Query Maintainer의 주장](https://github.com/TanStack/query/discussions/6297)
+
+<br />
+
 ## useQuery 주요 옵션
 
 [목차 이동](#주요-컨셉-및-가이드-목차)
