@@ -346,6 +346,7 @@ const {
   data,
   error,
   status,
+  isPending,
   fetchStatus,
   isLoading,
   isFetching,
@@ -366,14 +367,17 @@ const {
     - [Dependent Queries 공식 문서](https://tanstack.com/query/v5/docs/react/guides/dependent-queries)
   - error: 에러 발생했을 때 상태
   - success: 쿼리 함수가 오류 없이 요청 성공하고 데이터를 표시할 준비가 된 상태.
+- **isPending**: 쿼리가 아직 수행되지 않았고, 캐싱된 데이터가 없을 때 `true`를 반환한다.
+  - status(pending)에 파생된 boolean 값이다.
 - **fetchStatus**: `queryFn`에 대한 정보를 나타냄
   - fetching: 쿼리가 현재 실행 중인 상태
   - paused: 쿼리를 요청했지만, 잠시 중단된 상태 (network mode와 연관)
   - idle: 쿼리가 현재 아무 작업도 수행하지 않는 상태
 - **isLoading**: `캐싱 된 데이터가 없을 때` 즉, 처음 실행된 쿼리일 때 로딩 여부에 따라 `true/false`로 반환된다.
   - 이는 캐싱 된 데이터가 있다면 로딩 여부에 상관없이 `false`를 반환한다.
-  - `isFetching && isPending` 와 동일하다.
-- **isFetching**: 캐싱 된 데이터가 있더라도 쿼리가 실행되면 로딩 여부에 따라 `true/false`로 반환된다.
+  - status(pending)와 fetchStatus(fetching) 결합된 boolean이다. 즉, `isFetching && isPending` 와 동일하다.
+- **isFetching**: 캐싱된 데이터가 있더라도 서버에 요청을 보내면 `true`를 반환한다. 
+  - fetchStatus(fetching)에 파생된 boolean 값이다.
 - **isSuccess**: 쿼리 요청이 성공하면 `true`
 - **isError**: 쿼리 요청 중에 에러가 발생한 경우 `true`
 - **refetch**: 쿼리를 수동으로 다시 가져오는 함수.
@@ -393,13 +397,17 @@ const {
 
 <br />
 
-### 💡 isPending / isFetching / isLoading 차이점
-
-- isPending : 아직 쿼리가 수행되지 않았고, 캐쉬된 데이터가 없을 때 true
-- isFetching : 지금 서버에 요청을 보내고 있을 때 (처음 요청할 때, 풀링 방식이 동작 중일 때, 수동 refetch() 를 호출할 때, 백그라운드에서 refetch 될 때, enable이 true일 때)
-- isLoading : 캐시에 데이터가 없고 fetch 중일 때 (v5부터 isLoading 대신 isPending 사용을 권장하고 있습니다!!)
-  - enabled이 false일때 isPending은 true로 로딩 UI가 나오지만, isLoading은 false로 첫 렌더링 화면에서 로딩 UI가 나오지 않기 때문입니다.
-  - [isPending을 권장하는 TanStack Query Maintainer의 주장](https://github.com/TanStack/query/discussions/6297)
+### 💡 isPending, isLoading 주요 차이점
+- isPending은 status(pending) 필드에서 직접 파생된 상태인 반면, isLoading은 status(pending)와 fetchStatus(fetching)의 결합된 상태입니다.
+- 쉽게 접근하자면 isPending은 "아직 데이터가 없습니다" 를 의미합니다. 그에 반해 isLoading은 "아직 데이터가 없고, 데이터를 가져오는 중입니다"를 의미합니다.
+- 이러한 차이는 enabled 옵션이 false일 때 예시로 들면 이해하가 쉽습니다. 
+  - enabled가 false일 때, isPending은 true로 설정되지만, isLoading은 false로 설정됩니다.
+\```ts
+useQuery({ queryKey, queryFn, enabled: false });
+// isPending: true, isLoading: false
+\```
+- [React Query v5부터는 isLoading 대신 isPending 사용을 권장합니다.](https://github.com/TanStack/query/discussions/6297#discussioncomment-7467010)
+  - 로더 표시 여부는 사용 사례마다 다르지만, 대부분의 경우 isPending만으로 충분합니다. isLoading의 경우 이론적으로 "보류중이지만, 로딩되지 않은 경우(ex. enabled: false)"를 항상 검증해야 합니다.
 
 <br />
 
