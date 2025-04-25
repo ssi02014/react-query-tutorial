@@ -402,12 +402,11 @@ const {
 - 쉽게 접근하자면 isPending은 "아직 데이터가 없습니다" 를 의미합니다. 그에 반해 isLoading은 "아직 데이터가 없고, 데이터를 가져오는 중입니다"를 의미합니다.
 - 이러한 차이는 enabled 옵션이 false일 때 예시로 들면 이해하가 쉽습니다. 
   - enabled가 false일 때, isPending은 true로 설정되지만, isLoading은 false로 설정됩니다.
-<br />
 
-\```ts
+```ts
 useQuery({ queryKey, queryFn, enabled: false });
 // isPending: true, isLoading: false
-\```
+```
 
 - [React Query v5부터는 isLoading 대신 isPending 사용을 권장합니다.](https://github.com/TanStack/query/discussions/6297#discussioncomment-7467010)
   - 로더 표시 여부는 사용 사례마다 다르지만, 대부분의 경우 isPending만으로 충분합니다. isLoading의 경우 이론적으로 "보류중이지만, 로딩되지 않은 경우(ex. enabled: false)"를 항상 검증해야 합니다.
