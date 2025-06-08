@@ -207,13 +207,22 @@ function App() {
 * Garbage Collection(가비지 컬렉션)
 ```
 
-- `gcTime`의 기본값 5분, `staleTime` 기본값 0초를 가정
+```tsx
+const result = useQuery({
+  queryKey: ["A"],
+  queryFn,
+  staleTime: 0, // (기본값 0초)
+  gcTime: 1000 * 60 * 5, // (기본값 5분)
+});
+```
 
 1. `A`라는 `queryKey`를 가진 쿼리 인스턴스가 `mount`됩니다.
 2. 네트워크 요청을 통해 데이터를 fetch하고, 해당 데이터는 `A`라는 `queryKey`로 캐싱됩니다.
 3. 기본값인 `staleTime`이 0이므로, 데이터를 가져오자마자 바로 `stale` 상태로 전환됩니다.
-4. 쿼리 인스턴스가 `unmount`되면, TanStack Query는 해당 캐시를 `cacheTime`(기본값 5분)만큼 유지합니다.
-5. 만약 5분 이내에 `A` 쿼리가 다시 `mount`된다면, 캐시된 데이터를 즉시 화면에 보여주고, `cacheTime`은 다시 5분으로 초기화됩니다.
+4. 쿼리 인스턴스가 `unmount`되면, TanStack Query는 해당 캐시를 `gcTime`동안 유지합니다.
+5. 만약 5분 이내에 `A` 쿼리가 다시 `mount`된다면, 캐시된 데이터를 즉시 반환하고, 동시에 `queryFn`은 `background`에서 실행됩니다.
+   - `queryFn`이 성공적으로 실행되면 캐시를 최신 데이터로 채우며, `gcTime`은 다시 5분으로 초기화됩니다.
+   - [stale-while-revalidate(swr)](https://web.dev/articles/stale-while-revalidate?hl=ko) 전략 적용
 6. 반면, 쿼리가 5분 동안 다시 `mount`되지 않으면, 해당 캐시는 가비지 컬렉션에 의해 삭제됩니다.
 
 <br />
