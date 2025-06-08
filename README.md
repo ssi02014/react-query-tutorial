@@ -207,14 +207,23 @@ function App() {
 * Garbage Collection(가비지 컬렉션)
 ```
 
-- `gcTime`의 기본값 5분, `staleTime` 기본값 0초를 가정
+```tsx
+const result = useQuery({
+  queryKey: ["A"],
+  queryFn,
+  staleTime: 0, // (기본값 0초)
+  gcTime: 1000 * 60 * 5, // (기본값 5분)
+});
+```
 
-1. `A`라는 queryKey를 가진 A 쿼리 인스턴스가 `mount`됨
-2. 네트워크에서 데이터 fetch하고, 불러온 데이터는 A라는 queryKey로 `캐싱`함
-3. 이 데이터는 `fresh`상태에서 `staleTime(기본값 0)` 이후 `stale` 상태로 변경됨
-4. A 쿼리 인스턴스가 `unmount`됨
-5. 캐시는 `gcTime(기본값 5min)` 만큼 유지되다가 `가비지 콜렉터(GC)`로 수집됨
-6. 만일, gcTime 지나기 전이고, A 쿼리 인스턴스 fresh한 상태라면 새롭게 mount되면 캐시 데이터를 보여준다.
+1. `A`라는 `queryKey`를 가진 쿼리 인스턴스가 `mount`됩니다.
+2. 네트워크 요청을 통해 데이터를 fetch하고, 해당 데이터는 `A`라는 `queryKey`로 캐싱됩니다.
+3. 기본값인 `staleTime`이 0이므로, 데이터를 가져오자마자 바로 `stale` 상태로 전환됩니다.
+4. 쿼리 인스턴스가 `unmount`되면, TanStack Query는 해당 캐시를 `gcTime`동안 유지합니다.
+5. 만약 5분 이내에 `A` 쿼리가 다시 `mount`된다면, 캐시된 데이터를 즉시 반환하고, 동시에 `queryFn`은 `background`에서 실행됩니다.
+   - `queryFn`이 성공적으로 실행되면 캐시를 최신 데이터로 채우며, `gcTime`은 다시 5분으로 초기화됩니다.
+   - [stale-while-revalidate(swr)](https://web.dev/articles/stale-while-revalidate?hl=ko) 전략 적용
+6. 반면, 쿼리가 5분 동안 다시 `mount`되지 않으면, 해당 캐시는 가비지 컬렉션에 의해 삭제됩니다.
 
 <br />
 
@@ -376,7 +385,7 @@ const {
 - **isLoading**: `캐싱 된 데이터가 없을 때` 즉, 처음 실행된 쿼리일 때 로딩 여부에 따라 `true/false`로 반환된다.
   - 이는 캐싱 된 데이터가 있다면 로딩 여부에 상관없이 `false`를 반환한다.
   - status(pending)와 fetchStatus(fetching) 결합된 boolean이다. 즉, `isFetching && isPending` 와 동일하다.
-- **isFetching**: 캐싱된 데이터가 있더라도 서버에 요청을 보내면 `true`를 반환한다. 
+- **isFetching**: 캐싱된 데이터가 있더라도 서버에 요청을 보내면 `true`를 반환한다.
   - fetchStatus(fetching)에 파생된 boolean 값이다.
 - **isSuccess**: 쿼리 요청이 성공하면 `true`
 - **isError**: 쿼리 요청 중에 에러가 발생한 경우 `true`
@@ -398,9 +407,10 @@ const {
 <br />
 
 ### 💡 isPending, isLoading 주요 차이점
+
 - isPending은 status(pending) 필드에서 직접 파생된 상태인 반면, isLoading은 status(pending)와 fetchStatus(fetching)의 결합된 상태입니다.
 - 쉽게 접근하자면 isPending은 "아직 데이터가 없습니다" 를 의미합니다. 그에 반해 isLoading은 "아직 데이터가 없고, 데이터를 가져오는 중입니다"를 의미합니다.
-- 이러한 차이는 enabled 옵션이 false일 때 예시로 들면 이해하가 쉽습니다. 
+- 이러한 차이는 enabled 옵션이 false일 때 예시로 들면 이해하가 쉽습니다.
   - enabled가 false일 때, isPending은 true로 설정되지만, isLoading은 false로 설정됩니다.
 
 ```ts
