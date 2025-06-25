@@ -993,6 +993,45 @@ const InfiniteQueries = () => {
 
 - initialPageParam을 이용해서 첫 페이지를 가져올 때 사용할 기본 페이지 매개변수이다. `필수값`이다.
 
+#### 중요한 동작 특성
+
+- `initialPageParam`은 쿼리가 처음 실행될 때 `pageParams[0]`에 기록되며, **동일한 queryKey를 가진 쿼리의 전체 캐시 생명주기 동안 고정된 값으로 유지**된다.
+- 만약 여러 컴포넌트에서 동일한 `queryKey`를 사용하지만 서로 다른 `initialPageParam` 값으로 `useInfiniteQuery`를 호출하는 경우, **가장 먼저 호출된 값이 일관되게 사용**된다.
+
+#### queryKey와의 관계
+
+- 서로 다른 `initialPageParam` 값을 사용하는 경우, **queryKey에도 해당 값을 포함**시켜야 한다.
+- `initialPageParam`이 다르면 사실상 다른 데이터 세트를 의미하므로, **queryKey도 그에 맞춰 구분**되어야 한다.
+- 즉, `initialPageParam`의 값이 변경될 때마다 queryKey도 함께 변경하는 것이 올바른 패턴이다.
+
+```typescript
+// 잘못된 예: 같은 queryKey로 다른 initialPageParam 사용
+const query1 = useInfiniteQuery({
+  queryKey: ["posts", "infinite"], // 동일한 queryKey
+  queryFn: fetchPosts,
+  initialPageParam: 0, // 첫 번째 호출: 0이 사용됨
+});
+
+const query2 = useInfiniteQuery({
+  queryKey: ["posts", "infinite"], // 동일한 queryKey
+  queryFn: fetchPosts,
+  initialPageParam: 10, // 두 번째 호출: 무시되고 여전히 0이 사용됨
+});
+
+// 올바른 예: initialPageParam 값을 queryKey에 포함
+const query1 = useInfiniteQuery({
+  queryKey: ["posts", "infinite", { initialPage: 0 }], // initialPageParam을 queryKey에 반영
+  queryFn: fetchPosts,
+  initialPageParam: 0,
+});
+
+const query2 = useInfiniteQuery({
+  queryKey: ["posts", "infinite", { initialPage: 10 }], // initialPageParam을 queryKey에 반영
+  queryFn: fetchPosts,
+  initialPageParam: 10,
+});
+```
+
 2. getNextPageParam: `(lastPage, allPages, lastPageParam, allPageParams) => TPageParam | undefined | null`
 
 - getNextPageParam 을 이용해서 페이지를 증가시킬 수 있다. `필수값`이다.
