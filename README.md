@@ -60,9 +60,10 @@
 29. [에러가 발생했을 때 Fallback UI를 선언적으로 보여주기 위한 ErrorBoundary + useQueryErrorResetBoundary](#usequeryerrorresetboundary)
 30. [서버 로딩 중일 때 Fallback UI를 선언적으로 보여주기 위한 Suspense](#suspense)
 31. [앱 전체에 동일한 쿼리 함수를 공유하는 Default Query Function](#default-query-function)
-32. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
-33. [리액트 쿼리 ESLint 적용](#react-query-eslint-plugin)
-34. [리액트 쿼리 지원 버전](#지원-버전)
+32. [옵션을 재사용할 수 있는 queryOptions와 mutationOptions](#queryoptions와-mutationoptions)
+33. [리액트 쿼리에 타입스크립트 적용](#react-query-typescript)
+34. [리액트 쿼리 ESLint 적용](#react-query-eslint-plugin)
+35. [리액트 쿼리 지원 버전](#지원-버전)
 
 <br />
 
@@ -70,6 +71,7 @@
 
 1. [QueryClient 주요 내용 정리 문서](https://github.com/ssi02014/react-query-tutorial/blob/main/document/queryClient.md)
 2. [기본적인 React Query 아키텍처 살펴보기: inside React Query](https://github.com/ssi02014/react-query-tutorial/blob/main/document/insideReactQuery.md)
+3. [queryOptions & mutationOptions 정리 문서](https://github.com/ssi02014/react-query-tutorial/blob/main/document/queryOptions_mutationOptions.md)
 
 <br />
 
@@ -1511,6 +1513,168 @@ const useSuperHeroData = (heroId: string) => {
 
 - useQuery에 `queryKey`만 넣어주면 `queryFn`에는 자동으로 기본 쿼리 함수가 들어간다.
 - 일반적으로 `useQuery`를 사용할 때와 달리 `queryFn`을 지정하지 않기에 쿼리 함수에 직접 인자를 넣어주는 형태의 사용은 불가능하다.
+
+<br />
+
+## queryOptions와 mutationOptions
+
+[목차 이동](#주요-컨셉-및-가이드-목차)
+
+- [queryOptions 공식 문서](https://tanstack.com/query/latest/docs/framework/react/reference/functions/queryOptions)
+- [mutationOptions 공식 문서](https://tanstack.com/query/latest/docs/framework/react/reference/functions/mutationOptions)
+- `queryOptions`와 `mutationOptions`는 쿼리/뮤테이션 옵션을 한곳에 모아 두고, 여러 곳에서 `타입 안전하게` 재사용하기 위한 헬퍼입니다.
+- 런타임에서는 인자로 받은 객체를 `그대로 반환하는 항등 함수`이기 때문에 추가적인 런타임 비용이 없습니다. 즉, 온전히 `타입스크립트를 위한 헬퍼`입니다.
+- `queryOptions`와 `infiniteQueryOptions`는 `v5.0.0`부터, `mutationOptions`는 `v5.82.0`부터 사용할 수 있습니다.
+
+<br />
+
+### queryOptions
+
+- 지금까지는 `queryKey`와 `queryFn`을 커스텀 훅 안에서 관리했는데, 옵션을 별도 함수로 분리하면 `queryKey`가 들고 있던 데이터 타입 정보가 사라집니다.
+
+```tsx
+// ❌ 일반 객체로 분리한 경우
+const superHeroOptions = (heroId: string) => ({
+  queryKey: ["super-hero", heroId],
+  queryFn: () => getSuperHero(heroId),
+});
+
+const hero = queryClient.getQueryData(superHeroOptions("1").queryKey);
+//    ^? unknown
+```
+
+- `queryOptions`로 감싸면 반환된 `queryKey`에 `queryFn`의 반환 타입이 함께 붙기 때문에, 명령형 API에서도 제네릭을 직접 명시할 필요가 없습니다.
+
+```tsx
+import { queryOptions } from "@tanstack/react-query";
+
+export const superHeroOptions = (heroId: string) =>
+  queryOptions({
+    queryKey: ["super-hero", heroId],
+    queryFn: () => getSuperHero(heroId),
+    staleTime: 1 * 60 * 1000,
+    // ...options
+  });
+
+const hero = queryClient.getQueryData(superHeroOptions("1").queryKey);
+//    ^? AxiosResponse<Hero> | undefined
+```
+
+- 이렇게 만든 옵션은 쿼리 옵션을 받는 훅과 `queryClient` 메서드에 그대로 넘길 수 있습니다.
+
+```tsx
+// 훅
+useQuery(superHeroOptions("1"));
+useSuspenseQuery(superHeroOptions("1"));
+useQueries({
+  queries: [superHeroOptions("1"), superHeroOptions("2")],
+});
+
+// queryClient 메서드
+queryClient.prefetchQuery(superHeroOptions("1"));
+queryClient.ensureQueryData(superHeroOptions("1"));
+
+// queryKey만 필요한 메서드에는 `.queryKey`를 꺼내서 넘겨줍니다.
+queryClient.setQueryData(superHeroOptions("1").queryKey, newHero);
+queryClient.invalidateQueries({ queryKey: superHeroOptions("1").queryKey });
+```
+
+- 💡 앞서 [useQuery](#usequery)에서 `queryClient.setQueryData` 등을 사용할 때 `초기에 설정해둔 queryKey 포맷`을 지켜야 한다고 언급했습니다. `queryOptions`를 사용하면 queryKey를 한곳에서만 관리하므로 이런 실수를 방지할 수 있습니다.
+- 공통 옵션은 그대로 두고, 컴포넌트에서 필요한 옵션만 덮어쓸 수도 있습니다. 대표적으로 컴포넌트마다 다른 `select` 함수를 붙이는 패턴이 있습니다.
+
+```tsx
+const { data } = useQuery({
+  ...superHeroOptions("1"),
+  select: (data) => data.data.name,
+});
+
+/**
+ * 타입 추론이 유지되므로 data는 select의 반환 타입이 됩니다.
+ * data: string | undefined
+ */
+```
+
+- 무한 쿼리에는 `infiniteQueryOptions`를 사용하며, 사용법은 `queryOptions`와 동일합니다.
+
+<br />
+
+### mutationOptions
+
+- `v5.82.0`부터 뮤테이션에도 동일한 헬퍼인 `mutationOptions`가 추가됐습니다. `useMutation`에 넘길 수 있는 옵션을 그대로 넘길 수 있습니다.
+- `queryOptions`와 달리 추가적인 타입 정보를 붙이지 않고 `받은 객체를 그대로 반환`합니다. 즉, 옵션 객체에 대한 타입 검사와 자동 완성을 받기 위한 헬퍼입니다.
+
+```tsx
+import { mutationOptions, useMutation } from "@tanstack/react-query";
+
+export const addSuperHeroOptions = mutationOptions({
+  mutationFn: addSuperHero,
+});
+
+const { mutate } = useMutation(addSuperHeroOptions);
+```
+
+- `mutationKey`를 지정하면 나중에 `useMutationState`나 `useIsMutating`으로 해당 뮤테이션의 상태를 조회할 수 있습니다. 필요 없다면 생략해도 됩니다.
+
+```tsx
+import { mutationOptions, useMutationState } from "@tanstack/react-query";
+
+export const addSuperHeroOptions = mutationOptions({
+  mutationKey: ["super-heroes", "add"],
+  mutationFn: addSuperHero,
+});
+
+// 전역 "저장 중..." 인디케이터
+const SavingIndicator = () => {
+  const isAdding =
+    useMutationState({
+      filters: {
+        mutationKey: addSuperHeroOptions.mutationKey,
+        status: "pending",
+      },
+    }).length > 0;
+
+  return isAdding ? <span>Saving...</span> : null;
+};
+```
+
+<br />
+
+### 💡 mutationOptions에 콜백을 덧붙일 때 주의할 점
+
+- `mutationOptions`는 객체를 그대로 반환하기 때문에, 스프레드로 콜백을 덧붙이면 원본 콜백이 `덮어써집니다.`
+
+```tsx
+export const addSuperHeroOptions = mutationOptions({
+  mutationFn: addSuperHero,
+  onSuccess: () => console.log("A"),
+});
+
+useMutation({
+  ...addSuperHeroOptions,
+  onSuccess: () => console.log("B"), // ❌ "A"는 실행되지 않습니다.
+});
+```
+
+- 앞서 [useMutation callback과 mutate callback의 차이](#-usemutation-callback과-mutate-callback의-차이)에서 다뤘듯이, 꼭 필요한 공통 로직은 `mutationOptions`에 두고 컴포넌트 전용 로직은 `mutate`의 Callback으로 넘기는 것이 좋습니다.
+
+```tsx
+export const addSuperHeroOptions = mutationOptions({
+  mutationFn: addSuperHero,
+  onSuccess: () => {
+    // 공통 로직
+    queryClient.invalidateQueries({ queryKey: ["super-heroes"] });
+  },
+});
+
+const { mutate } = useMutation(addSuperHeroOptions);
+
+mutate(newHero, {
+  // 컴포넌트 전용 로직
+  onSuccess: () => navigate("/super-heroes"),
+});
+```
+
+- 더 자세한 내용과 예제는 [queryOptions & mutationOptions 정리 문서](https://github.com/ssi02014/react-query-tutorial/blob/main/document/queryOptions_mutationOptions.md)를 참고해 주세요.
 
 <br />
 
