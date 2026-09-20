@@ -36,7 +36,7 @@
 5. [useQuery](#usequery)
 6. [useQuery 주요 리턴 데이터](#usequery-주요-리턴-데이터)
 7. [staleTime과 gcTime](#staletime과-gctime)
-8. [마운트 될 때마다 재요청하는 refetchOnMount](#refetchonmount)
+8. [마운트될 때마다 재요청하는 refetchOnMount](#refetchonmount)
 9. [윈도우가 포커싱될 때마다 재요청하는 refetchOnWindowFocus](#refetchonwindowfocus)
 10. [Polling 방식을 구현하기 위한 refetchInterval과 refetchIntervalInBackground](#polling)
 11. [자동 실행의 enabled와 수동으로 쿼리를 다시 요청하는 refetch](#enabled-refetch)
